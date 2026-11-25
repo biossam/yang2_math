@@ -119,7 +119,7 @@ document.addEventListener('click',e=>{if(RM_SEEK&&e.target.closest('#rmscene')){
   if(t.dataset.rm==='edit'){RM_EDIT=!RM_EDIT;RM_SEL=null;return rmRender()}
   if(t.dataset.rm==='flip'){const it=R.items.find(x=>x.id===RM_SEL);if(it){it.f=it.f?0:1;save()}return rmRender()}
   if(t.dataset.rm==='del'){R.items=R.items.filter(x=>x.id!==RM_SEL);RM_SEL=null;save();return rmRender()}
-  if(t.dataset.rmadd){const k=t.dataset.rmadd,I=RM_ITEMS[k];const id=R.nid++;R.items.push({id,k,x:50,y:I.p==='wall'?40:84,f:0});RM_SEL=id;save();toast(`${I.n}을(를) 놓았어요. 끌어서 옮겨 보세요`);return rmRender()}
+  if(t.dataset.rmadd){const k=t.dataset.rmadd,I=RM_ITEMS[k];const id=R.nid++;R.items.push({id,k,x:50,y:I.p==='wall'?40:84,f:0});RM_SEL=id;save();toast(`${rmJ(I.n,"을","를")} 놓았어요. 끌어서 옮겨 보세요`);return rmRender()}
   if(t.dataset.rmbuy&&t.dataset.rmbuy.startsWith('snack:')){const k=t.dataset.rmbuy.slice(6),o=RM_SNACK[k];if((R.coins||0)<o.c){toast(`포인트가 ${o.c-(R.coins||0)} 더 필요해요 ⭐`);return}R.coins-=o.c;R.snack=R.snack||{};R.snack[k]=(R.snack[k]||0)+1;save();toast(`${o.e} ${o.n}을(를) 샀어요! 미니룸에서 ${o.g==='toy'?'놀아 주세요':'주세요'}`);return rmRender()}
   if(t.dataset.rmbuy){const [kind,k]=t.dataset.rmbuy.split(':');const o=kind==='item'?RM_ITEMS[k]:kind==='wall'?RM_WALL[k]:RM_FLOOR[k];
     if(!R.own.includes(k)){if((R.coins||0)<o.c){toast(`포인트가 ${o.c-(R.coins||0)} 더 필요해요 ⭐`);return}R.coins-=o.c;R.own.push(k);toast(`${o.n}을(를) 샀어요!`)}

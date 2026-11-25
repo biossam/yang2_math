@@ -11,3 +11,4 @@
 .rmjs.jscheer svg{animation:rmbob .28s ease-in-out infinite alternate}
 .jswv{animation:jswv .32s ease-in-out infinite alternate;transform-box:view-box}@keyframes jswv{from{transform:rotate(-14deg)}to{transform:rotate(16deg)}}
 .jshrt{position:absolute;left:62%;top:20%;font-style:normal;font-size:15px;pointer-events:none;animation:jshrt 1.6s ease-out forwards}@keyframes jshrt{0%{opacity:0;transform:translateY(0) scale(.6)}25%{opacity:1}100%{opacity:0;transform:translateY(-44px) scale(1.15)}}
+.jsmark{position:absolute;width:18px;height:8px;margin:-4px 0 0 -9px;border:2px solid #FF7563;border-radius:50%;pointer-events:none;animation:jsmark .9s ease-out forwards;z-index:200}@keyframes jsmark{from{opacity:1;transform:scale(.4)}to{opacity:0;transform:scale(1.6)}}

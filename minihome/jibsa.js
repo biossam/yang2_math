@@ -74,24 +74,40 @@ let JS_PREV='stand';
 function jsTabHTML(){const o=rmLook();const R=rmS();
   const sw=(k,arr)=>`<div class="jsrow"><b>${{skin:'피부',hc:'머리 색',tc:'옷 색',pc:'바지·신발'}[k]}</b><div class="jssw">${arr.map((c,n)=>`<button class="${o[k]===n?'on':''}" data-jsopt="${k}:${n}" style="background:${c}" aria-label="${n+1}"></button>`).join('')}</div></div>`;
   const ch=(k,lab)=>`<div class="jsrow"><b>${lab}</b><div class="camopts">${JS_OPT[k].map(([v,t])=>`<button class="${o[k]===v?'on':''}" data-jsopt="${k}:${v}">${t}</button>`).join('')}</div></div>`;
-  return `<div class="jsbox"><div class="jsprev ${JS_PREV==='dance'?'jsdance':JS_PREV==='spin'?'jsspin':''}">${jsSvg(o,0,JS_PREV==='spin'?'stand':JS_PREV)}<span>${esc(R.name||'나')}</span></div><div class="jsbtns"><button class="rmbtn" data-jsrand>🎲 아무거나</button></div></div>
+  return `<div class="jsbox"><div class="jsprev ${JS_PREV==='dance'?'jsdance':JS_PREV==='spin'?'jsspin':''}">${jsSvg(o,0,JS_PREV==='spin'?'stand':JS_PREV)}<span>${esc(R.name||'나')}</span></div><div class="jsbtns"><button class="rmbtn" data-jsrand>🎲 아무거나</button><button class="rmbtn" data-jsauto style="margin-top:8px">${R.jsAuto===false?'🧍 혼자 다니기 꺼짐':'🚶 혼자 다니기 켜짐'}</button></div></div>
    <div class="jsrow"><b>동작 보기</b><div class="camopts">${JS_ACTS.map(([k,t])=>`<button class="${JS_PREV===k?'on':''}" data-jsprev="${k}">${t}</button>`).join('')}</div></div>${ch('hair','머리 모양')}${sw('hc',JS_HC)}${sw('skin',JS_SKIN)}${ch('top','옷')}${sw('tc',JS_TC)}${sw('pc',JS_PC)}${ch('acc','꾸미기')}${ch('face','표정')}${ch('hold','손에 든 것')}
-   <p class="rmhint" style="margin-top:12px">만든 집사는 미니룸에서 걷고, 춤추고, 책 읽고, 낮잠도 자며 친구들과 함께 지내요. 누르면 여러 가지로 반응하고, 친구랑 놀기와 셀카에도 나와요.</p>`}
+   <p class="rmhint" style="margin-top:12px">미니룸 바닥을 누르면 집사가 그리로 걸어가고, 가구를 누르면 앉거나 책을 읽어요. 혼자 다니기를 켜 두면 스스로 걷고, 춤추고, 책 읽고, 낮잠도 자며 친구들과 함께 지내요. 누르면 여러 가지로 반응하고, 친구랑 놀기와 셀카에도 나와요.</p>`}
 function jsPose(el,pose,ms,say){const sv=el.querySelector('svg');if(sv)sv.outerHTML=jsSvg(rmLook(),0,pose==='spin'?'stand':pose);el.classList.remove('jsdance','jsspin','jscheer');void el.offsetWidth;
   if(pose==='dance')el.classList.add('jsdance');if(pose==='spin')el.classList.add('jsspin');if(pose==='cheer'||pose==='clap')el.classList.add('jscheer');el._pose=pose;
   if(say)jsSay(el,say);if(pose==='pet'){const h=document.createElement('i');h.className='jshrt';h.textContent='💗';el.appendChild(h);setTimeout(()=>h.remove(),1700)}
   clearTimeout(el._pt);if(ms)el._pt=setTimeout(()=>jsPose(el,'stand'),ms);el._busy=Date.now()+(ms||0)}
 function jsSay(el,t){el.querySelectorAll('.jsbub').forEach(b=>b.remove());const h=document.createElement('i');h.className='jsbub';h.textContent=t;el.appendChild(h);setTimeout(()=>h.remove(),2200)}
-function jsGo(el,x,y,then){const x0=parseFloat(el.style.left);if(el._pose!=='stand')jsPose(el,'stand');el.classList.toggle('rmflip',x<x0);el.classList.add('rmwalk');el.style.left=x+'%';el.style.top=y+'%';el.style.zIndex=Math.round(y)+1;el._busy=Date.now()+2500;clearTimeout(el._t);el._t=setTimeout(()=>{el.classList.remove('rmwalk');then&&then()},2400)}
-function jsWalk(){const el=document.querySelector('#rmscene .rmjs');if(!el||RM_SEEK||RM_EDIT)return;if(Date.now()<(el._busy||0))return;if(el._pose&&el._pose!=='stand'&&Math.random()<.5)return;if(Math.random()<.3)return;
+function jsGo(el,x,y,then,keep){const x0=parseFloat(el.style.left);if(el._pose!=='stand')jsPose(el,'stand');el.classList.toggle('rmflip',x<x0);el.classList.add('rmwalk');el.style.left=x+'%';el.style.top=y+'%';el.style.zIndex=Math.round(y)+1;el._busy=Date.now()+2500;clearTimeout(el._t);el._t=setTimeout(()=>{el.classList.remove('rmwalk');if(keep){const R=rmS();R.jx=Math.round(x*10)/10;R.jy=Math.round(y*10)/10;save()}then&&then()},2400)}
+function jsWalk(){const el=document.querySelector('#rmscene .rmjs');if(!el||RM_SEEK||RM_EDIT)return;if(Date.now()<(el._busy||0)||Date.now()<(el._manual||0))return;{const R=rmS();if(!R.jsTip){R.jsTip=1;save();toast('👆 바닥이나 가구를 누르면 집사가 그리로 가요')}if(R.jsAuto===false)return}if(el._pose&&el._pose!=='stand'&&Math.random()<.5)return;if(Math.random()<.3)return;
   const r=Math.random(),say=k=>Math.random()<.45?(JS_ACTS.find(a=>a[0]===k)||[])[2]:'';
   if(r<.4)return jsGo(el,10+Math.random()*80,78+Math.random()*18);
   if(r<.55){const cats=[...document.querySelectorAll('#rmscene .rmc')];if(cats.length){const c=cats[Math.floor(Math.random()*cats.length)];const cx=parseFloat(c.style.left),cy=parseFloat(c.style.top);if(cy>70){const side=cx>50?-7:7;return jsGo(el,Math.min(92,Math.max(8,cx+side)),Math.min(96,cy+1),()=>{el.classList.toggle('rmflip',side>0);jsPose(el,'pet',2600,say('pet'))})}}}
   const P=['wave','cheer','dance','clap','read','think','stretch','sit','sleep','spin'],W=[2,1,2,1,2,1,2,2,2,1];let t=Math.random()*W.reduce((a,b)=>a+b),k=0;while(t>W[k]){t-=W[k];k++}
   const p=P[k];jsPose(el,p,{read:6000,sit:5000,sleep:7000,spin:900,dance:3200}[p]||2600,say(p))}
 const JS_SAY=['오늘도 3문제 풀었어!','다들 밥 먹었니? 🍡','공부 끝나면 놀아 줄게!','우리 애들 최고 💗','숨바꼭질 할 사람~?','간식 시간이다!','구구단 같이 외울 사람?','분수는 피자로 생각하면 쉬워!'];
-document.addEventListener('click',e=>{const t=e.target.closest('[data-jsopt],[data-jsrand],[data-jsprev],#rmscene .rmjs');if(!t)return;e.preventDefault();e.stopPropagation();const o=rmLook();
+document.addEventListener('click',e=>{const t=e.target.closest('[data-jsopt],[data-jsrand],[data-jsprev],[data-jsauto],#rmscene .rmjs');if(!t)return;e.preventDefault();e.stopPropagation();const o=rmLook();
   if(t.classList.contains('rmjs')){if(RM_EDIT||RM_SEEK)return;const r=Math.random();if(r<.4){jsPose(t,'stand');t.classList.remove('jsjump');void t.offsetWidth;t.classList.add('jsjump');jsSay(t,JS_SAY[Math.floor(Math.random()*JS_SAY.length)]);t._busy=Date.now()+2500;return}const a=JS_ACTS.filter(a=>!['sit','sleep','pet','read'].includes(a[0]))[Math.floor(Math.random()*7)];jsPose(t,a[0],a[0]==='spin'?900:2400,a[2]);return}
+  if(t.dataset.jsauto!=null){const R=rmS();R.jsAuto=R.jsAuto===false;save();toast(R.jsAuto?'집사가 혼자서도 돌아다녀요':'이제 집사는 시킬 때만 움직여요');return rmRender()}
   if(t.dataset.jsprev){JS_PREV=JS_PREV===t.dataset.jsprev?'stand':t.dataset.jsprev;return rmRender()}
   if(t.dataset.jsrand!=null){const r=a=>Math.floor(Math.random()*a);Object.assign(o,{skin:r(JS_SKIN.length),hc:r(JS_HC.length),tc:r(JS_TC.length),pc:r(JS_PC.length)});['hair','top','acc','face','hold'].forEach(k=>o[k]=JS_OPT[k][r(JS_OPT[k].length)][0]);save();return rmRender()}
   const [k,v]=t.dataset.jsopt.split(':');o[k]=/^\d+$/.test(v)?+v:v;save();rmRender()},true);
+
+// ===== 집사 직접 움직이기: 바닥을 누르면 그리로, 가구·친구를 누르면 그 옆으로 =====
+const JS_AT={sofa:['sit','소파에 앉아야지'],cushion:['sit','폭신폭신~'],rug:['sit','여기 앉을래'],bed:['sleep','쿨쿨…'],desk:['read','공부 시작!'],shelf:['read','무슨 책 읽지?'],lamp:['read','불 켜고 책 읽기'],plant:['think','물 줄 때가 됐나?'],fish:['think','물고기 귀엽다~'],tower:['cheer','캣타워 멋지다!'],box:['think','상자 안에 누가 있나?'],window:['stretch','날씨 좋다~'],clock:['think','벌써 시간이…'],frame:['think','멋진 그림이야']};
+function jsMark(sc,x,y){const m=document.createElement('i');m.className='jsmark';m.style.left=x+'%';m.style.top=y+'%';sc.appendChild(m);setTimeout(()=>m.remove(),900)}
+document.addEventListener('click',e=>{if(typeof VIEW==='undefined'||VIEW!=='room'||RM_TAB!=='room'||RM_EDIT||RM_SEEK)return;const sc=e.target.closest('#rmscene');if(!sc)return;
+  if(e.target.closest('.rmjs,button,a,input,.rmempty,[data-rmcam],[data-rmseek],[data-rmsnack],[data-rm]'))return;const el=sc.querySelector('.rmjs');if(!el)return;
+  const sr=sc.getBoundingClientRect(),cl=(v,a,b)=>Math.max(a,Math.min(b,v));const pc=(cx,cy)=>[cl((cx-sr.left)/sr.width*100,6,94),cl((cy-sr.top)/sr.height*100,66,97)];
+  el._manual=Date.now()+9000;clearTimeout(el._pt);
+  const cat=e.target.closest('.rmc');
+  if(cat){const r=cat.getBoundingClientRect();let [x,y]=pc(r.left+r.width/2,r.bottom);const side=x>50?-7:7;x=cl(x+side,6,94);jsGo(el,x,y,()=>{el.classList.toggle('rmflip',side>0);jsPose(el,'pet',2600,'착하다~ 💗')},1);return} // 친구 정보 창은 그대로 열려요
+  const it=e.target.closest('.rmi');
+  if(it){e.preventDefault();e.stopPropagation();const r=it.getBoundingClientRect();const R=rmS();const o=R.items.find(i=>String(i.id)===it.dataset.rmi);const act=JS_AT[o&&o.k]||['wave','여기 좋다!'];
+    let [x,y]=pc(r.left+r.width/2,r.bottom+(act[0]==='sit'||act[0]==='sleep'?-r.height*.25:6));if(r.width/sr.width>.2&&act[0]!=='sit'&&act[0]!=='sleep')x=cl(x+(x>50?-12:12),6,94);
+    jsGo(el,x,y,()=>jsPose(el,act[0],act[0]==='sleep'?6000:act[0]==='read'?5000:3200,act[1]),1);return}
+  e.preventDefault();e.stopPropagation();const [x,y]=pc(e.clientX,e.clientY);jsMark(sc,x,y);jsGo(el,x,y,()=>{if(Math.random()<.35)jsPose(el,pick(['wave','stretch','clap']),2200,'')},1)},true);
