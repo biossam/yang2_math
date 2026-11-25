@@ -1,0 +1,9 @@
+{
+  "name": "nyangmeong-party",
+  "version": "1.0.0",
+  "private": true,
+  "description": "일일삼제 미니홈피 친구랑 놀기 서버 (외부 패키지 없음)",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=20" }
+}

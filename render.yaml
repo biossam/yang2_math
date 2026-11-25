@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: nyangmeong-party
+    runtime: node
+    plan: free
+    rootDir: party
+    buildCommand: echo "no build"
+    startCommand: node server.js
+    healthCheckPath: /health
+    envVars:
+      - key: ALLOW_ORIGINS
+        value: https://biossam.github.io

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>냥멍수학</title>
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="shortcut icon" href="icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="냥멍수학">
+<meta name="theme-color" content="#FFF8EE">
+<meta name="mobile-web-app-capable" content="yes">
+<meta property="og:title" content="냥멍수학">
+<meta property="og:image" content="icon-512.png">
+<style>
+:root{color-scheme:light;--bg:#FFF8EE;--ink:#2A2A35;--sub:#77778A;--line:#F0E5D3;--c:#2FB59E;--cd:#1F8D7A}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;display:flex;justify-content:center;padding:28px 16px 40px}
+main{width:100%;max-width:420px;text-align:center}
+img.ic{width:104px;height:104px;border-radius:26px;box-shadow:0 3px 0 var(--line)}
+h1{font-size:24px;margin:14px 0 2px}.sub{color:var(--sub);font-size:14px;margin:0 0 20px}
+.go{display:block;text-align:center;background:var(--c);color:#fff;text-decoration:none;font-weight:700;font-size:18px;border-radius:16px;padding:15px;box-shadow:0 4px 0 var(--cd);margin-bottom:22px}
+.card{background:#fff;border:2px solid var(--line);border-radius:18px;padding:16px 16px 10px;text-align:left;margin-bottom:12px}
+.card h2{font-size:16px;margin:0 0 8px}.card ol{margin:0;padding-left:20px}.card li{margin:0 0 8px;line-height:1.6;font-size:15px}
+.card b{color:var(--cd)}.hide{display:none}
+.warn{background:#FFE7E2;border-color:#FFC9BF}.warn button{font:inherit;font-weight:700;border:0;border-radius:12px;background:#FF7563;color:#fff;padding:10px 14px;margin:4px 0 8px}
+.step{background:#E6F4FF;border-color:#BFD7EA}
+.small{font-size:13px;color:var(--sub);line-height:1.6}
+</style>
+</head>
+<body>
+<main>
+<img class="ic" src="icon-512.png" alt="">
+<h1>냥멍수학</h1>
+<p class="sub">고양이·강아지와 함께하는 초등 수학 복습 (1~6학년)</p>
+<a class="go" href="./app.html">공부하러 가기</a>
+
+<div class="card warn hide" id="inapp"><h2>⚠️ 카카오톡·인스타 안에서 열렸어요</h2>
+<p class="small">이 화면에서는 홈 화면에 추가할 수 없어요. <b>Safari</b>(아이폰) 또는 <b>Chrome</b>(안드로이드)으로 열어 주세요.</p>
+<button id="ext">기본 브라우저로 열기</button>
+<p class="small">버튼이 안 되면 오른쪽 위 ⋯ / ⋮ 메뉴에서 ‘다른 브라우저로 열기’를 누르세요.</p></div>
+
+<div class="card step hide" id="addnow"><h2>👍 지금 이 화면에서 추가하세요</h2>
+<ol><li id="addios">아래 <b>공유 버튼(□↑)</b> → <b>홈 화면에 추가</b> → <b>추가</b></li>
+<li id="addand">오른쪽 위 <b>⋮</b> → <b>홈 화면에 추가</b> → <b>추가</b></li></ol>
+<p class="small">추가한 아이콘을 누르면 바로 공부 화면으로 넘어가요.</p></div>
+
+<div class="card" id="howto"><h2>📲 홈 화면에 추가하기</h2>
+<ol><li>아래 버튼을 눌러 <b>홈 화면용 페이지</b>로 가요.</li>
+<li>그 화면에서 안내대로 <b>홈 화면에 추가</b>를 눌러요.</li></ol>
+<a class="go" style="margin:10px 0 6px;font-size:16px;padding:12px" href="./?app=1">홈 화면용 페이지 열기</a></div>
+
+<p class="small">로그인은 필요 없어요. 학습 기록은 이 기기의 브라우저에 저장되니 늘 같은 기기·같은 브라우저(홈 화면 아이콘)로 들어오세요.</p>
+</main>
+<script>
+(function(){
+  var URL_="./app.html", ua=navigator.userAgent||'', q=location.search;
+  var inapp=/KAKAOTALK|Instagram|FBAN|FBAV|NAVER\(inapp|Line\/|DaumApps|everytimeApp/i.test(ua);
+  var isAnd=/Android/i.test(ua), standalone=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone;
+  var fromHere=document.referrer&&document.referrer.indexOf(location.host)>-1;
+  if(inapp){document.getElementById('inapp').classList.remove('hide');
+    document.getElementById('ext').onclick=function(){var here=location.href.split('#')[0];
+      if(/KAKAOTALK/i.test(ua)){location.href='kakaotalk://web/openExternal?url='+encodeURIComponent(here);return}
+      if(isAnd){location.href='intent://'+here.replace(/^https?:\/\//,'')+'#Intent;scheme=https;package=com.android.chrome;end';return}
+      alert('오른쪽 위 메뉴에서 Safari로 열기를 눌러 주세요.')};return}
+  if(/[?&]app=1/.test(q)){
+    if(standalone||!fromHere){location.replace(URL_);return}
+    document.getElementById('howto').classList.add('hide');
+    document.getElementById('addnow').classList.remove('hide');
+    document.getElementById(isAnd?'addios':'addand').classList.add('hide');
+  }
+})();
+</script>
+<script>if("serviceWorker" in navigator){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(had&&!rl){rl=true;location.reload()}});addEventListener("load",()=>navigator.serviceWorker.register("./sw.js",{updateViaCache:"none"}).then(r=>r.update()).catch(()=>{}))}
+async function hardRefresh(){try{if(window.caches){for(const k of await caches.keys())await caches.delete(k)}if(navigator.serviceWorker){for(const r of await navigator.serviceWorker.getRegistrations())await r.unregister()}}catch(e){}location.replace(location.pathname+"?r="+Date.now())}</script></body>
+</html>
