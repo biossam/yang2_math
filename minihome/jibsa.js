@@ -109,5 +109,5 @@ document.addEventListener('click',e=>{if(typeof VIEW==='undefined'||VIEW!=='room
   const it=e.target.closest('.rmi');
   if(it){e.preventDefault();e.stopPropagation();const r=it.getBoundingClientRect();const R=rmS();const o=R.items.find(i=>String(i.id)===it.dataset.rmi);const act=JS_AT[o&&o.k]||['wave','여기 좋다!'];
     let [x,y]=pc(r.left+r.width/2,r.bottom+(act[0]==='sit'||act[0]==='sleep'?-r.height*.25:6));if(r.width/sr.width>.2&&act[0]!=='sit'&&act[0]!=='sleep')x=cl(x+(x>50?-12:12),6,94);
-    jsGo(el,x,y,()=>jsPose(el,act[0],act[0]==='sleep'?6000:act[0]==='read'?5000:3200,act[1]),1);return}
+    jsGo(el,x,y,()=>{if(act[0]==='sit'||act[0]==='sleep')el.style.zIndex=(parseInt(getComputedStyle(it).zIndex)||Math.round(y))+2;jsPose(el,act[0],act[0]==='sleep'?6000:act[0]==='read'?5000:3200,act[1])},1);return}
   e.preventDefault();e.stopPropagation();const [x,y]=pc(e.clientX,e.clientY);jsMark(sc,x,y);jsGo(el,x,y,()=>{if(Math.random()<.35)jsPose(el,pick(['wave','stretch','clap']),2200,'')},1)},true);
