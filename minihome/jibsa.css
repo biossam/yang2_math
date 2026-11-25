@@ -5,3 +5,9 @@
 .jsbox{display:flex;align-items:center;gap:14px;background:#fff;border:2px solid #E5DCCF;border-radius:16px;padding:10px 14px}.jsprev{width:110px;text-align:center;background:#FFF6E6;border-radius:14px;padding:6px 4px}.jsprev svg{width:84px;height:auto}.jsprev span{display:block;font-family:'Jua',sans-serif;font-size:15px;color:#4A3B33}
 .jsbtns{flex:1}.jsrow{margin-top:12px}.jsrow>b{display:block;font-size:13px;color:#4A3B33;margin-bottom:6px}.jssw{display:flex;flex-wrap:wrap;gap:8px}.jssw button{width:30px;height:30px;border-radius:50%;border:2px solid #4A3B33;cursor:pointer}.jssw button.on{box-shadow:0 0 0 3px #FF7563}
 .ptjs{width:11%;z-index:140!important}
+
+.rmjs.jsdance svg,.jsprev.jsdance svg{animation:jsdance .45s ease-in-out infinite alternate;transform-origin:50% 100%}@keyframes jsdance{from{transform:rotate(-9deg)}to{transform:rotate(9deg)}}
+.rmjs.jsspin svg,.jsprev.jsspin svg{animation:jsspin .9s ease-in-out}@keyframes jsspin{to{transform:rotateY(360deg)}}
+.rmjs.jscheer svg{animation:rmbob .28s ease-in-out infinite alternate}
+.jswv{animation:jswv .32s ease-in-out infinite alternate;transform-box:view-box}@keyframes jswv{from{transform:rotate(-14deg)}to{transform:rotate(16deg)}}
+.jshrt{position:absolute;left:62%;top:20%;font-style:normal;font-size:15px;pointer-events:none;animation:jshrt 1.6s ease-out forwards}@keyframes jshrt{0%{opacity:0;transform:translateY(0) scale(.6)}25%{opacity:1}100%{opacity:0;transform:translateY(-44px) scale(1.15)}}

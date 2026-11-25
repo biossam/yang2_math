@@ -13,7 +13,7 @@ const JS_OPT={
 function rmLook(){const R=rmS();R.look=Object.assign({skin:0,hair:'short',hc:0,top:'apron',tc:0,pc:0,acc:'catears',face:'smile',hold:'none'},R.look||{});return R.look}
 function jsClean(o){o=o||{};const pick=(k,arr)=>arr.some(a=>a[0]===o[k])?o[k]:arr[0][0];const n=(k,max)=>Math.max(0,Math.min(max-1,(+o[k]|0)));
   return {skin:n('skin',JS_SKIN.length),hair:pick('hair',JS_OPT.hair),hc:n('hc',JS_HC.length),top:pick('top',JS_OPT.top),tc:n('tc',JS_TC.length),pc:n('pc',JS_PC.length),acc:pick('acc',JS_OPT.acc),face:pick('face',JS_OPT.face),hold:pick('hold',JS_OPT.hold)}}
-function jsSvg(o,xmlns){o=jsClean(o);const OL=RM_OL,sk=JS_SKIN[o.skin],hc=JS_HC[o.hc],tc=JS_TC[o.tc],pc=JS_PC[o.pc];const st=`stroke="${OL}" stroke-width="1.6" stroke-linejoin="round"`;
+function jsSvg(o,xmlns,pose){o=jsClean(o);pose=pose||'stand';const PZ=JS_POSE[pose]||JS_POSE.stand;if(PZ.face)o=Object.assign({},o,{face:PZ.face});if(PZ.noHold||PZ.R)o=Object.assign({},o,{hold:'none'});const OL=RM_OL,sk=JS_SKIN[o.skin],hc=JS_HC[o.hc],tc=JS_TC[o.tc],pc=JS_PC[o.pc];const st=`stroke="${OL}" stroke-width="1.6" stroke-linejoin="round"`;
   let back='',front='',body='',acc='',hold='',face='';
   // 머리 뒤
   if(o.hair==='bob')back=`<path d="M11 28C11 9 49 9 49 28V44c0 3-5 3-5 0V32H16v12c0 3-5 3-5 0z" fill="${hc}" ${st}/>`;
@@ -24,15 +24,15 @@ function jsSvg(o,xmlns){o=jsClean(o);const OL=RM_OL,sk=JS_SKIN[o.skin],hc=JS_HC[
   // 몸
   const arm=(x1,y1,x2,y2,c)=>`<path d="M${x1} ${y1}L${x2} ${y2}" stroke="${OL}" stroke-width="6.4" stroke-linecap="round"/><path d="M${x1} ${y1}L${x2} ${y2}" stroke="${c}" stroke-width="4" stroke-linecap="round"/><circle cx="${x2}" cy="${y2+1}" r="2.8" fill="${sk}" ${st}/>`;
   const sleeve=o.top==='apron'?tc:tc;
-  const legs=`<rect x="22" y="66" width="6.5" height="11" rx="2" fill="${pc}" ${st}/><rect x="31.5" y="66" width="6.5" height="11" rx="2" fill="${pc}" ${st}/><ellipse cx="25" cy="78.5" rx="5" ry="2.8" fill="${OL}"/><ellipse cx="35" cy="78.5" rx="5" ry="2.8" fill="${OL}"/>`;
-  const armL=arm(20,50,14,61,sleeve),armR=o.hold==='none'?arm(40,50,46,61,sleeve):arm(40,50,47,55,sleeve);
+  const legs=PZ.sit?`<path d="M15 66c0-2 2-3 4-3h22c2 0 4 1 4 3v4c0 3-2 5-5 5H20c-3 0-5-2-5-5z" fill="${pc}" ${st}/><path d="M30 66v8" stroke="${OL}" stroke-width="1.2"/><ellipse cx="16.5" cy="74" rx="4" ry="2.6" fill="${OL}"/><ellipse cx="43.5" cy="74" rx="4" ry="2.6" fill="${OL}"/>`:`<rect x="22" y="66" width="6.5" height="11" rx="2" fill="${pc}" ${st}/><rect x="31.5" y="66" width="6.5" height="11" rx="2" fill="${pc}" ${st}/><ellipse cx="25" cy="78.5" rx="5" ry="2.8" fill="${OL}"/><ellipse cx="35" cy="78.5" rx="5" ry="2.8" fill="${OL}"/>`;
+  let armL=arm(20,50,14,61,sleeve),armR=o.hold==='none'?arm(40,50,46,61,sleeve):arm(40,50,47,55,sleeve);if(PZ.L)armL=arm(20,50,PZ.L[0],PZ.L[1],sleeve);if(PZ.R)armR=arm(40,50,PZ.R[0],PZ.R[1],sleeve);if(PZ.wave)armR=`<g class="jswv" style="transform-origin:40px 50px">${armR}</g>`;
   if(o.top==='dress')body=`${legs}<path d="M21 46h18l7 24H14z" fill="${tc}" ${st}/><path d="M16 64h28" stroke="#fff" stroke-width="1.6" stroke-dasharray="2 2"/>`;
   else body=`${legs}<path d="M20 49c0-3 2-4 5-4h10c3 0 5 1 5 4l1 19H19z" fill="${tc}" ${st}/>`;
   if(o.top==='apron')body+=`<path d="M23 50h14v17H23z" fill="#fff" ${st}/><path d="M23 50l-2-4M37 50l2-4" stroke="${OL}" stroke-width="1.2"/><g fill="#FFB8C6"><circle cx="30" cy="60" r="2.6"/><circle cx="26.8" cy="56.4" r="1.2"/><circle cx="29" cy="55" r="1.2"/><circle cx="31.4" cy="55" r="1.2"/><circle cx="33.4" cy="56.6" r="1.2"/></g>`;
   if(o.top==='hoodie')body+=`<path d="M24 60h12v6H24z" fill="none" ${st}/><path d="M27 46v6M33 46v6" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>`;
   if(o.top==='tee')body+=`<path d="M27 54c1-2 2-2 3 0 1-2 2-2 3 0-1 3-2 4-3 5-1-1-2-2-3-5z" fill="#FF7563"/>`;
   if(o.top==='suit')body+=`<path d="M30 46l-5 6 5 15 5-15z" fill="#fff" ${st}/><path d="M28 47h4l-1 2h-2z" fill="#FF7563" stroke="${OL}" stroke-width="1"/><circle cx="30" cy="58" r=".9" fill="${OL}"/><circle cx="30" cy="62" r=".9" fill="${OL}"/>`;
-  body+=armL+armR;
+  body+=armL+armR;if(pose==='read')body+=`<g transform="translate(30 56)"><path d="M0 -5C-3 -7 -8 -7 -10 -5V5C-8 3 -3 3 0 5z" fill="#fff" ${st}/><path d="M0 -5C3 -7 8 -7 10 -5V5C8 3 3 3 0 5z" fill="#fff" ${st}/><path d="M-7 -2h5M-7 1h5M2 -2h5M2 1h5" stroke="#9AA9C9" stroke-width=".8"/></g>`;
   // 고양이 후드 귀(머리 뒤에)
   if(o.top==='hoodie')back=`<path d="M10 30C9 8 51 8 50 30l-2 14H12z" fill="${tc}" ${st}/><path d="M13 16l1-11 9 6zM47 16l-1-11-9 6z" fill="${tc}" ${st}/><path d="M15 13l.6-5 4 3zM45 13l-.6-5-4 3z" fill="#FFB8C6"/>`+back;
   // 머리
@@ -43,10 +43,11 @@ function jsSvg(o,xmlns){o=jsClean(o);const OL=RM_OL,sk=JS_SKIN[o.skin],hc=JS_HC[
     curly:`M13.5 27C13 12 47 12 46.5 27C45 23 42 22 40 23C39 20 35 19 33 21C31 18 27 18 25 21C23 19 19 20 18 23C16 22 14 24 13.5 27z`}[o.hair];
   front=o.top==='hoodie'&&o.hair!=='curly'?`<path d="${bang}" fill="${hc}" ${st} transform="translate(30 27) scale(.96) translate(-30 -27)"/>`:`<path d="${bang}" fill="${hc}" ${st}/>`;
   // 얼굴
-  const eye=(x)=>`<ellipse cx="${x}" cy="31" rx="1.9" ry="2.5" fill="${OL}"/><circle cx="${x+.7}" cy="30" r=".7" fill="#fff"/>`;
+  const ey=pose==='read'?32.5:31;const eye=(x)=>`<ellipse cx="${x}" cy="${ey}" rx="1.9" ry="2.5" fill="${OL}"/><circle cx="${x+.7}" cy="${ey-1}" r=".7" fill="#fff"/>`;
+  const shut=(x)=>`<path d="M${x-2.2} 30.5q2.2 2.6 4.4 0" stroke="${OL}" stroke-width="1.5" fill="none" stroke-linecap="round"/>`;
   const arc=(x)=>`<path d="M${x-2.2} 31.5q2.2-2.8 4.4 0" stroke="${OL}" stroke-width="1.5" fill="none" stroke-linecap="round"/>`;
-  face=(o.face==='happy'?arc(24)+arc(36):o.face==='wink'?eye(24)+arc(36):eye(24)+eye(36))+`<ellipse cx="20.5" cy="36" rx="2.6" ry="1.6" fill="#FFB8C6" opacity=".85"/><ellipse cx="39.5" cy="36" rx="2.6" ry="1.6" fill="#FFB8C6" opacity=".85"/>`+
-    (o.face==='ooh'?`<ellipse cx="30" cy="38" rx="1.8" ry="2.2" fill="#B5544A" stroke="${OL}" stroke-width="1"/>`:`<path d="M27 37q1.5 2.2 3 0q1.5 2.2 3 0" stroke="${OL}" stroke-width="1.3" fill="none" stroke-linecap="round"/>`);
+  face=(o.face==='shut'?shut(24)+shut(36):o.face==='happy'?arc(24)+arc(36):o.face==='wink'?eye(24)+arc(36):eye(24)+eye(36))+`<ellipse cx="20.5" cy="36" rx="2.6" ry="1.6" fill="#FFB8C6" opacity=".85"/><ellipse cx="39.5" cy="36" rx="2.6" ry="1.6" fill="#FFB8C6" opacity=".85"/>`+
+    (o.face==='shut'&&pose==='sleep'?`<ellipse cx="30" cy="38.4" rx="1.2" ry="1" fill="#B5544A"/>`:o.face==='ooh'||pose==='stretch'?`<ellipse cx="30" cy="38" rx="1.8" ry="2.2" fill="#B5544A" stroke="${OL}" stroke-width="1"/>`:`<path d="M27 37q1.5 2.2 3 0q1.5 2.2 3 0" stroke="${OL}" stroke-width="1.3" fill="none" stroke-linecap="round"/>`);
   // 꾸미기
   if(o.acc==='catears')acc=`<path d="M17 18l2-10 7 6zM43 18l-2-10-7 6z" fill="${OL}"/><path d="M19.5 15.5l1-5 3.5 3zM40.5 15.5l-1-5-3.5 3z" fill="#FFB8C6"/><path d="M15 21C18 12 42 12 45 21" stroke="${OL}" stroke-width="2" fill="none"/>`;
   if(o.acc==='ribbon')acc=`<g transform="translate(41 16) rotate(20)"><path d="M0 0l-7-4v8zM0 0l7-4v8z" fill="#FF7563" ${st}/><circle r="2" fill="#FF9F7A" ${st}/></g>`;
@@ -58,17 +59,39 @@ function jsSvg(o,xmlns){o=jsClean(o);const OL=RM_OL,sk=JS_SKIN[o.skin],hc=JS_HC[
   if(o.hold==='wand')hold=`<path d="M47 56L56 34" stroke="${OL}" stroke-width="1.6" stroke-linecap="round"/><path d="M56 34c2 4 1 8-2 10" stroke="${OL}" stroke-width=".9" fill="none"/><path d="M54 44c-3 1-4 4-2 6 2-1 3-3 2-6z" fill="#7CD7C2" stroke="${OL}" stroke-width="1"/>`;
   if(o.hold==='book')hold=`<g transform="translate(48 55) rotate(-12)"><rect x="-6" y="-7" width="12" height="14" rx="1.5" fill="#5B8DEF" ${st}/><path d="M-3 -1h6M0 -4v6" stroke="#fff" stroke-width="1.4"/></g>`;
   if(o.hold==='cat')hold=`<g transform="translate(50 53)"><ellipse cx="0" cy="2" rx="7" ry="5" fill="#FFC9A3" ${st}/><path d="M-6 -2l1-6 4 3zM6 -2l-1-6-4 3z" fill="#FFC9A3" ${st}/><circle cx="-2.4" cy="0" r=".9" fill="${OL}"/><circle cx="2.4" cy="0" r=".9" fill="${OL}"/><path d="M-1 2.4q1 1 2 0" stroke="${OL}" stroke-width=".8" fill="none"/></g>`;
-  return `<svg ${xmlns?'xmlns="http://www.w3.org/2000/svg" width="480" height="672" ':''}viewBox="0 0 60 84">${back}${body}${head}${front}${face}${acc}${hold}</svg>`}
+  const zz=pose==='sleep'?`<text class="rmz" x="47" y="18" style="font-size:9px">z</text><text class="rmz z2" x="52" y="10" style="font-size:11px">Z</text>`:'';
+  return `<svg ${xmlns?'xmlns="http://www.w3.org/2000/svg" width="480" height="672" ':''}viewBox="0 0 60 84"><g${PZ.sit?' transform="translate(0 4)"':''}>${back}${body}${head}${front}${face}${acc}${hold}</g>${zz}</svg>`}
+// 집사 동작: 팔 끝 위치(L·R), 표정, 앉기 등
+const JS_POSE={stand:{},
+  wave:{R:[47,39],wave:1,face:'happy'},cheer:{L:[12,38],R:[48,38],face:'happy',noHold:1},
+  stretch:{L:[17,33],R:[43,33],face:'shut',noHold:1},dance:{L:[11,42],R:[47,61],face:'happy',noHold:1},
+  read:{L:[25,57],R:[35,57],noHold:1},pet:{R:[51,66],face:'happy'},
+  sit:{sit:1,L:[17,62],R:[43,62]},sleep:{sit:1,L:[19,63],R:[41,63],face:'shut',noHold:1},
+  think:{R:[33,41],noHold:1},clap:{L:[28,52],R:[32,52],face:'happy',noHold:1}};
+const JS_ACTS=[['wave','👋 인사','안녕~!'],['cheer','🙌 만세','오늘도 해냈다!'],['dance','💃 춤','♪ 신난다~'],['clap','👏 박수','짝짝짝!'],['read','📖 책 읽기','수학책 읽는 중…'],['think','🤔 생각','음… 답이 뭘까?'],['stretch','🙆 기지개','으쌰~ 개운하다'],['sit','🪑 앉기','잠깐 쉬어야지'],['sleep','😴 낮잠','쿨쿨…'],['spin','🌀 빙글','빙글빙글~'],['pet','🤲 쓰다듬기','착하다~ 💗']];
+let JS_PREV='stand';
 // 미니홈피 탭
 function jsTabHTML(){const o=rmLook();const R=rmS();
   const sw=(k,arr)=>`<div class="jsrow"><b>${{skin:'피부',hc:'머리 색',tc:'옷 색',pc:'바지·신발'}[k]}</b><div class="jssw">${arr.map((c,n)=>`<button class="${o[k]===n?'on':''}" data-jsopt="${k}:${n}" style="background:${c}" aria-label="${n+1}"></button>`).join('')}</div></div>`;
   const ch=(k,lab)=>`<div class="jsrow"><b>${lab}</b><div class="camopts">${JS_OPT[k].map(([v,t])=>`<button class="${o[k]===v?'on':''}" data-jsopt="${k}:${v}">${t}</button>`).join('')}</div></div>`;
-  return `<div class="jsbox"><div class="jsprev">${jsSvg(o)}<span>${esc(R.name||'나')}</span></div><div class="jsbtns"><button class="rmbtn" data-jsrand>🎲 아무거나</button></div></div>
-   ${ch('hair','머리 모양')}${sw('hc',JS_HC)}${sw('skin',JS_SKIN)}${ch('top','옷')}${sw('tc',JS_TC)}${sw('pc',JS_PC)}${ch('acc','꾸미기')}${ch('face','표정')}${ch('hold','손에 든 것')}
-   <p class="rmhint" style="margin-top:12px">만든 집사는 미니룸에서 친구들과 함께 지내고, 친구랑 놀기와 셀카에도 나와요.</p>`}
-function jsWalk(){const el=document.querySelector('#rmscene .rmjs');if(!el||RM_SEEK||RM_EDIT)return;if(Math.random()<.55)return;const x0=parseFloat(el.style.left),x=10+Math.random()*80,y=78+Math.random()*18;el.classList.toggle('rmflip',x<x0);el.classList.add('rmwalk');el.style.left=x+'%';el.style.top=y+'%';el.style.zIndex=Math.round(y)+1;clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('rmwalk'),2400)}
-const JS_SAY=['오늘도 3문제 풀었어!','다들 밥 먹었니? 🍡','공부 끝나면 놀아 줄게!','우리 애들 최고 💗','숨바꼭질 할 사람~?','츄르 시간이다!'];
-document.addEventListener('click',e=>{const t=e.target.closest('[data-jsopt],[data-jsrand],#rmscene .rmjs');if(!t)return;e.preventDefault();e.stopPropagation();const o=rmLook();
-  if(t.classList.contains('rmjs')){if(RM_EDIT||RM_SEEK)return;t.classList.remove('jsjump');void t.offsetWidth;t.classList.add('jsjump');const h=document.createElement('i');h.className='jsbub';h.textContent=JS_SAY[Math.floor(Math.random()*JS_SAY.length)];t.appendChild(h);setTimeout(()=>h.remove(),2200);return}
+  return `<div class="jsbox"><div class="jsprev ${JS_PREV==='dance'?'jsdance':JS_PREV==='spin'?'jsspin':''}">${jsSvg(o,0,JS_PREV==='spin'?'stand':JS_PREV)}<span>${esc(R.name||'나')}</span></div><div class="jsbtns"><button class="rmbtn" data-jsrand>🎲 아무거나</button></div></div>
+   <div class="jsrow"><b>동작 보기</b><div class="camopts">${JS_ACTS.map(([k,t])=>`<button class="${JS_PREV===k?'on':''}" data-jsprev="${k}">${t}</button>`).join('')}</div></div>${ch('hair','머리 모양')}${sw('hc',JS_HC)}${sw('skin',JS_SKIN)}${ch('top','옷')}${sw('tc',JS_TC)}${sw('pc',JS_PC)}${ch('acc','꾸미기')}${ch('face','표정')}${ch('hold','손에 든 것')}
+   <p class="rmhint" style="margin-top:12px">만든 집사는 미니룸에서 걷고, 춤추고, 책 읽고, 낮잠도 자며 친구들과 함께 지내요. 누르면 여러 가지로 반응하고, 친구랑 놀기와 셀카에도 나와요.</p>`}
+function jsPose(el,pose,ms,say){const sv=el.querySelector('svg');if(sv)sv.outerHTML=jsSvg(rmLook(),0,pose==='spin'?'stand':pose);el.classList.remove('jsdance','jsspin','jscheer');void el.offsetWidth;
+  if(pose==='dance')el.classList.add('jsdance');if(pose==='spin')el.classList.add('jsspin');if(pose==='cheer'||pose==='clap')el.classList.add('jscheer');el._pose=pose;
+  if(say)jsSay(el,say);if(pose==='pet'){const h=document.createElement('i');h.className='jshrt';h.textContent='💗';el.appendChild(h);setTimeout(()=>h.remove(),1700)}
+  clearTimeout(el._pt);if(ms)el._pt=setTimeout(()=>jsPose(el,'stand'),ms);el._busy=Date.now()+(ms||0)}
+function jsSay(el,t){el.querySelectorAll('.jsbub').forEach(b=>b.remove());const h=document.createElement('i');h.className='jsbub';h.textContent=t;el.appendChild(h);setTimeout(()=>h.remove(),2200)}
+function jsGo(el,x,y,then){const x0=parseFloat(el.style.left);if(el._pose!=='stand')jsPose(el,'stand');el.classList.toggle('rmflip',x<x0);el.classList.add('rmwalk');el.style.left=x+'%';el.style.top=y+'%';el.style.zIndex=Math.round(y)+1;el._busy=Date.now()+2500;clearTimeout(el._t);el._t=setTimeout(()=>{el.classList.remove('rmwalk');then&&then()},2400)}
+function jsWalk(){const el=document.querySelector('#rmscene .rmjs');if(!el||RM_SEEK||RM_EDIT)return;if(Date.now()<(el._busy||0))return;if(el._pose&&el._pose!=='stand'&&Math.random()<.5)return;if(Math.random()<.3)return;
+  const r=Math.random(),say=k=>Math.random()<.45?(JS_ACTS.find(a=>a[0]===k)||[])[2]:'';
+  if(r<.4)return jsGo(el,10+Math.random()*80,78+Math.random()*18);
+  if(r<.55){const cats=[...document.querySelectorAll('#rmscene .rmc')];if(cats.length){const c=cats[Math.floor(Math.random()*cats.length)];const cx=parseFloat(c.style.left),cy=parseFloat(c.style.top);if(cy>70){const side=cx>50?-7:7;return jsGo(el,Math.min(92,Math.max(8,cx+side)),Math.min(96,cy+1),()=>{el.classList.toggle('rmflip',side>0);jsPose(el,'pet',2600,say('pet'))})}}}
+  const P=['wave','cheer','dance','clap','read','think','stretch','sit','sleep','spin'],W=[2,1,2,1,2,1,2,2,2,1];let t=Math.random()*W.reduce((a,b)=>a+b),k=0;while(t>W[k]){t-=W[k];k++}
+  const p=P[k];jsPose(el,p,{read:6000,sit:5000,sleep:7000,spin:900,dance:3200}[p]||2600,say(p))}
+const JS_SAY=['오늘도 3문제 풀었어!','다들 밥 먹었니? 🍡','공부 끝나면 놀아 줄게!','우리 애들 최고 💗','숨바꼭질 할 사람~?','간식 시간이다!','구구단 같이 외울 사람?','분수는 피자로 생각하면 쉬워!'];
+document.addEventListener('click',e=>{const t=e.target.closest('[data-jsopt],[data-jsrand],[data-jsprev],#rmscene .rmjs');if(!t)return;e.preventDefault();e.stopPropagation();const o=rmLook();
+  if(t.classList.contains('rmjs')){if(RM_EDIT||RM_SEEK)return;const r=Math.random();if(r<.4){jsPose(t,'stand');t.classList.remove('jsjump');void t.offsetWidth;t.classList.add('jsjump');jsSay(t,JS_SAY[Math.floor(Math.random()*JS_SAY.length)]);t._busy=Date.now()+2500;return}const a=JS_ACTS.filter(a=>!['sit','sleep','pet','read'].includes(a[0]))[Math.floor(Math.random()*7)];jsPose(t,a[0],a[0]==='spin'?900:2400,a[2]);return}
+  if(t.dataset.jsprev){JS_PREV=JS_PREV===t.dataset.jsprev?'stand':t.dataset.jsprev;return rmRender()}
   if(t.dataset.jsrand!=null){const r=a=>Math.floor(Math.random()*a);Object.assign(o,{skin:r(JS_SKIN.length),hc:r(JS_HC.length),tc:r(JS_TC.length),pc:r(JS_PC.length)});['hair','top','acc','face','hold'].forEach(k=>o[k]=JS_OPT[k][r(JS_OPT[k].length)][0]);save();return rmRender()}
   const [k,v]=t.dataset.jsopt.split(':');o[k]=/^\d+$/.test(v)?+v:v;save();rmRender()},true);
