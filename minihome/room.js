@@ -83,7 +83,7 @@ function roomHTML(){const R=rmS();const days=Object.keys(S.days||{}).filter(k=>S
   }else if(RM_TAB==='me'){body=jsTabHTML()}else{
     const first=R.rooms[0].id;body=`${roomsBar}<p class="rmhint" style="margin:0 0 8px"><b>${RM_RT[cur.t].e} ${esc(cur.name)}</b>에서 살 친구를 눌러서 골라요. (한 방에 최대 16마리${R.cur===first?'':' · 다시 누르면 '+esc(rmJ(R.rooms[0].name,'으로'))+' 돌아가요'})</p><div class="rmgrid">${all.map(i=>{const b=BREEDS[i];const h=rmHomeOf(i);const here=h===R.cur;const hr=R.rooms.find(r=>r.id===h);return `<button class="rmshop ${here?'own on':''}" data-rmhome="${i}">${catImg(b)?`<img src="${catImg(b)}" alt="" class="rmph" onerror="this.remove()">`:`<svg viewBox="0 -2 40 36" width="46" height="42">${bFace(b)}</svg>`}<span>${esc(b.n)}</span><em>${here?'✓ 이 방':RM_RT[hr.t].e+' '+esc(hr.name)}</em></button>`}).join('')||'<p class="rmhint">아직 없어요. 문제 세트를 풀고 숨은 친구를 찾아 보세요!</p>'}</div><button class="rmbtn" style="margin-top:10px" data-act="dexopen2">📖 ${PETW()} 도감 보기</button>`;
   }
-  return `<div class="mh"><div class="mhtop"><span>TODAY <b>${td}</b></span><span>TOTAL <b>${days}</b></span><span class="mhurl">냥멍수학 미니홈피</span></div>
+  return `<div class="mh"><div class="mhtop"><span>TODAY <b>${td}</b></span><span>TOTAL <b>${days}</b></span><span class="mhurl">yang2수학 미니홈피</span></div>
   <div class="mhbook"><aside class="mhside"><div class="mhava" data-rmtab="me" title="내 집사 꾸미기">${jsSvg(rmLook())}</div>
     <input class="mhname" data-rmname maxlength="12" value="${esc(R.name)}" placeholder="이름 쓰기">
     <textarea class="mhmsg" data-rmmsg maxlength="60" rows="3" placeholder="오늘의 한마디">${esc(R.msg)}</textarea>
@@ -214,7 +214,7 @@ function camDraw(keepVideo){const el=document.getElementById('rmcam');if(!el||!C
   el.innerHTML=`<div class="camwrap"><div class="camtop"><b>📸 친구랑 셀카</b><button class="camx" data-cam="close">✕</button></div>
     <div class="camstage" id="camstage" style="--fb:${fr[0]};--ft:${fr[1]}"><div class="camview">${CAM.bg?`<img class="cambg" src="${CAM.bg}" alt="">`:CAM.bgc?`<div class="cambg" style="background:${CAM.bgc}"></div>`:'<video id="camv" autoplay playsinline muted></video><div class="cammsg" id="cammsg">카메라를 켜는 중…</div>'}
       ${CAM.cats.map(camCatHTML).join('')}<i class="camcd" id="camcd"></i></div>
-      <div class="camfoot"><span>🐾 ${esc(R.name||'나')} & ${esc(names||'친구')}</span><small>${new Date().toLocaleDateString('ko-KR')} · 냥멍수학 미니홈피</small></div></div>
+      <div class="camfoot"><span>🐾 ${esc(R.name||'나')} & ${esc(names||'친구')}</span><small>${new Date().toLocaleDateString('ko-KR')} · yang2수학 미니홈피</small></div></div>
     <div class="campanel">
       <div class="camrow"><b>함께 찍을 친구</b> <small>(최대 3마리 · 끌어서 옮기고, 눌러서 고르세요)</small></div>
       <div class="camcats"><button class="camc ${CAM.cats.some(c=>c.i<0)?'on':''}" data-campick="-1"><svg viewBox="8 6 44 44" width="34" height="30">${jsSvg(rmLook()).replace(/^<svg[^>]*>|<\/svg>$/g,'')}</svg><span>내 집사</span></button>${(live.length?live.concat(all.filter(i=>!live.includes(i))):all).map(i=>{const on=CAM.cats.findIndex(c=>c.i===i);return `<button class="camc ${on>=0?'on':''}" data-campick="${i}"><svg viewBox="0 -2 40 36" width="34" height="30">${bFace(BREEDS[i])}</svg><span>${esc(BREEDS[i].n)}</span></button>`}).join('')}</div>
@@ -246,9 +246,9 @@ async function camShoot(){const cd=document.getElementById('camcd');for(const n 
   else{x.fillStyle='#FFF6E6';x.fillRect(P,P,W,H)}
   for(const c of CAM.cats){const im=await camLoadImg('data:image/svg+xml;charset=utf-8,'+encodeURIComponent(c.i<0?camJs(c.f):camSvg(BREEDS[c.i],c.pose,c.f)));const w=W*c.s/100,h=w*(c.i<0?84/60:c.pose==='wave'?54/48:54/44);x.drawImage(im,P+W*c.x/100-w/2,P+H*c.y/100-h,w,h)}
   x.restore();x.fillStyle=fr[1];x.textBaseline='middle';x.font="44px Jua, 'IBM Plex Sans KR', sans-serif";const R=rmS();
-  x.fillText('🐾 '+(R.name||'나')+' & '+(CAM.cats.filter(c=>c.i>=0).map(c=>BREEDS[c.i].n).join(', ')||'친구'),P+6,H+P+FT*.42,W-12);x.font="26px 'IBM Plex Sans KR', sans-serif";x.globalAlpha=.75;x.fillText(new Date().toLocaleDateString('ko-KR')+' · 냥멍수학 미니홈피',P+6,H+P+FT*.78);x.globalAlpha=1;
+  x.fillText('🐾 '+(R.name||'나')+' & '+(CAM.cats.filter(c=>c.i>=0).map(c=>BREEDS[c.i].n).join(', ')||'친구'),P+6,H+P+FT*.42,W-12);x.font="26px 'IBM Plex Sans KR', sans-serif";x.globalAlpha=.75;x.fillText(new Date().toLocaleDateString('ko-KR')+' · yang2수학 미니홈피',P+6,H+P+FT*.78);x.globalAlpha=1;
   CAM.shot=cv.toDataURL('image/png');camStop();R.love=R.love||{};CAM.cats.forEach(c=>{if(c.i>=0)R.love[c.i]=(R.love[c.i]||0)+1});save();camDraw()}
-function camFileName(){const d=new Date();return `냥멍셀카_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}.png`}
+function camFileName(){const d=new Date();return `yang2셀카_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}.png`}
 document.addEventListener('click',async e=>{const t=e.target.closest('#rmcam [data-cam],#rmcam [data-campick],#rmcam [data-campose],#rmcam [data-camfr]');if(!t||!CAM)return;e.preventDefault();e.stopPropagation();const a=t.dataset.cam;
   if(t.dataset.campick){const i=+t.dataset.campick;const k=CAM.cats.findIndex(c=>c.i===i);if(k>=0){CAM.cats.splice(k,1);CAM.sel=Math.max(0,Math.min(CAM.sel,CAM.cats.length-1))}else{if(CAM.cats.length>=(CAM.cats.some(c=>c.i<0)||i<0?4:3)){toast('친구는 최대 3마리까지 함께 찍을 수 있어요');return}if(i<0){CAM.cats.push({i:-1,x:30,y:100,s:40,pose:'sit',f:0});CAM.sel=CAM.cats.length-1;return camDraw(true)}const n=CAM.cats.filter(c=>c.i>=0).length;CAM.cats.push({i,x:[72,28,50][n],y:[96,96,70][n],s:n==2?26:32,pose:CAM_POSES[(n*2+1)%CAM_POSES.length][0],f:n==1?1:0});CAM.sel=CAM.cats.length-1}return camDraw(true)}
   if(t.dataset.campose){CAM.cats[CAM.sel].pose=t.dataset.campose;return camDraw(true)}

@@ -1,4 +1,4 @@
-// 냥멍수학 미니홈피 · 친구랑 놀기 서버 (외부 패키지 없음)
+// yang2수학 미니홈피 · 친구랑 놀기 서버 (외부 패키지 없음)
 // 방 정보는 메모리에만 있고, 놀이가 끝나거나 30분 동안 아무도 없으면 지워져요.
 'use strict';
 const http = require('node:http');
@@ -147,4 +147,4 @@ setInterval(() => {
 }, 30e3).unref();
 
 server.headersTimeout = 15e3; server.requestTimeout = 0; server.keepAliveTimeout = 65e3;
-server.listen(PORT, () => console.log(`냥멍 놀이터 서버 :${PORT} · 허용 ${ORIGINS.join(' ')}`));
+server.listen(PORT, () => console.log(`yang2 놀이터 서버 :${PORT} · 허용 ${ORIGINS.join(' ')}`));

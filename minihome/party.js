@@ -70,7 +70,7 @@ function ptPlay(){if(!PT||!PT.snap)return;const el=ptEl();const s=PT.snap;const 
   const keep=RM_EDIT;RM_EDIT=false;const items=(s.items||[]).filter(it=>RM_ITEMS[it.k]).map(rmItemHTML).join('');RM_EDIT=keep;
   el.innerHTML=`<div class="camwrap"><div class="camtop"><b>👫 ${esc(host?host.nick:'친구')}의 ${esc(s.name)}</b><button class="camx" data-pt="close">✕</button></div>
     <div class="ptcodebar"><span>방 코드 <b>${PT.code}</b></span><button class="cambtn" data-pt="qr">📱 초대 QR ${PT.qr?'접기':'보기'}</button></div>
-    ${PT.qr?`<div class="ptqr"><div id="ptqrimg">QR 만드는 중…</div><p>친구가 카메라로 찍거나, 냥멍수학 → 미니홈피 → 👫 → <b>코드 ${PT.code}</b>${jfix(PT.code+'를').slice(String(PT.code).length)} 넣으면 들어와요</p></div>`:''}
+    ${PT.qr?`<div class="ptqr"><div id="ptqrimg">QR 만드는 중…</div><p>친구가 카메라로 찍거나, yang2수학 → 미니홈피 → 👫 → <b>코드 ${PT.code}</b>${jfix(PT.code+'를').slice(String(PT.code).length)} 넣으면 들어와요</p></div>`:''}
     <div class="ptpeople" id="ptpeople"></div>
     <div class="rmscene ptscene" id="ptscene"><div class="rmwall" style="background:${W.css}"></div><div class="rmfloor" style="background:${F.css}"></div>${items}${cats}${(PT.people||[]).map((p,n,a)=>{const x=a.length<2?50:12+76*n/(a.length-1),y=91-(n%2)*5;return `<div class="rmjs ptjs ${p.on?'':'off'}" data-ptj="${p.pid}" style="left:${x}%;top:${y}%;z-index:${Math.round(y)+1}">${jsSvg(p.look||{})}<span class="ptown" style="background:${ptColor(p.pid)}">${p.pid===PT.pid?'나':esc(p.nick)}</span></div>`}).join('')}<div class="ptbubs" id="ptbubs"></div><div class="ptnet" id="ptnet" style="display:none">📶 다시 연결하는 중…</div></div>
     <div class="ptbar"><b>놀잇감</b>${PT_TOYS.map(e=>`<button data-pttoy="${e}">${e}</button>`).join('')}</div>

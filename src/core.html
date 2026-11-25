@@ -1,4 +1,4 @@
-<!doctype html><html><head><title>냥멍수학</title><script>var APPVER="11-25 10:43"</script><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png"><link rel="apple-touch-icon" sizes="180x180" href="icon-180.png"><link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-title" content="냥멍수학"><meta name="mobile-web-app-capable" content="yes"><meta name="theme-color" content="#FFF8EE"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}.recbox{margin:10px 0 12px;padding:12px 14px;border:2px dashed var(--line,#E9DCC6);border-radius:18px;background:var(--card,#fff)}
+<!doctype html><html><head><title>yang2수학</title><script>var APPVER="11-25 10:43"</script><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png"><link rel="apple-touch-icon" sizes="180x180" href="icon-180.png"><link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-title" content="yang2수학"><meta name="mobile-web-app-capable" content="yes"><meta name="theme-color" content="#FFF8EE"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}.recbox{margin:10px 0 12px;padding:12px 14px;border:2px dashed var(--line,#E9DCC6);border-radius:18px;background:var(--card,#fff)}
 .recbox .rrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.recbox .rbtn{border:0;border-radius:999px;padding:10px 16px;font-weight:800;font-size:15px;background:#FF7563;color:#fff;cursor:pointer}
 .recbox .rbtn.stop{background:#2B2B38}.recbox .rbtn.ghost{background:transparent;color:var(--sub,#8a7f72);border:1.5px solid var(--line,#E9DCC6)}
 .recbox .rt{font-variant-numeric:tabular-nums;font-weight:800}.recbox .dot{width:10px;height:10px;border-radius:50%;background:#FF4B3A;animation:rblink 1s infinite}@keyframes rblink{50%{opacity:.2}}
@@ -15,7 +15,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>냥멍수학</title>
+<title>yang2수학</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -579,7 +579,7 @@ function findCat(id,el){S.cats=S.cats||[];el.classList.remove('hop');void el.off
   ask(pic,(first?'🎉 새 친구! ':'')+esc(br.n),esc(br.t)+catCredit(br)+`<br><span class="small">${already?'이미 찾은 친구예요.':n>=v?`오늘 숨은 친구 ${v}마리를 모두 찾았어요!`:`숨은 친구 ${n}/${v} 찾았어요.`}</span>`,[{t:'📖 도감 보기',cls:'go',fn:openDex}],'닫기')}
 function shelfOpen(v){document.getElementById('shelf').classList.toggle('open',v);document.getElementById('mapside').classList.remove('open');const dm=document.getElementById('shelfdim');dm.classList.toggle('on',v);dm.classList.remove('mapdim')}
 function mapOpen(v){document.getElementById('mapside').classList.toggle('open',v);document.getElementById('shelf').classList.remove('open');const dm=document.getElementById('shelfdim');dm.classList.toggle('on',v);dm.classList.toggle('mapdim',v)}
-function topbarHTML(){return `<div class="topbar"><span class="brand">🐾<span class="bt"> 냥멍수학</span>${hcat('brand',CAT.peek(B('brand'),22),'brandc')}</span><div class="tbs"><button class="tb lib" data-act="shelfopen">📚 서재</button><button class="tb map" data-act="mapopen">🗺️ 지도</button><button class="tb home" data-act="home" ${VIEW==='home'?'disabled':''}>⌂ 홈</button><button class="tb rs" data-act="resetask">↺ 리셋</button></div></div>`}
+function topbarHTML(){return `<div class="topbar"><span class="brand">🐾<span class="bt"> yang2수학</span>${hcat('brand',CAT.peek(B('brand'),22),'brandc')}</span><div class="tbs"><button class="tb lib" data-act="shelfopen">📚 서재</button><button class="tb map" data-act="mapopen">🗺️ 지도</button><button class="tb home" data-act="home" ${VIEW==='home'?'disabled':''}>⌂ 홈</button><button class="tb rs" data-act="resetask">↺ 리셋</button></div></div>`}
 function ask(icon,title,msg,btns,cancel='취소',extra=''){const el=document.getElementById('modal');el.innerHTML=`<div class="mbox"><div class="mi">${icon}</div><h3>${title}</h3><p>${msg}</p>${extra}${btns.map((b,i)=>`<button class="mbtn ${b.cls||''}" data-mb="${i}">${b.t}</button>`).join('')}<button class="mbtn" data-mb="x">${cancel}</button></div>`;el._b=btns;el.classList.add('on')}
 function closeModal(){const el=document.getElementById('modal');el.classList.remove('on');el.innerHTML=''}
 function resetAll(){const r=S.range,sp=S.sp,mp=S.map,dx=S.dex;S=fresh();S.range=r;S.sp=sp;S.map=mp;S.dex=dx||{};S.dexChecked=today()-1;save();toast('기록을 초기화했어요');go('home')}
@@ -941,7 +941,7 @@ document.addEventListener('change',e=>{const i=e.target.closest('[data-recfile]'
 
 // ===== ONBOARD: 처음 들어오면 학년과 함께 모을 친구 고르기 =====
 let OB={g:0,sp:''};
-function obOpen(){ask('🐾','냥멍수학에 온 걸 환영해요!','몇 학년 수학을 복습할까요? 공부하면 숨어 있는 친구를 모아 미니홈피에서 함께 살 수 있어요.',[],'나중에 고를게요',
+function obOpen(){ask('🐾','yang2수학에 온 걸 환영해요!','몇 학년 수학을 복습할까요? 공부하면 숨어 있는 친구를 모아 미니홈피에서 함께 살 수 있어요.',[],'나중에 고를게요',
  `<div class="obg">${[1,2,3,4,5,6].map(n=>`<button class="${OB.g===n?'on':''}" data-obg="${n}">${n}학년</button>`).join('')}</div>
   <p class="obh">함께 모을 친구</p><div class="obs">${[['cat','🐱','고양이'],['dog','🐶','강아지'],['both','🐱🐶','둘 다']].map(([k,e,t])=>`<button class="${OB.sp===k?'on':''}" data-obs="${k}"><span>${e}</span>${t}</button>`).join('')}</div>
   <button class="lpbig s" data-obgo="1" ${OB.g&&OB.sp?'':'disabled'}>시작하기 ▶</button>`)}
