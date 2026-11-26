@@ -630,10 +630,12 @@ function pickDaily(){
   const td=dailyToday(),need=td>=3?3:3-td;return re.map(prepare).concat(pre.slice(0,need))}
 function retryLeft(){const t0=today();return Object.values((S.daily&&S.daily.miss)||{}).filter(m=>m.day<t0).length}
 function pickDaily0(){
-  const left=dailyPool().map(p=>{const m=mastery(p.cid);return {p,w:(m==null?.5:m)-(p.h?.35:0)+Math.random()*.35}}).sort((a,b)=>a.w-b.w).map(x=>x.p);
+  const left=dailyPool().map(p=>{const m=mastery(p.cid);return {p,w:(m==null?.5:m)-(p.h?.35:0)+(p.t==='self'?.05:0)+Math.random()*.35}}).sort((a,b)=>a.w-b.w).map(x=>x.p);
   const out=[],cids=new Set();
-  for(const p of left){if(out.length===3)break;if(!cids.has(p.cid)){out.push(p);cids.add(p.cid)}}
-  for(const p of left){if(out.length===3)break;if(!out.includes(p))out.push(p)}
+  // 스스로 채점 문제는 별에 세지 않으니 하루 3문제에 1개까지만
+  const sOK=p=>p.t!=='self'||!out.some(q=>q.t==='self');
+  for(const p of left){if(out.length===3)break;if(!cids.has(p.cid)&&sOK(p)){out.push(p);cids.add(p.cid)}}
+  for(const p of left){if(out.length===3)break;if(!out.includes(p)&&sOK(p))out.push(p)}
   const g=rangeIds().filter(id=>C[id].gen);let t=0;while(out.length<3&&g.length&&t++<10){const q=genOne(pick(g));if(q)out.push(q)}
   return out.map(prepare);
 }
@@ -797,7 +799,7 @@ function flParse(a){let x=String(a).replace(/\s*\([^)]*\)\s*$/,'').trim();
 function flUnits(u){const fam=FU_FAM.find(f=>f.includes(u))||[];const o=[u];for(const v of fam.concat(['개','cm','분','°','원','명']))if(!o.includes(v)&&o.length<4)o.push(v);return shuffle(o)}
 function flNorm(t){return String(t).replace(/[x*]/gi,'×').replace(/\([^)]*\)/g,'').replace(/\.\.\./g,'…').replace(/[\s.,~·!?'"]/g,'').toLowerCase()}
 function flFrac(t){t=String(t).trim();let m=t.match(/^(\d+)\s+(\d+)\s*\/\s*(\d+)$/);if(m)return {w:+m[1],n:+m[2],d:+m[3],v:+m[1]+ +m[2]/+m[3]};m=t.match(/^(\d+)\s*\/\s*(\d+)$/);if(m)return {w:0,n:+m[1],d:+m[2],v:+m[1]/+m[2]};m=t.match(/^\d+(\.\d+)?$/);if(m)return {w:0,n:0,d:1,v:+t,plain:true};return null}
-function flMode(c){const P=flParse(c.a);const g=+C[c.cid].u[0];if(g<=2)return 'mc';return P.k}
+function flMode(c){const P=flParse(c.a);const g=+C[c.cid].u[0];if(g<=2)return 'mc';if(P.k==='text'&&/\d/.test(P.core)&&/[,=÷×:…]/.test(P.core)&&P.core.length>6)return 'mc';return P.k}
 function flOpts(st){st.fopt=st.fopt||{};if(st.fopt[st.j])return st.fopt[st.j];const c=st.cards[st.j],P=flParse(c.a);let o;
   if(P.k==='num'){o=[c.a,...balDs(P.n,[],P.n>=200&&Number.isInteger(P.n)?10**(Math.floor(Math.log10(P.n))-1):1).map(v=>(P.u?`${cm(v)}${/^[a-zA-Z°%²³]/.test(P.u)&&P.u!=='%'&&P.u!=='°'?' ':''}${P.u}`:cm(v)))]}
   else{const g=C[c.cid].u[0];const pool=[...new Set(Object.values(C).filter(k=>k.u[0]===g).flatMap(k=>k.fl.map(f=>f[1])).filter(a=>a!==c.a&&flParse(a).k===P.k&&flNorm(a)!==flNorm(c.a)))];o=[c.a,...shuffle(pool).slice(0,3)]}
