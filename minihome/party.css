@@ -22,3 +22,6 @@
 .ptrank{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin:4px 0}.ptrank i{font-style:normal;color:#fff;border-radius:99px;padding:2px 9px;font-size:13px;border:1.5px solid #fff}
 .ptscene .rmc.ptpend{opacity:.6}
 .ptscene .rmc.rmhid .ptown,.ptscene .rmc.rmhid .rmheart{display:none}
+
+.ptsrv{margin-top:12px;text-align:left;font-size:12px;color:var(--muted,#8a7d72)}.ptsrv summary{cursor:pointer}.ptsrv input{width:100%;box-sizing:border-box;margin:6px 0;padding:8px;border:2px solid var(--line,#eadfcf);border-radius:10px;font-size:13px}.ptsrv .cambtn{margin:2px 4px 0 0}
+#ptqrimg svg{display:block;margin:0 auto;border-radius:8px}

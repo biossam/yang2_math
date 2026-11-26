@@ -49,8 +49,10 @@ function readJson(req) {
   });
 }
 function newCode() { for (let k = 0; k < 50; k++) { const c = String(crypto.randomInt(1000, 10000)); if (!rooms.has(c)) return c; } return null; }
-function pubPeople(r) { return [...r.people.values()].map(p => ({ pid: p.pid, nick: p.nick, host: p.pid === r.host, cats: p.cats, look: p.look, on: p.clients.size > 0 })); }
-function broadcast(r, ev) { r.last = now(); r.seq++; const line = `id: ${r.seq}\ndata: ${JSON.stringify(ev)}\n\n`; for (const p of r.people.values()) for (const c of p.clients) c.write(line); }
+const isOn = p => p.clients.size > 0 || now() - (p.pollAt || 0) < 9000;
+function pubPeople(r) { return [...r.people.values()].map(p => ({ pid: p.pid, nick: p.nick, host: p.pid === r.host, cats: p.cats, look: p.look, on: isOn(p) })); }
+function helloOf(r, p) { return { t: 'hello', snap: r.snap, people: pubPeople(r), pos: r.pos, seek: r.seek ? { hides: r.seek.hides, found: r.seek.found } : null, me: p.pid }; }
+function broadcast(r, ev) { r.last = now(); r.seq++; r.log.push([r.seq, ev]); if (r.log.length > 300) r.log.splice(0, r.log.length - 300); const line = `id: ${r.seq}\ndata: ${JSON.stringify(ev)}\n\n`; for (const p of r.people.values()) for (const c of p.clients) c.write(line); }
 function auth(body) { const r = rooms.get(String(body.code || '')); if (!r) return [null, null, 'gone']; const p = r.people.get(String(body.pid || '')); if (!p || !safeEq(p.tok, tokHash(body.tok))) return [r, null, 'auth']; return [r, p, null]; }
 function closeRoom(r, why) { broadcast(r, { t: 'closed', why }); for (const p of r.people.values()) for (const c of p.clients) c.end(); rooms.delete(r.code); }
 const LOOK = { hair: ['short', 'bob', 'long', 'pony', 'bun', 'curly'], top: ['apron', 'hoodie', 'tee', 'dress', 'suit'], acc: ['none', 'catears', 'ribbon', 'glasses', 'cap', 'flower'], face: ['smile', 'wink', 'happy', 'ooh'], hold: ['none', 'churu', 'wand', 'book', 'cat'] };
@@ -63,14 +65,14 @@ const server = http.createServer(async (req, res) => {
   if (req.method === 'OPTIONS') { res.writeHead(204, headers(req)); return res.end(); }
   if (url.pathname === '/health' || url.pathname === '/') return send(req, res, 200, { ok: true, rooms: rooms.size });
   if (req.method === 'POST' && req.headers.origin && !ORIGINS.includes(req.headers.origin)) return send(req, res, 403, { err: 'origin' });
-  if (limited('ip:' + ip, 600, 60e3)) return send(req, res, 429, { err: 'slow' });
+  if (limited('ip:' + ip, 4000, 60e3)) return send(req, res, 429, { err: 'slow' });
   try {
     if (req.method === 'GET' && url.pathname === '/api/events') {
       const [r, p, err] = auth({ code: url.searchParams.get('code'), pid: url.searchParams.get('pid'), tok: url.searchParams.get('tok') });
       if (err) return send(req, res, err === 'gone' ? 404 : 403, { err });
       res.writeHead(200, headers(req, { 'Content-Type': 'text/event-stream; charset=utf-8', 'Connection': 'keep-alive', 'X-Accel-Buffering': 'no' }));
-      res.write(`retry: 3000\ndata: ${JSON.stringify({ t: 'hello', snap: r.snap, people: pubPeople(r), pos: r.pos, seek: r.seek ? { hides: r.seek.hides, found: r.seek.found } : null, me: p.pid })}\n\n`);
-      const wasOn = p.clients.size > 0; p.clients.add(res); p.last = now();
+      res.write(`retry: 3000\nid: ${r.seq}\ndata: ${JSON.stringify(helloOf(r, p))}\n\n`);
+      const wasOn = isOn(p); p.clients.add(res); p.last = now();
       if (!wasOn) broadcast(r, { t: 'people', people: pubPeople(r) });
       const hb = setInterval(() => res.write(': hb\n\n'), 20e3);
       req.on('close', () => { clearInterval(hb); p.clients.delete(res); if (rooms.has(r.code) && p.clients.size === 0) broadcast(r, { t: 'people', people: pubPeople(r) }); });
@@ -79,21 +81,30 @@ const server = http.createServer(async (req, res) => {
     if (req.method !== 'POST') return send(req, res, 404, { err: 'nf' });
     const body = await readJson(req);
     if (url.pathname === '/api/create') {
-      if (limited('create:' + ip, 20, 600e3)) return send(req, res, 429, { err: 'slow' });
+      if (limited('create:' + ip, 80, 600e3)) return send(req, res, 429, { err: 'slow' });
       if (rooms.size >= MAX_ROOMS) return send(req, res, 503, { err: 'full' });
       const code = newCode(); if (!code) return send(req, res, 503, { err: 'full' });
-      const r = { code, created: now(), last: now(), seq: 0, snap: cleanSnap(body.snap), people: new Map(), pos: [], host: null };
+      const r = { code, created: now(), last: now(), seq: 0, log: [], snap: cleanSnap(body.snap), people: new Map(), pos: [], host: null };
       const [p, tok] = addPerson(r, body.nick, body.cats, body.look); r.host = p.pid; rooms.set(code, r);
       return send(req, res, 200, { code, pid: p.pid, tok });
     }
     if (url.pathname === '/api/join') {
-      if (limited('join:' + ip, 40, 600e3)) return send(req, res, 429, { err: 'slow' });
+      if (limited('join:' + ip, 200, 600e3)) return send(req, res, 429, { err: 'slow' });
       const r = rooms.get(String(body.code || '').replace(/\D/g, ''));
       if (!r) return send(req, res, 404, { err: 'gone' });
       if (r.people.size >= MAX_PEOPLE) return send(req, res, 409, { err: 'many' });
       const [p, tok] = addPerson(r, body.nick, (body.cats || []).slice(0, 3), body.look);
       broadcast(r, { t: 'people', people: pubPeople(r), join: p.nick });
       return send(req, res, 200, { code: r.code, pid: p.pid, tok });
+    }
+    // 학교·기관 망처럼 이벤트 스트림(SSE)이 막히거나 늦게 오는 곳을 위한 짧은 물어보기(폴링)
+    if (url.pathname === '/api/poll') {
+      const [r, p, err] = auth(body); if (err) return send(req, res, err === 'gone' ? 404 : 403, { err });
+      const wasOn = isOn(p); p.pollAt = now(); p.last = now();
+      const since = num(body.since, 0, 1e9) | 0;
+      if (!wasOn) broadcast(r, { t: 'people', people: pubPeople(r) });
+      if (!since || !r.log.length || since < r.log[0][0] - 1) return send(req, res, 200, { seq: r.seq, hello: helloOf(r, p) });
+      return send(req, res, 200, { seq: r.seq, evs: r.log.filter(e => e[0] > since).map(e => e[1]) });
     }
     if (url.pathname === '/api/act') {
       const [r, p, err] = auth(body); if (err) return send(req, res, err === 'gone' ? 404 : 403, { err });
@@ -139,9 +150,10 @@ const server = http.createServer(async (req, res) => {
 setInterval(() => {
   const t = now();
   for (const r of rooms.values()) {
-    const anyOn = [...r.people.values()].some(p => p.clients.size > 0);
+    const anyOn = [...r.people.values()].some(isOn);
+    for (const p of r.people.values()) if (p.pollAt && !p.clients.size && t - p.pollAt > 9000 && t - p.pollAt < 40000 && !p.offSent) { p.offSent = 1; broadcast(r, { t: 'people', people: pubPeople(r) }); } else if (isOn(p)) p.offSent = 0;
     if (t - r.created > LIFE_MS || (!anyOn && t - r.last > IDLE_MS)) closeRoom(r, 'time');
-    else if (!anyOn && t - r.last > 5 * 60e3 && !r.people.get(r.host)?.clients.size) closeRoom(r, 'host');
+    else if (!anyOn && t - r.last > 5 * 60e3 && !(r.people.get(r.host) && isOn(r.people.get(r.host)))) closeRoom(r, 'host');
   }
   for (const [k, h] of ipHits) if (t - h.t > 600e3) ipHits.delete(k);
 }, 30e3).unref();

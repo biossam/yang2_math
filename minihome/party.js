@@ -10,14 +10,16 @@ function ptColor(pid){const i=(PT&&PT.people||[]).findIndex(p=>p.pid===pid);retu
 function ptEl(){let el=document.getElementById('rmparty');if(!el){el=document.createElement('div');el.id='rmparty';document.body.appendChild(el)}el.className='rmcam on';return el}
 function ptNick(){const R=rmS();return (PT&&PT.nick)||R.name||''}
 async function ptApi(path,body){const r=await fetch(PT_URL+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});let j={};try{j=await r.json()}catch(e){}if(!r.ok)throw Object.assign(new Error(j.err||'net'),{code:j.err||'net'});return j}
-async function ptWake(){const t0=Date.now();let first=true;while(Date.now()-t0<90000){try{const c=new AbortController();const tm=setTimeout(()=>c.abort(),first?4000:15000);const r=await fetch(PT_URL+'/health',{signal:c.signal,cache:'no-store'});clearTimeout(tm);if(r.ok)return true}catch(e){}
+let PT_BLOCK=0;
+async function ptWake(){PT_BLOCK=0;const t0=Date.now();let first=true;while(Date.now()-t0<90000){try{const c=new AbortController();const tm=setTimeout(()=>c.abort(),first?4000:15000);const t1=Date.now();const r=await fetch(PT_URL+'/health',{signal:c.signal,cache:'no-store'});clearTimeout(tm);let j=null;try{j=await r.json()}catch(e){}if(r.ok&&j&&j.ok)return true;if(r.ok){PT_BLOCK=(PT_BLOCK||0)+3}}catch(e){if(Date.now()-t0<20000&&e.name!=='AbortError')PT_BLOCK=(PT_BLOCK||0)+1}if((PT_BLOCK||0)>=4){PT_BLOCK=0;return false}
     if(first){first=false;ptMsg('⏳ 놀이터 문을 여는 중이에요','처음 열 때는 30초~1분쯤 걸려요. 잠시만 기다려 주세요!')}if(!PT)return false;await new Promise(r=>setTimeout(r,2500))}return false}
 function ptMsg(t,sub,btn){const el=ptEl();el.innerHTML=`<div class="camwrap"><div class="camtop"><b>👫 친구랑 놀기</b><button class="camx" data-pt="close">✕</button></div><div class="ptmsg"><div class="ptspin"></div><b>${t}</b><p>${sub||''}</p>${btn||''}</div></div>`}
+function ptSrvBox(){return `<details class="ptsrv"><summary>선생님용 · 놀이터 서버 주소 바꾸기</summary><input data-ptsrvin value="${esc(PT_URL)}" inputmode="url" autocomplete="off"><button class="cambtn" data-ptsrvsave>저장하고 다시 열기</button><button class="cambtn" data-ptsrvreset>처음 주소로</button></details>`}
 function ptErr(e){const m={gone:'그 코드의 방이 없어요. 코드를 다시 확인하거나, 친구에게 방을 다시 열어 달라고 해요.',many:'방이 꽉 찼어요 (최대 8명).',slow:'너무 빨리 눌렀어요. 잠시 뒤에 다시 해 봐요.',full:'놀이터가 붐벼요. 잠시 뒤에 다시 해 봐요.',origin:'이 주소에서는 놀이터를 쓸 수 없어요.'}[e.code]||'인터넷 연결을 확인하고 다시 해 봐요.';
   ptMsg('😿 들어갈 수 없어요',m,'<button class="cambig" data-pt="menu">처음으로</button>')}
 function ptOpen(code){if(PT&&PT.es)return ptPlay();PT={scr:code?'join':'menu',code:code||'',nick:ptDefNick(),bring:[]};ptDraw()}
 function ptClose(){if(PT&&PT.es&&PT.pid){ptApi('/api/act',{code:PT.code,pid:PT.pid,tok:PT.tok,t:'leave'}).catch(()=>{})}ptStop();PT=null;const el=document.getElementById('rmparty');if(el){el.className='rmcam';el.innerHTML=''}if(VIEW==='room')render()}
-function ptStop(){if(!PT)return;if(PT.es){PT.es.close();PT.es=null}clearInterval(PT.loop);clearTimeout(PT.rt)}
+function ptStop(){if(!PT)return;if(PT.es){PT.es.close();PT.es=null}PT.polling=false;clearInterval(PT.loop);clearTimeout(PT.rt);clearTimeout(PT.ht)}
 function ptCatPick(max){const all=rmAll();return `<div class="camcats">${all.map(i=>`<button class="camc ${PT.bring.includes(i)?'on':''}" data-ptbring="${i}"><svg viewBox="0 -2 40 36" width="34" height="30">${bFace(BREEDS[i])}</svg><span>${esc(BREEDS[i].n)}</span></button>`).join('')||'<p class="camhint" style="text-align:left">아직 모은 친구가 없어요. 그래도 놀러 갈 수 있어요!</p>'}</div>`}
 function ptDraw(){const el=ptEl();const R=rmS();const cur=rmCur(R);
   const nickIn=`<div class="camrow"><b>내 별명</b><input class="ptnick" data-ptnick maxlength="8" value="${esc(PT.nick)}" placeholder="별명을 꼭 써 주세요 (8자까지)"></div><p class="camhint" style="text-align:left;margin-top:0">진짜 이름 대신 별명을 써도 좋아요. 친구들에게 이 별명이 보여요.</p>`;
@@ -34,14 +36,21 @@ function ptDraw(){const el=ptEl();const R=rmS();const cur=rmCur(R);
     <p class="camhint">놀이터에서는 정해진 말과 이모지만 쓸 수 있어요. 방 정보는 놀이 중에만 잠깐 서버에 있고, 놀이가 끝나면 지워져요.</p></div>`}
 async function ptStart(kind){const R=rmS();PT.nick=(PT.nick||'').trim();if(!PT.nick){toast('친구들이 알아볼 수 있게 별명을 써 주세요');const n=document.querySelector('#rmparty [data-ptnick]');if(n)n.focus();return}R.ptNick=PT.nick;save();
   if(kind==='join'&&!/^\d{4}$/.test(PT.code)){toast('4자리 방 코드를 넣어 주세요');return}
-  ptMsg('🚪 놀이터로 가는 중…','');if(!await ptWake()){if(PT)ptMsg('😿 놀이터에 연결할 수 없어요','인터넷 연결을 확인하고 다시 해 봐요.','<button class="cambig" data-pt="menu">처음으로</button>');return}
+  ptMsg('🚪 놀이터로 가는 중…','');if(!await ptWake()){if(PT)ptMsg('😿 놀이터에 연결할 수 없어요',`학교·기관 인터넷에서는 놀이터 서버(<b>${esc(PT_URL.replace(/^https?:\/\//,''))}</b>)가 막혀 있을 수 있어요. 휴대폰 데이터로 해 보거나, 선생님께 이 주소를 열어 달라고 부탁해요.`,`<button class="cambig" data-pt="menu">처음으로</button>${ptSrvBox()}`);return}
   try{let j;if(kind==='host'){const cur=rmCur(R);j=await ptApi('/api/create',{nick:PT.nick,look:rmLook(),cats:rmLive().slice(0,12).map(i=>({i})),snap:{name:cur.name,t:cur.t,wall:cur.wall,floor:cur.floor,items:cur.items.map(it=>({k:it.k,x:it.x,y:it.y,f:it.f}))}})}
     else j=await ptApi('/api/join',{code:PT.code,nick:PT.nick,look:rmLook(),cats:PT.bring.map(i=>({i}))});
     Object.assign(PT,{code:j.code,pid:j.pid,tok:j.tok,host:kind==='host',st:{},people:[],scr:'play',qr:kind==='host'});ptConnect()}catch(e){if(PT)ptErr(e)}}
-function ptConnect(){const es=new EventSource(`${PT_URL}/api/events?code=${PT.code}&pid=${PT.pid}&tok=${encodeURIComponent(PT.tok)}`);PT.es=es;
-  es.onmessage=ev=>{if(!PT)return;let d;try{d=JSON.parse(ev.data)}catch(e){return}ptOn(d)};
-  es.onerror=()=>{if(!PT)return;if(es.readyState===2){ptStop();ptMsg('👋 놀이가 끝났어요','방이 닫혔거나 연결이 끊겼어요.','<button class="cambig" data-pt="menu">처음으로</button>')}else{const b=document.getElementById('ptnet');if(b)b.style.display=''}};
+// 실시간 연결: 먼저 이벤트 스트림(SSE)을 쓰고, 6초 안에 첫 소식이 안 오면(학교 망 등) 1.2초마다 물어보기로 바꿔요
+function ptConnect(){PT.since=0;PT.gotHello=false;let es;try{es=new EventSource(`${PT_URL}/api/events?code=${PT.code}&pid=${PT.pid}&tok=${encodeURIComponent(PT.tok)}`)}catch(e){return ptPollStart()}PT.es=es;
+  PT.ht=setTimeout(()=>{if(PT&&!PT.gotHello)ptPollStart()},6000);
+  es.onmessage=ev=>{if(!PT)return;let d;try{d=JSON.parse(ev.data)}catch(e){return}if(ev.lastEventId)PT.since=+ev.lastEventId;if(d.t==='hello')PT.gotHello=true;ptOn(d)};
+  es.onerror=()=>{if(!PT)return;if(!PT.gotHello){return ptPollStart()}if(es.readyState===2){ptStop();ptMsg('👋 놀이가 끝났어요','방이 닫혔거나 연결이 끊겼어요.','<button class="cambig" data-pt="menu">처음으로</button>')}else{const b=document.getElementById('ptnet');if(b)b.style.display=''}};
   es.onopen=()=>{const b=document.getElementById('ptnet');if(b)b.style.display='none'}}
+function ptPollStart(){if(!PT||PT.polling)return;clearTimeout(PT.ht);if(PT.es&&PT.es.close&&!PT.es.poll)PT.es.close();PT.polling=true;PT.es={poll:1,readyState:1,close(){if(PT)PT.polling=false}};PT.since=0;ptPollLoop()}
+async function ptPollLoop(){let fails=0;while(PT&&PT.polling){try{const j=await ptApi('/api/poll',{code:PT.code,pid:PT.pid,tok:PT.tok,since:PT.since||0});if(!PT||!PT.polling)return;fails=0;const b=document.getElementById('ptnet');if(b)b.style.display='none';
+    if(j.hello){PT.gotHello=true;ptOn(j.hello)}(j.evs||[]).forEach(d=>{if(PT)ptOn(d)});if(PT)PT.since=j.seq}
+  catch(e){if(!PT||!PT.polling)return;if(e.code==='gone'||e.code==='auth'){ptStop();ptMsg('👋 놀이가 끝났어요','방이 닫혔거나 연결이 끊겼어요.','<button class="cambig" data-pt="menu">처음으로</button>');return}fails++;const b=document.getElementById('ptnet');if(b)b.style.display=''}
+  await new Promise(r=>setTimeout(r,fails?2500:1200))}}
 function ptKeys(){const o=[];if(!PT)return o;(PT.people||[]).forEach(p=>(p.cats||[]).forEach(c=>{if(BREEDS[c.i])o.push({k:p.pid+'-'+c.i,i:c.i,own:p.nick,pid:p.pid,host:p.host})}));return o}
 function ptOn(d){if(d.t==='hello'){PT.snap=d.snap;PT.people=d.people;(d.pos||[]).forEach(p=>PT.st[p.k]=p);ptPlay();ptReward();if(d.seek)ptSeekStart(d.seek.hides,d.seek.found,null,true);return}
   if(d.t==='people'){const before=ptKeys().map(c=>c.k).join();PT.people=d.people;if(d.join){ptBubble(null,`🐾 ${esc(d.join)} 친구가 놀러 왔어요!`);if(PT.host){const R=rmS();R.guests=(R.guests||[]).concat({n:d.join,d:new Date().toLocaleDateString('ko-KR',{month:'numeric',day:'numeric'})}).slice(-30);save()}}
@@ -81,8 +90,8 @@ function ptPlay(){if(!PT||!PT.snap)return;const el=ptEl();const s=PT.snap;const 
     <div class="cambtns"><button class="cambtn" data-pt="close">${PT.host?'🚪 방 닫고 나가기':'🏠 집으로 돌아가기'}</button></div></div>`;
   document.querySelectorAll('#ptscene .rmc').forEach(c=>{const p=PT.st[c.dataset.ptc];if(p&&p.pose)ptPose(c,p.pose)});
   ptPeople();if(PT.qr)ptQR(url);if(PT.host){clearInterval(PT.loop);PT.loop=setInterval(ptHostTick,3000);ptHostTick(true)}}
-function ptQR(url){const draw=()=>{const box=document.getElementById('ptqrimg');if(!box)return;try{const q=qrcode(0,'M');q.addData(url);q.make();box.innerHTML=`<img src="${q.createDataURL(6,2)}" alt="초대 QR" width="180" height="180">`}catch(e){box.textContent='QR을 만들 수 없어요. 코드를 알려 주세요.'}};
-  if(typeof qrcode==='function')return draw();const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js';sc.onload=draw;sc.onerror=()=>{const b=document.getElementById('ptqrimg');if(b)b.textContent='QR을 불러오지 못했어요. 코드 '+jfix(PT.code+'를')+' 알려 주세요.'};document.head.appendChild(sc)}
+function ptQR(url){const draw=()=>{const box=document.getElementById('ptqrimg');if(!box)return;try{box.innerHTML=qrSVG(url,180)}catch(e){box.textContent='QR을 만들 수 없어요. 코드를 알려 주세요.'}};
+  draw()}
 function ptHostTick(initial){if(!PT||!PT.host||!PT.snap)return;if(PT.busy>Date.now()||PT.seek)return;const keys=ptKeys();if(!keys.length)return;
   const spots=[];(PT.snap.items||[]).forEach(it=>{if(RM_ITEMS[it.k])(RM_SPOTS[it.k]||[]).forEach((sp,j)=>spots.push({key:it.id+':'+j,it,sp}))});
   const used={};keys.forEach(c=>{const s=PT.st[c.k];if(s&&s.spot)used[s.spot]=1});const out=[];
@@ -154,3 +163,7 @@ function ptSeekEnd(score){if(!PT)return;const sc=document.getElementById('ptscen
 document.addEventListener('click',e=>{if(!PT||!PT.seek)return;const sc=e.target.closest('#ptscene');if(!sc)return;e.preventDefault();e.stopPropagation();
   let hit=null,best=1e9;sc.querySelectorAll('.rmc.rmhid:not(.ptpend)').forEach(c=>{const r=c.getBoundingClientRect();if(e.clientX>=r.left-6&&e.clientX<=r.right+6&&e.clientY>=r.top-6&&e.clientY<=r.bottom+6){const d=Math.hypot(e.clientX-(r.left+r.width/2),e.clientY-(r.top+r.height*.3));if(d<best){best=d;hit=c}}});
   if(hit){hit.classList.add('ptpend');ptApi('/api/act',{code:PT.code,pid:PT.pid,tok:PT.tok,t:'found',k:hit.dataset.ptc}).then(j=>{hit.classList.remove('ptpend');if(j&&j.late)toast('아깝다! 친구가 먼저 찾았어요')}).catch(()=>hit.classList.remove('ptpend'))}},true);
+
+document.addEventListener('click',e=>{const t=e.target.closest('[data-ptsrvsave],[data-ptsrvreset]');if(!t)return;e.preventDefault();e.stopPropagation();
+  try{if(t.dataset.ptsrvreset!=null){localStorage.removeItem('ptURL')}else{const v=(document.querySelector('[data-ptsrvin]')||{}).value||'';const u=v.trim().replace(/\/+$/,'');if(!/^https:\/\/[a-z0-9.-]+(:\d+)?$/i.test(u)){toast('https:// 로 시작하는 주소를 넣어 주세요');return}localStorage.setItem('ptURL',u)}}catch(err){}
+  toast('주소를 바꿨어요. 다시 열어요');setTimeout(()=>location.reload(),600)},true);

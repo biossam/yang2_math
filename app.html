@@ -1,4 +1,4 @@
-<!doctype html><html><head><title>yang2수학</title><script>var APPVER="11-26 02:10"</script><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png"><link rel="apple-touch-icon" sizes="180x180" href="icon-180.png"><link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-title" content="yang2수학"><meta name="mobile-web-app-capable" content="yes"><meta name="theme-color" content="#FFF8EE"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}.recbox{margin:10px 0 12px;padding:12px 14px;border:2px dashed var(--line,#E9DCC6);border-radius:18px;background:var(--card,#fff)}
+<!doctype html><html><head><title>yang2수학</title><script>var APPVER="11-26 18:16"</script><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png"><link rel="apple-touch-icon" sizes="180x180" href="icon-180.png"><link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-title" content="yang2수학"><meta name="mobile-web-app-capable" content="yes"><meta name="theme-color" content="#FFF8EE"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}.recbox{margin:10px 0 12px;padding:12px 14px;border:2px dashed var(--line,#E9DCC6);border-radius:18px;background:var(--card,#fff)}
 .recbox .rrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.recbox .rbtn{border:0;border-radius:999px;padding:10px 16px;font-weight:800;font-size:15px;background:#FF7563;color:#fff;cursor:pointer}
 .recbox .rbtn.stop{background:#2B2B38}.recbox .rbtn.ghost{background:transparent;color:var(--sub,#8a7f72);border:1.5px solid var(--line,#E9DCC6)}
 .recbox .rt{font-variant-numeric:tabular-nums;font-weight:800}.recbox .dot{width:10px;height:10px;border-radius:50%;background:#FF4B3A;animation:rblink 1s infinite}@keyframes rblink{50%{opacity:.2}}
@@ -96,6 +96,9 @@
 .ptrank{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin:4px 0}.ptrank i{font-style:normal;color:#fff;border-radius:99px;padding:2px 9px;font-size:13px;border:1.5px solid #fff}
 .ptscene .rmc.ptpend{opacity:.6}
 .ptscene .rmc.rmhid .ptown,.ptscene .rmc.rmhid .rmheart{display:none}
+
+.ptsrv{margin-top:12px;text-align:left;font-size:12px;color:var(--muted,#8a7d72)}.ptsrv summary{cursor:pointer}.ptsrv input{width:100%;box-sizing:border-box;margin:6px 0;padding:8px;border:2px solid var(--line,#eadfcf);border-radius:10px;font-size:13px}.ptsrv .cambtn{margin:2px 4px 0 0}
+#ptqrimg svg{display:block;margin:0 auto;border-radius:8px}
 .rmjs{position:absolute;width:12%;transform:translate(-50%,-100%);transition:left 2.4s linear,top 2.4s linear;cursor:pointer;filter:drop-shadow(0 2px 2px rgba(0,0,0,.12))}.rmjs svg{display:block;width:100%;height:auto}
 .rmjs.rmflip svg{transform:scaleX(-1)}.rmjs.rmwalk svg{animation:rmbob .4s ease-in-out infinite alternate}.rmjs.jsjump svg{animation:jsjump .5s ease-out}@keyframes jsjump{0%,100%{transform:translateY(0)}40%{transform:translateY(-14%)}}
 .rmjs.off{opacity:.45}.jsbub{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);white-space:nowrap;font:700 11px sans-serif;font-style:normal;color:#4A3B33;background:#fff;border:2px solid #4A3B33;border-radius:12px;padding:3px 8px;animation:rmpop .25s ease-out;z-index:5}
@@ -463,6 +466,7 @@ const dc=(x,k=4)=>String(+(+x).toFixed(k));                          // 소수 �
 const sa=(l,q,x,s)=>({l,t:'sa',q,x:String(x),s});
 const ox=(l,q,v,s)=>({l,t:'ox',q,x:!!v,s});
 const fig=(p,f)=>{p.fig=f;return p};
+const tm=(h,m)=>m?`${h}시 ${m}분`:`${h}시`;
 const numDs=(n,step=1)=>[n+step,n-step,n+2*step,n-2*step,n+10*step,n+3*step].filter(v=>v>=0&&v!==n);
 const mcn=(l,q,ans,s,extra=[],step=1)=>mc(l,q,cm(ans),extra.map(v=>typeof v==='number'?cm(v):v).concat(numDs(ans,step).map(cm)),s);
 const mcd=(l,q,ans,s,extra=[],step=.1)=>mc(l,q,dc(ans),extra.map(v=>typeof v==='number'?dc(v):v).concat(numDs(ans,step).map(v=>dc(v))),s);
@@ -615,14 +619,14 @@ Object.assign(GEN,{
  n14b(){const even=Math.random()<.5;const c=[];while(c.length<3){const x=ri(10,99);if((x%2===0)!==even&&!c.includes(x))c.push(x)}let v=ri(10,99);while((v%2===0)!==even)v++;return mc(1,`다음 중 ${even?'짝수':'홀수'}는?`,String(v),c.map(String),`일의 자리가 ${v%10}이므로 ${even?'짝수':'홀수'}예요.`)},
  n14c(){const a=ri(51,99);const k=pick([1,10]);return Math.random()<.5&&a+k<=100?sa(1,`${a}보다 ${k} 큰 수는?`,a+k,`${a} + ${k} = ${a+k}`):sa(1,`${a}보다 ${k} 작은 수는?`,a-k,`${a} − ${k} = ${a-k}`)},
  n15a(){const t1=ri(1,7),o1=ri(0,8),t2=ri(1,8-t1),o2=ri(0,9-o1);const a=t1*10+o1,b=Math.random()<.3?o2:t2*10+o2;return sa(1,`${a} + ${b} = ?`,a+b,`낱개 ${o1} + ${o2} = ${o1+o2}, 묶음끼리 더하면 ${a+b}`)},
- n15b(){const t1=ri(2,9),o1=ri(1,9),t2=ri(1,t1),o2=ri(0,o1);const a=t1*10+o1,b=Math.random()<.3?o2:t2*10+o2;return sa(1,`${a} − ${b} = ?`,a-b,`낱개 ${o1} − ${o2} = ${o1-o2}, 묶음끼리 빼면 ${a-b}`)},
+ n15b(){const t1=ri(2,9),o1=ri(1,9),t2=ri(1,t1),o2=ri(0,o1);const a=t1*10+o1,b=Math.random()<.3?o2:t2*10+o2;if(a===b||!b)return GEN.n15b();return sa(1,`${a} − ${b} = ?`,a-b,`낱개 ${o1} − ${o2} = ${o1-o2}, 묶음끼리 빼면 ${a-b}`)},
  g13a(){const k=pick([3,4,0]);const nm={3:'△ 모양',4:'□ 모양',0:'○ 모양'};if(Math.random()<.5)return fig(mc(1,'그림은 어떤 모양일까요?',nm[k],Object.values(nm).filter(v=>v!==nm[k]),k?`뾰족한 곳이 ${k}군데 → ${nm[k]}`:'뾰족한 곳이 없는 둥근 모양 → ○ 모양'),figPoly(k,pick(PAL)));const n=pick([3,4]);return mc(1,`뾰족한 곳이 ${n}군데인 모양은?`,nm[n],Object.values(nm).filter(v=>v!==nm[n]),`${nm[n]}은 뾰족한 곳이 ${n}군데예요.`)},
  n16a(){const a=ri(1,9);return sa(1,`${a} + □ = 10, □는?`,10-a,`${a}와 ${10-a}를 더하면 10`)},
  n16b(){const a=ri(2,9),b=ri(11-a,9);return mc(1,`${a} + ${b} = ?`,String(a+b),numDs(a+b).map(String),`${a}에 ${10-a}를 더해 10, 남은 ${b-(10-a)}를 더해 ${a+b}`)},
  n16c(){if(Math.random()<.5){const a=ri(1,9),b=10-a,c=ri(1,9);const o=shuffle([a,b,c]);return sa(1,`${o[0]} + ${o[1]} + ${o[2]} = ?`,a+b+c,`${a} + ${b} = 10을 먼저 → 10 + ${c} = ${10+c}`)}const n=ri(11,18),b=ri(n-9,9);return mc(1,`${n} − ${b} = ?`,String(n-b),numDs(n-b).map(String),`${n}에서 ${n-10}을 빼 10, ${b-(n-10)}을 더 빼면 ${n-b}`)},
- g14a(){const h=ri(1,12),half=Math.random()<.5;const ans=half?`${h}시 30분`:`${h}시`;const h2=h%12+1;return fig(mc(1,'시계가 나타내는 시각은?',ans,half?[`${h}시`,`${h2}시 30분`,`${h2}시`,`6시 ${h}분`]:[`${h}시 30분`,`12시 ${h}분`,`${h2}시`,`${h===1?12:h-1}시`],half?`긴바늘이 6, 짧은바늘이 ${h}와 ${h2} 사이 → ${ans}`:`긴바늘이 12, 짧은바늘이 ${h} → ${ans}`),figClock(h,half?30:0))},
+ g14a(){const h=ri(1,12),half=Math.random()<.5;const ans=half?`${h}시 30분`:`${h}시`;const h2=h%12+1;return fig(mc(1,'시계가 나타내는 시각은?',ans,half?[`${h}시`,`${h2}시 30분`,`${h2}시`,`6시 ${h}분`]:[`${h}시 30분`,`${h}시 12분`,`${h2}시`,`${h===1?12:h-1}시`],half?`긴바늘이 6, 짧은바늘이 ${h}와 ${h2} 사이 → ${ans}`:`긴바늘이 12, 짧은바늘이 ${h} → ${ans}`),figClock(h,half?30:0))},
  r11a(){const s=ri(0,20),k=pick([1,2,3,5,10]);const up=Math.random()<.7||s<5*k;const a=[0,1,2,3,4].map(i=>up?s+i*k:s+(5-i)*k);const v=up?s+5*k:s;return mc(1,`${a.join(', ')}, □ 에 알맞은 수는?`,String(v),[v+k,v-k,v+1,v-1].filter(x=>x>=0&&x!==v).map(String),`${k}씩 ${up?'커지는':'작아지는'} 규칙 → ${v}`)},
- r11b(){const S=['○','△','□','☆','♡'];const u=shuffle(S).slice(0,pick([2,3]));const rep=pick([[0,1],[0,0,1],[0,1,1],[0,1,2]].filter(r=>Math.max(...r)<u.length));const L=rep.length*2+ri(0,rep.length-1);const seq=[];for(let i=0;i<=L;i++)seq.push(u[rep[i%rep.length]]);const v=seq.pop();return mc(1,`${seq.join(' ')} □ 에 알맞은 모양은?`,v,S.filter(x=>x!==v).slice(0,3),`「${rep.map(i=>u[i]).join(' ')}」 모양이 반복돼요 → ${v}`)}
+ r11b(){const S=['○','△','◇','☆','♡'];const u=shuffle(S).slice(0,pick([2,3]));const rep=pick([[0,1],[0,0,1],[0,1,1],[0,1,2]].filter(r=>Math.max(...r)<u.length));const L=rep.length*2+ri(0,rep.length-1);const seq=[];for(let i=0;i<=L;i++)seq.push(u[rep[i%rep.length]]);const v=seq.pop();return mc(1,`${seq.join(' ')} □ 에 알맞은 모양은?`,v,S.filter(x=>x!==v).slice(0,3),`「${rep.map(i=>u[i]).join(' ')}」 모양이 반복돼요 → ${v}`)}
 });
 
 // ================= 2학년 =================
@@ -646,7 +650,7 @@ CONCEPTS.push(
  pr:[P(1,'ox','56 + 27 = 73이에요.',false,'6 + 7 = 13 → 1 받아올림. 5 + 2 + 1 = 8 → 83'),P(2,'mc','어떤 수에 19를 더했더니 45가 되었어요. 어떤 수는?',['26','64','36','24'],'□ + 19 = 45 → □ = 45 − 19 = 26'),P(2,'self','63 − 28을 계산하는 방법을 받아내림을 써서 설명해 보세요.',null,'3에서 8을 뺄 수 없어서 십의 자리에서 10을 받아내려 13 − 8 = 5. 십의 자리는 5 − 2 = 3. 답은 35예요.')],
  gen:['n22a','n22b','n22c']},
 {id:'g22',u:'2G',ex:'2-1',t:'길이 재기 (cm)',
- sum:['**1 cm**(1 센티미터)는 자의 작은 큰 눈금 한 칸이에요.','자의 **눈금 0**에 물건의 한쪽 끝을 맞추고 다른 끝의 눈금을 읽어요.','0이 아닌 곳에서 시작했다면 **끝 눈금 − 시작 눈금**이 길이예요.','자 없이 짐작한 길이를 **어림**이라고 하고 "약 □ cm"라고 말해요.'],
+ sum:['**1 cm**(1 센티미터)는 자에서 숫자가 쓰인 큰 눈금 한 칸이에요.','자의 **눈금 0**에 물건의 한쪽 끝을 맞추고 다른 끝의 눈금을 읽어요.','0이 아닌 곳에서 시작했다면 **끝 눈금 − 시작 눈금**이 길이예요.','자 없이 짐작한 길이를 **어림**이라고 하고 "약 □ cm"라고 말해요.'],
  fl:[['자로 길이를 잴 때 물건 끝을 맞출 곳은?','눈금 0'],['3에서 시작해 8에서 끝나면 길이는?','5 cm'],['어림한 길이를 말할 때 붙이는 말은?','약']],
  bk:{q:'자로 길이를 재는 방법과 어림하는 방법을 설명해 보세요.',pts:['0 눈금에 끝 맞추기','끝 눈금 읽기','0이 아닐 때 눈금 차이로 구하기','"약 □ cm"로 어림 말하기']},
  pr:[P(1,'ox','1 cm는 1 센티미터라고 읽어요.',true,'cm는 센티미터예요.'),P(2,'self','클립 몇 개 길이로 연필을 재면 사람마다 결과가 다를 수 있어요. cm를 쓰면 좋은 까닭을 말해 보세요.',null,'클립이나 뼘은 크기가 서로 달라서 결과가 달라져요. cm는 누구나 같은 길이라서 정확하게 알려 줄 수 있어요.')],
@@ -721,7 +725,7 @@ Object.assign(GEN,{
  g23b(){const a=ri(1,5),b=ri(5,60),c=ri(1,4),d=ri(5,39);const sum=a*100+b+c*100+d;const sm=Math.floor(sum/100),sc=sum%100;if(Math.random()<.5)return mc(2,`${a} m ${b} cm + ${c} m ${d} cm = ?`,`${sm} m ${sc} cm`,[`${a+c} m ${b+d} cm`,`${sm} m ${sc+10} cm`,`${sm+1} m ${sc} cm`,`${sm-1} m ${sc} cm`].filter(x=>x!==`${sm} m ${sc} cm`&&!/ -/.test(x)),`cm끼리 ${b} + ${d} = ${b+d}${b+d>=100?' → 100 cm는 1 m로 받아올림':''}, m끼리 더하면 ${sm} m ${sc} cm`);const x=a*100+b+c*100+d;const y=c*100+d;return mc(2,`${Math.floor(x/100)} m ${x%100} cm − ${c} m ${d} cm = ?`,`${a} m ${b} cm`,[`${a+1} m ${b} cm`,`${a} m ${b+10} cm`,`${a-1} m ${b} cm`,`${a} m ${Math.abs(b-10)} cm`].filter(v=>v!==`${a} m ${b} cm`&&!v.startsWith('0 m')),`cm끼리, m끼리 빼요${x%100<d?' (1 m를 100 cm로 받아내림)':''} → ${a} m ${b} cm`)},
  g24a(){const h=ri(1,12),m=ri(1,11)*5;const ans=`${h}시 ${m}분`;const h2=h%12+1;return fig(mc(1,'시계가 나타내는 시각은?',ans,[`${h}시 ${m/5}분`,`${m/5}시 ${h*5===60?0:h*5}분`,`${h2}시 ${m}분`,`${h}시 ${(m+5)%60||5}분`].filter(x=>x!==ans),`짧은바늘이 ${h}와 ${h2} 사이, 긴바늘이 ${m/5} → ${m}분`),figClock(h,m))},
  g24b(){const r=Math.random();if(r<.4){const h=ri(1,3),m=ri(0,5)*10;return sa(1,`${h}시간 ${m?m+'분':''} = □분`,h*60+m,`1시간 = 60분 → ${h*60}${m?' + '+m:''} = ${h*60+m}분`)}if(r<.7){const w=ri(1,4),d=ri(0,6);return sa(1,`${w}주일${d?' '+d+'일':''} = □일`,w*7+d,`1주일 = 7일 → ${w*7}${d?' + '+d:''} = ${w*7+d}일`)}const d=ri(1,3);return sa(1,`${d}일 = □시간`,d*24,`하루 = 24시간 → ${d*24}시간`)},
- g24c(){const h=ri(1,10),m=ri(2,11)*5,add=pick([10,15,20,25,30,40]);const t=m+add;const ans=`${t>=60?h+1:h}시 ${t%60}분`;return mc(2,`${h}시 ${m}분에서 ${add}분이 지난 시각은?`,ans,[`${h}시 ${t}분`,`${h+1}시 ${(t+5)%60}분`,`${t>=60?h:h+1}시 ${t%60}분`,`${h}시 ${Math.abs(m-add)}분`].filter(x=>x!==ans&&!/ 6\d분| [7-9]\d분/.test(x)),t>=60?`${60-m}분 지나면 ${h+1}시, 남은 ${t-60}분 → ${ans}`:`${m} + ${add} = ${t}분 → ${ans}`)},
+ g24c(){const h=ri(1,10),m=ri(2,11)*5,add=pick([10,15,20,25,30,40]);const t=m+add;const H=t>=60?h+1:h,M=t%60;const ans=tm(H,M);return mc(2,`${tm(h,m)}에서 ${add}분이 지난 시각은?`,ans,[t<60?null:`${h}시 ${t}분`,tm(H,(M+5)%60),tm(t>=60?h:h+1,M),m>add?tm(h,m-add):tm(H,M+10>59?M-10:M+10)].filter(x=>x&&x!==ans&&!/ [6-9]\d분/.test(x)),t>=60?`${60-m}분 지나면 ${h+1}시${t>60?`, 남은 ${t-60}분 → ${ans}`:''}`:`${m} + ${add} = ${t}분 → ${ans}`)},
  d22a(){const L=shuffle(['사과','포도','딸기','귤','배']).slice(0,4);const v=L.map(()=>ri(2,8));if(new Set(v).size<4)return GEN.d22a();const tot=v.reduce((a,b)=>a+b,0);const t=`좋아하는 과일 조사: ${L.map((l,i)=>l+' '+v[i]+'명').join(', ')}`;if(Math.random()<.5)return sa(1,t+'\n조사한 학생은 모두 몇 명일까요?',tot,`${v.join(' + ')} = ${tot}명`);const mx=Math.max(...v);const w=L[v.indexOf(mx)];return fig(mc(1,'그래프에서 가장 많은 학생이 좋아하는 과일은?',w,L.filter(x=>x!==w),`막대가 가장 높은 것은 ${w}, ${mx}명이에요.`),figBar(L,v,'명',1))},
  r21a(){const a=ri(2,9);const s=ri(1,5);return mc(1,`곱셈표에서 ${a*s}, ${a*(s+1)}, ${a*(s+2)}, ${a*(s+3)} 은 몇씩 커지나요?`,`${a}씩`,[`${a+1}씩`,`${a-1||10}씩`,`${a*2}씩`].filter(x=>x!==`${a}씩`),`${a}단의 수이므로 ${a}씩 커져요.`)}
 });
@@ -747,7 +751,7 @@ CONCEPTS.push(
  pr:[P(1,'ox','18 ÷ 3 = 6이에요.',true,'3 × 6 = 18이니까 18 ÷ 3 = 6'),P(1,'mc','사탕 28개를 4명에게 똑같이 나누어 주면 한 명은 몇 개?',['7개','6개','8개','24개'],'28 ÷ 4 = 7'),P(2,'self','"쿠키 30개를 한 봉지에 5개씩 담으면 몇 봉지?"를 나눗셈식으로 나타내고 설명해 보세요.',null,'30을 5씩 덜어 내는 횟수를 구해요. 30 ÷ 5 = 6, 6봉지예요. 5 × 6 = 30으로 확인할 수 있어요.')],
  gen:['n32a','n32b']},
 {id:'n33',u:'3N',ex:'3-1',t:'곱셈 (두 자리 수 × 한 자리 수)',
- sum:['23 × 3 → 일의 자리 3 × 3 = 9, 십의 자리 20 × 3 = 60 → **69**','일의 자리 곱이 10보다 크면 **십의 자리로 받아올림**: 27 × 4 → 28 → 8 쓰고 2 올림 → 80 + 20 = 108','십의 자리 곱이 100보다 크면 백의 자리로 써요: 52 × 3 = 156'],
+ sum:['23 × 3 → 일의 자리 3 × 3 = 9, 십의 자리 20 × 3 = 60 → **69**','일의 자리 곱이 10이거나 10보다 크면 **십의 자리로 받아올림**: 27 × 4 → 7 × 4 = 28에서 8을 쓰고 2를 올림, 2 × 4 = 8에 올린 2를 더해 10 → 108','십의 자리 곱이 10이거나 10보다 크면 백의 자리까지 써요: 52 × 3 → 5 × 3 = 15 → 156'],
  fl:[['30 × 4 = ?','120'],['16 × 5 = ?','80'],['48 × 3 = ?','144']],
  bk:{q:'두 자리 수 × 한 자리 수를 계산하는 방법을 받아올림이 있는 예로 설명해 보세요.',pts:['일의 자리부터 곱하기','받아올림 더하기','십의 자리 곱은 몇십 × 한 자리','결과를 어림으로 확인']},
  pr:[P(1,'ox','40 × 3 = 120이에요.',true,'4 × 3 = 12 → 40 × 3 = 120'),P(2,'mc','한 상자에 연필이 36자루씩 들어 있어요. 4상자에는 모두 몇 자루?',['144자루','124자루','134자루','40자루'],'36 × 4 = 144'),P(2,'self','25 × 4를 쉽게 계산하는 방법을 말해 보세요.',null,'25 × 2 = 50이고 50 × 2 = 100이에요. 또는 20 × 4 = 80, 5 × 4 = 20 → 100')],
@@ -812,7 +816,7 @@ Object.assign(GEN,{
  n33a(){const a=ri(12,49),b=ri(2,9);return sa(1,`${a} × ${b} = ?`,a*b,`${a%10} × ${b} = ${(a%10)*b}, ${a-a%10} × ${b} = ${(a-a%10)*b} → ${a*b}`)},
  n33b(){const a=ri(13,68),b=ri(3,9);const [it,u]=pick(ITEMS);return mcn(2,`한 묶음에 ${it} ${a}${u}씩 ${b}묶음이 있어요. 모두 몇 ${u}?`,a*b,`${a} × ${b} = ${a*b}`,[a+b,a*b+10,a*b-10])},
  g32a(){const r=Math.random();if(r<.35){const c=ri(1,20),m=ri(1,9);return sa(1,`${c} cm ${m} mm = □ mm`,c*10+m,`1 cm = 10 mm → ${c*10} + ${m} = ${c*10+m}`)}if(r<.7){const k=ri(1,9),m=ri(1,999);return sa(1,`${k} km ${m} m = □ m`,k*1000+m+'|'+cm(k*1000+m),`1 km = 1000 m → ${k*1000} + ${m} = ${k*1000+m}`)}const mi=ri(1,5),s=ri(1,59);return sa(1,`${mi}분 ${s}초 = □초`,mi*60+s,`1분 = 60초 → ${mi*60} + ${s} = ${mi*60+s}`)},
- g32b(){const h=ri(1,9),m=ri(10,55),dh=ri(1,2),dm=ri(10,55);const t=m+dm;const ah=h+dh+(t>=60?1:0),am=t%60;return mc(2,`${h}시 ${m}분에서 ${dh}시간 ${dm}분이 지난 시각은?`,`${ah}시 ${am}분`,[`${h+dh}시 ${t}분`,`${h+dh}시 ${am}분`,`${ah}시 ${(am+10)%60}분`,`${ah+1}시 ${am}분`].filter(x=>x!==`${ah}시 ${am}분`&&!/ [6-9]\d분/.test(x)),`분끼리 ${m} + ${dm} = ${t}${t>=60?` → 60분 = 1시간 받아올림`:''}, 시끼리 더하면 ${ah}시 ${am}분`)},
+ g32b(){const h=ri(1,9),m=ri(10,55),dh=ri(1,2),dm=ri(10,55);const t=m+dm;const ah=h+dh+(t>=60?1:0),am=t%60;const A=tm(ah,am);return mc(2,`${h}시 ${m}분에서 ${dh}시간 ${dm}분이 지난 시각은?`,A,[t>=60?`${h+dh}시 ${t}분`:null,t>=60?tm(h+dh,am):tm(ah+1,am),tm(ah,(am+10)%60),ah>1?tm(ah-1,am):null].filter(x=>x&&x!==A&&!/ [6-9]\d분|1[3-9]시/.test(x)),`분끼리 ${m} + ${dm} = ${t}${t>=60?` → 60분 = 1시간 받아올림`:''}, 시끼리 더하면 ${A}`)},
  n34a(){const d=ri(2,8),n=ri(1,d-1);const f=Math.random()<.5?figFracBar(n,d):figFracCircle(n,d);return fig(mc(1,'색칠한 부분을 분수로 나타내면?',F(n,d),[F(d-n,d),F(n,d+1),F(d,n),F(n+1,d)].filter(x=>x!==F(n,d)&&!/§0|\{\{0/.test(x)),`전체를 똑같이 ${d}로 나눈 것 중 ${n} → ${F(n,d)}`),f)},
  n34b(){const a=ri(2,9);let b=ri(2,9);if(a===b)b=a+1;const big=Math.random()<.5;const v=big?Math.min(a,b):Math.max(a,b);return mc(1,`${F(1,a)}과 ${F(1,b)} 중 더 ${big?'큰':'작은'} 분수는?`,F(1,v),[F(1,v===a?b:a),'같아요'],`단위분수는 분모가 ${big?'작을':'클'}수록 ${big?'커요':'작아요'} → ${F(1,v)}`)},
  n34c(){const r=Math.random();if(r<.4){const n=ri(2,29);return mcd(1,`0.1이 ${n}개인 수는?`,n/10,`0.1이 10개이면 1 → ${dc(n/10)}`,[n,n/100])}if(r<.7){const c=ri(1,15),m=ri(1,9);return mcd(1,`${c} cm ${m} mm는 몇 cm일까요? (소수로)`,c+m/10,`1 mm = 0.1 cm → ${c} + ${dc(m/10)} = ${dc(c+m/10)}`,[c*10+m,c+m/100])}const a=ri(1,49),b=ri(1,49);if(a===b)return GEN.n34c();return mc(1,`${dc(a/10)}과 ${dc(b/10)} 중 더 큰 수는?`,dc(Math.max(a,b)/10),[dc(Math.min(a,b)/10),'같아요'],`0.1이 몇 개인지 비교 → ${dc(Math.max(a,b)/10)}`)},
@@ -912,7 +916,7 @@ Object.assign(GEN,{
  g41a(){const a=ri(20,80),b=ri(20,80);if(Math.random()<.5)return sa(1,`${a}° + ${b}° = □°`,a+b,`${a} + ${b} = ${a+b}`);const x=Math.max(a,b)+60,y=Math.min(a,b);return sa(1,`${x}° − ${y}° = □°`,x-y,`${x} − ${y} = ${x-y}`)},
  g41b(){if(Math.random()<.55){const a=ri(25,95),b=ri(20,150-a);return sa(1,`삼각형의 두 각이 ${a}°, ${b}°일 때 나머지 한 각은 몇 도?`,180-a-b,`180° − ${a}° − ${b}° = ${180-a-b}°`)}const a=ri(50,120),b=ri(50,120),c=ri(50,120);if(a+b+c>=330)return GEN.g41b();return sa(2,`사각형의 세 각이 ${a}°, ${b}°, ${c}°일 때 나머지 한 각은 몇 도?`,360-a-b-c,`360° − ${a}° − ${b}° − ${c}° = ${360-a-b-c}°`)},
  g41c(){const d=pick([ri(15,80),ri(100,170),90]);const k=d<90?'예각':d>90?'둔각':'직각';return fig(mc(1,`그림의 각은 ${d}°예요. 어떤 각일까요?`,k,['예각','직각','둔각'].filter(x=>x!==k),d<90?'90°보다 작으면 예각':d>90?'90°보다 크고 180°보다 작으면 둔각':'90°는 직각'),figAngle(d))},
- n42a(){const a=ri(102,899),b=ri(12,89);return sa(2,`${a} × ${b} = ?`,a*b+'|'+cm(a*b),`${a} × ${b%10} = ${cm(a*(b%10))}, ${a} × ${b-b%10} = ${cm(a*(b-b%10))} → 합 ${cm(a*b)}`)},
+ n42a(){const a=ri(102,899),b=ri(12,89);if(b%10===0)return GEN.n42a();return sa(2,`${a} × ${b} = ?`,a*b+'|'+cm(a*b),`${a} × ${b%10} = ${cm(a*(b%10))}, ${a} × ${b-b%10} = ${cm(a*(b-b%10))} → 합 ${cm(a*b)}`)},
  n42b(){const a=ri(2,9)*100,b=ri(2,9)*10;return mcn(1,`${a} × ${b} = ?`,a*b,`${a/100} × ${b/10} = ${a/100*b/10}에 0을 3개 붙여요 → ${cm(a*b)}`,[a*b/10,a*b*10],1000)},
  n42c(){const b=ri(12,45),q=ri(3,25),r=ri(0,b-1);const n=b*q+r;if(n>999)return GEN.n42c();return mc(2,`${n} ÷ ${b}의 몫과 나머지는?`,`몫 ${q}, 나머지 ${r}`,[`몫 ${q-1}, 나머지 ${r+b}`,`몫 ${q+1}, 나머지 ${r}`,`몫 ${q}, 나머지 ${(r+1)%b}`,`몫 ${q+1}, 나머지 ${Math.abs(r-b)}`].filter(x=>x!==`몫 ${q}, 나머지 ${r}`),`${b} × ${q} = ${b*q}, ${n} − ${b*q} = ${r}`)},
  g42a(){const A=['↑','→','↓','←'];const i=ri(0,3);const r=Math.random();if(r<.5){const k=pick([1,2,3]);const cw=Math.random()<.5;const j=(i+(cw?k:4-k))%4;return mc(1,`${A[i]} 를 ${cw?'시계 방향':'시계 반대 방향'}으로 ${k*90}° 돌리면?`,A[j],A.filter(x=>x!==A[j]),`${k*90}°는 ${k}칸 → ${A[j]}`)}const lr=Math.random()<.5;const j=lr?(i===1?3:i===3?1:i):(i===0?2:i===2?0:i);return mc(1,`${A[i]} 를 ${lr?'오른쪽':'아래쪽'}으로 뒤집으면?`,A[j],A.filter(x=>x!==A[j]),lr?'오른쪽(왼쪽)으로 뒤집으면 왼쪽과 오른쪽이 바뀌어요':'위쪽(아래쪽)으로 뒤집으면 위와 아래가 바뀌어요')},
@@ -1010,18 +1014,18 @@ CONCEPTS.push(
  gen:['d51a','d51b']}
 );
 Object.assign(GEN,{
- n51a(){const a=ri(2,9),b=ri(2,9),c=ri(10,40);const T=[[`${c} + ${a} × ${b}`,c+a*b,`곱셈 먼저: ${a} × ${b} = ${a*b} → ${c} + ${a*b} = ${c+a*b}`],[`(${c} + ${a}) × ${b}`,(c+a)*b,`( ) 먼저: ${c+a} → ${c+a} × ${b} = ${(c+a)*b}`],[`${c+a*b} − ${a} × ${b}`,c,`곱셈 먼저: ${a*b} → ${c+a*b} − ${a*b} = ${c}`],[`${a*b*2} ÷ ${a} + ${c}`,b*2+c,`나눗셈 먼저: ${a*b*2} ÷ ${a} = ${b*2} → ${b*2+c}`]];const [q,v,s]=pick(T);return sa(1,`${q} = ?`,v,s)},
+ n51a(){const a=ri(2,9),b=ri(2,9),c=ri(10,40);const T=[[`${c} + ${a} × ${b}`,c+a*b,`곱셈 먼저: ${a} × ${b} = ${a*b} → ${c} + ${a*b} = ${c+a*b}`],[`(${c} + ${a}) × ${b}`,(c+a)*b,`( ) 먼저: ${c+a} → ${c+a} × ${b} = ${(c+a)*b}`],[`${c+a*b} − ${a} × ${b}`,c,`곱셈 먼저: ${a} × ${b} = ${a*b} → ${c+a*b} − ${a*b} = ${c}`],[`${a*b*2} ÷ ${a} + ${c}`,b*2+c,`나눗셈 먼저: ${a*b*2} ÷ ${a} = ${b*2} → ${b*2+c}`]];const [q,v,s]=pick(T);return sa(1,`${q} = ?`,v,s)},
  n51b(){const a=ri(2,6),b=ri(2,5),c=ri(3,9),d=ri(2,c);const e=a*(b+c-d)>0?a*(b+c-d):0;if(Math.random()<.5){const v=(b+c)*a-d;return mcn(2,`(${b} + ${c}) × ${a} − ${d} = ?`,v,`( ) → ${b+c}, × ${a} → ${(b+c)*a}, − ${d} → ${v}`,[b+c*a-d,(b+c)*(a-d)>0?(b+c)*(a-d):v+a])}const v=a*(b+c-d);return mcn(2,`${a} × (${b} + ${c} − ${d}) = ?`,v,`( ) 안 앞에서부터: ${b} + ${c} − ${d} = ${b+c-d} → ${a} × ${b+c-d} = ${v}`,[a*b+c-d,a*(b+c)-d])},
- n52a(){const n=pick([12,16,18,20,24,28,30,32,36,40,42,45,48]);const D=[];for(let i=1;i<=n;i++)if(n%i===0)D.push(i);return Math.random()<.5?mcn(1,`${n}의 약수는 모두 몇 개일까요?`,D.length,`${n}의 약수: ${D.join(', ')}`,[D.length-1,D.length+2]):mc(1,`다음 중 ${n}의 약수가 아닌 것은?`,String([5,7,8,9,11,13].find(x=>n%x)),shuffle(D.filter(x=>x>1&&x<n)).slice(0,3).map(String),`${n}의 약수: ${D.join(', ')}`)},
+ n52a(){const n=pick([12,16,18,20,24,28,30,32,36,40,42,45,48]);const D=[];for(let i=1;i<=n;i++)if(n%i===0)D.push(i);return Math.random()<.5?mcn(1,`${n}의 약수는 모두 몇 개일까요?`,D.length,`${n}의 약수: ${D.join(', ')}`,[D.length-1,D.length+2]):mc(1,`다음 중 ${n}의 약수가 아닌 것은?`,String(pick([5,7,8,9,10,11,13,14,15,16].filter(x=>x<n&&n%x))),shuffle(D.filter(x=>x>1&&x<n)).slice(0,3).map(String),`${n}의 약수: ${D.join(', ')}`)},
  n52b(){const g=ri(2,9),a=ri(2,6),b=ri(2,7);if(gcd(a,b)!==1||a===b)return GEN.n52b();return mcn(2,`${g*a}와 ${g*b}의 최대공약수는?`,g,`${g*a} = ${g} × ${a}, ${g*b} = ${g} × ${b} → 최대공약수 ${g}`,[g*a*b,g*2>Math.min(g*a,g*b)?1:g*2,Math.min(a,b)])},
  n52c(){const a=ri(3,12),b=ri(3,12);if(a===b)return GEN.n52c();const L=lcm(a,b);return mcn(2,`${a}와 ${b}의 최소공배수는?`,L,`${a}의 배수와 ${b}의 배수 중 가장 작은 공통인 수 → ${L}`,[a*b===L?L*2:a*b,gcd(a,b),L+a])},
  r51a(){const m=ri(2,9),c=ri(0,6),x=ri(10,30);const eq=c?`△ = ○ × ${m} + ${c}`:`△ = ○ × ${m}`;const tb=[1,2,3,4].map(o=>`○ ${o} → △ ${o*m+c}`).join(', ');return sa(2,`표: ${tb}\n○가 ${x}일 때 △는? (대응 관계: ${eq})`,x*m+c,`${eq} → ${x} × ${m}${c?' + '+c:''} = ${x*m+c}`)},
  r51b(){const k=ri(2,9),o=ri(2,9);const T=pick([['세발자전거','바퀴',3],['오리','다리',2],['문어','다리',8],['네잎클로버','잎',4]]);return mc(1,`${T[0]}의 수를 ○, ${T[1]}의 수를 △라고 할 때 대응 관계를 나타낸 식은?`,`△ = ○ × ${T[2]}`,[`△ = ○ + ${T[2]}`,`○ = △ × ${T[2]}`,`△ = ○ − ${T[2]}`],`${T[0]} 1개에 ${T[1]} ${T[2]}개 → △ = ○ × ${T[2]}`)},
- n53a(){const a=ri(1,8),b=ri(a+1,9);if(gcd(a,b)!==1)return GEN.n53a();const k=ri(2,6);return mc(1,`${F(a*k,b*k)}를 기약분수로 나타내면?`,F(a,b),[F(a*k/(k>3?2:1)|0||a+1,b*k),F(a+1,b),F(a,b+1),F(b,a)].filter(x=>x!==F(a,b)),`분모와 분자를 최대공약수 ${k}로 나누면 ${F(a,b)}`)},
+ n53a(){const a=ri(1,8),b=ri(a+1,9);if(gcd(a,b)!==1)return GEN.n53a();const k=ri(2,6);return mc(1,`${F(a*k,b*k)}를 기약분수로 나타내면?`,F(a,b),[F(a+1,b),F(a,b+1),F(a*k,b),F(b,a)].filter(x=>x!==F(a,b)),`분모와 분자를 최대공약수 ${k}로 나누면 ${F(a,b)}`)},
  n53b(){const a=ri(1,4),b=ri(2,6),c=ri(1,5),d=ri(2,8);if(a>=b||c>=d||b===d)return GEN.n53b();const L=lcm(b,d);return mc(2,`${F(a,b)}와 ${F(c,d)}를 분모의 최소공배수로 통분하면?`,`${F(a*L/b,L)}, ${F(c*L/d,L)}`,[`${F(a*d,b*d)}, ${F(c*b,b*d)}`,`${F(a,L)}, ${F(c,L)}`,`${F(a*L/b+1,L)}, ${F(c*L/d,L)}`].filter(x=>x!==`${F(a*L/b,L)}, ${F(c*L/d,L)}`),`${b}와 ${d}의 최소공배수 ${L} → ${F(a*L/b,L)}, ${F(c*L/d,L)}`)},
  n53c(){const b=ri(3,9),d=ri(3,9);const a=ri(1,b-1),c=ri(1,d-1);if(a*d===c*b||b===d)return GEN.n53c();const big=a*d>c*b?F(a,b):F(c,d);const L=lcm(b,d);return mc(2,`${F(a,b)}와 ${F(c,d)} 중 더 큰 분수는?`,big,[big===F(a,b)?F(c,d):F(a,b),'같아요'],`통분하면 ${F(a*L/b,L)}, ${F(c*L/d,L)} → ${big}`)},
  n54a(){const b=ri(2,8),d=ri(2,9);if(b===d)return GEN.n54a();const a=ri(1,b-1),c=ri(1,d-1);const L=lcm(b,d);const n=a*L/b+c*L/d;const A=FRM(n,L);return mc(2,`${F(a,b)} + ${F(c,d)} = ?`,A,[F(a+c,b+d),FRM(n+1,L),FRM(Math.abs(a*L/b-c*L/d)||1,L),F(a+c,L)].filter(x=>x!==A),`${L}으로 통분: ${F(a*L/b,L)} + ${F(c*L/d,L)} = ${F(n,L)}${FRM(n,L)!==F(n,L)?' = '+A:''}`)},
- n54b(){const b=ri(2,8),d=ri(2,9);if(b===d)return GEN.n54b();const a=ri(1,b-1),c=ri(1,d-1);const L=lcm(b,d);let x=a*L/b,y=c*L/d;if(x===y)return GEN.n54b();let [p,q,P1,P2]=x>y?[F(a,b),F(c,d),x,y]:[F(c,d),F(a,b),y,x];const A=FRM(P1-P2,L);return mc(2,`${p} − ${q} = ?`,A,[FRM(P1+P2,L),FRM(P1-P2+1,L),F(Math.abs(a-c)||1,Math.abs(b-d)||1)].filter(o=>o!==A),`${L}으로 통분: ${F(P1,L)} − ${F(P2,L)} = ${F(P1-P2,L)}${FRM(P1-P2,L)!==F(P1-P2,L)?' = '+A:''}`)},
+ n54b(){const b=ri(2,8),d=ri(2,9);if(b===d)return GEN.n54b();const a=ri(1,b-1),c=ri(1,d-1);const L=lcm(b,d);let x=a*L/b,y=c*L/d;if(x===y)return GEN.n54b();let [p,q,P1,P2]=x>y?[F(a,b),F(c,d),x,y]:[F(c,d),F(a,b),y,x];const A=FRM(P1-P2,L);return mc(2,`${p} − ${q} = ?`,A,[FRM(P1+P2,L),FRM(P1-P2+1,L),Math.abs(b-d)>1&&Math.abs(a-c)>0&&Math.abs(a-c)<Math.abs(b-d)?F(Math.abs(a-c),Math.abs(b-d)):FRM(P1-P2,L*2)].filter(o=>o!==A),`${L}으로 통분: ${F(P1,L)} − ${F(P2,L)} = ${F(P1-P2,L)}${FRM(P1-P2,L)!==F(P1-P2,L)?' = '+A:''}`)},
  g51a(){const w=ri(3,15),h=ri(3,12);if(Math.random()<.5)return fig(sa(1,`가로 ${w} cm, 세로 ${h} cm인 직사각형의 넓이는 몇 cm²?`,w*h,`${w} × ${h} = ${w*h} (cm²)`),figRect(w,h,w+' cm',h+' cm'));return fig(sa(1,`가로 ${w} cm, 세로 ${h} cm인 직사각형의 둘레는 몇 cm?`,(w+h)*2,`(${w} + ${h}) × 2 = ${(w+h)*2} (cm)`),figRect(w,h,w+' cm',h+' cm'))},
  g51b(){const b=ri(4,16),h=ri(3,12);const k=pick(['tri','para','trap','rho']);if(k==='tri'){const bb=b%2?b+1:b;return fig(sa(1,`밑변 ${bb} cm, 높이 ${h} cm인 삼각형의 넓이는 몇 cm²?`,bb*h/2,`${bb} × ${h} ÷ 2 = ${bb*h/2}`),figTri(bb+' cm',h+' cm'))}if(k==='para')return fig(sa(1,`밑변 ${b} cm, 높이 ${h} cm인 평행사변형의 넓이는 몇 cm²?`,b*h,`${b} × ${h} = ${b*h}`),figPara(b+' cm',h+' cm'));if(k==='trap'){const a=ri(2,b-1),hh=h%2&&(a+b)%2?h+1:h;return fig(sa(2,`윗변 ${a} cm, 아랫변 ${b} cm, 높이 ${hh} cm인 사다리꼴의 넓이는 몇 cm²?`,(a+b)*hh/2,`(${a} + ${b}) × ${hh} ÷ 2 = ${(a+b)*hh/2}`),figTrap(a+' cm',b+' cm',hh+' cm'))}const p=ri(3,12)*2,q=ri(3,12);return sa(2,`두 대각선의 길이가 ${p} cm, ${q} cm인 마름모의 넓이는 몇 cm²?`,p*q/2,`${p} × ${q} ÷ 2 = ${p*q/2}`)},
  g51c(){const r=Math.random();if(r<.5){const m=ri(2,9);return mcn(1,`${m} m²는 몇 cm²일까요?`,m*10000,`1 m² = 10000 cm² → ${cm(m*10000)} cm²`,[m*100,m*1000,m*100000],10000)}const s=ri(3,12);return sa(2,`둘레가 ${s*4} cm인 정사각형의 넓이는 몇 cm²?`,s*s,`한 변 = ${s*4} ÷ 4 = ${s} → ${s} × ${s} = ${s*s}`)},
@@ -1117,21 +1121,21 @@ CONCEPTS.push(
  gen:['g65a']}
 );
 Object.assign(GEN,{
- n61a(){const a=ri(1,9),b=ri(2,9);if(a%b===0||Math.random()<.3)return mc(1,`${a} ÷ ${b}의 몫을 분수로 나타내면?`,FRM(a,b),[F(b,a),FRM(a+1,b),F(a,b+a)].filter(x=>x!==FRM(a,b)),`${a} ÷ ${b} = ${F(a,b)}${FRM(a,b)!==F(a,b)?' = '+FRM(a,b):''}`);return mc(1,`${a} ÷ ${b} = ?`,FRM(a,b),[F(b,a),FRM(a,b+1),FRM(a+b,b)].filter(x=>x!==FRM(a,b)),`몫을 분수로 → ${F(a,b)}${FRM(a,b)!==F(a,b)?' = '+FRM(a,b):''}`)},
+ n61a(){const a=ri(1,9),b=ri(2,9);if(a%b===0)return GEN.n61a();if(Math.random()<.3)return mc(1,`${a} ÷ ${b}의 몫을 분수로 나타내면?`,FRM(a,b),[F(b,a),FRM(a+1,b),F(a,b+a)].filter(x=>x!==FRM(a,b)),`${a} ÷ ${b} = ${F(a,b)}${FRM(a,b)!==F(a,b)?' = '+FRM(a,b):''}`);return mc(1,`${a} ÷ ${b} = ?`,FRM(a,b),[F(b,a),FRM(a,b+1),FRM(a+b,b)].filter(x=>x!==FRM(a,b)),`몫을 분수로 → ${F(a,b)}${FRM(a,b)!==F(a,b)?' = '+FRM(a,b):''}`)},
  n61b(){const d=ri(3,9),k=ri(2,6);let n=ri(1,d-1);if(Math.random()<.5&&k*2<d)n=k*ri(1,Math.floor((d-1)/k));const A=FR(n,d*k);return mc(2,`${F(n,d)} ÷ ${k} = ?`,FRM(n,d*k),[FRM(n*k,d),F(n,d+k),FRM(n,d*k+1)].filter(x=>x!==FRM(n,d*k)),`${F(n,d)} × ${F(1,k)} = ${F(n,d*k)}${A!==F(n,d*k)?' = '+FRM(n,d*k):''}`)},
  g61a(){const n=ri(3,8),nm={3:'삼',4:'사',5:'오',6:'육',7:'칠',8:'팔'}[n];const kind=pick(['각기둥','각뿔']);const w=pick(['면','모서리','꼭짓점']);const v=kind==='각기둥'?{면:n+2,모서리:n*3,꼭짓점:n*2}[w]:{면:n+1,모서리:n*2,꼭짓점:n+1}[w];const alt=kind==='각기둥'?[n+2,n*3,n*2]:[n+1,n*2,n+1];return mcn(2,`${nm}${kind}의 ${josa(w,'은','는')} 몇 개일까요?`,v,kind==='각기둥'?`${n}각기둥: 면 ${n} + 2, 모서리 ${n} × 3, 꼭짓점 ${n} × 2 → ${v}개`:`${n}각뿔: 면 ${n} + 1, 모서리 ${n} × 2, 꼭짓점 ${n} + 1 → ${v}개`,alt.filter(x=>x!==v).concat([n]))},
  n62a(){const k=ri(2,9),q=ri(11,99)/10;const a=q*k;return mcd(1,`${dc(a)} ÷ ${k} = ?`,q,`${Math.round(a*10)} ÷ ${k} = ${Math.round(q*10)} → 소수점을 맞추면 ${dc(q)}`,[q*10,q/10])},
- n62b(){const k=pick([2,4,5,8]),a=ri(1,9);if(a%k===0)return GEN.n62b();return mcd(2,`${a} ÷ ${k} = ? (소수로)`,a/k,`${a}.00 ÷ ${k} = ${dc(a/k)}`,[k/a,a/k*10],.05)},
+ n62b(){const k=pick([2,4,5,8]),a=ri(1,9);if(a%k===0)return GEN.n62b();return mcd(2,`${a} ÷ ${k} = ? (소수로)`,a/k,`${a}.00 ÷ ${k} = ${dc(a/k)}`,[a/k*10,a/k/10],.05)},
  r61a(){const b=ri(2,10),a=ri(1,b+3);if(a===b)return GEN.r61a();const v=a/b;if(String(dc(v)).length>5)return GEN.r61a();return mcd(1,`${a} : ${b}의 비율을 소수로 나타내면?`,v,`${a} ÷ ${b} = ${dc(v)}`,[b/a,v+.1],.05)},
  r61b(){const p=ri(1,99);if(Math.random()<.5)return sa(1,`비율 ${dc(p/100)}을 백분율로 나타내면 몇 %?`,p,`${dc(p/100)} × 100 = ${p}%`);return mcd(1,`${p}%를 소수로 나타내면?`,p/100,`${p} ÷ 100 = ${dc(p/100)}`,[p/10,p/1000],.01)},
- r61c(){const pr=ri(2,20)*1000,d=pick([10,20,25,30,40,50]);return mcn(2,`${cm(pr)}원짜리 물건을 ${d}% 할인해서 사면 얼마일까요?`,pr*(100-d)/100,`할인 금액 ${cm(pr)} × ${F(d,100)} = ${cm(pr*d/100)}원 → ${cm(pr)} − ${cm(pr*d/100)} = ${cm(pr*(100-d)/100)}원`,[pr*d/100,pr-d],100)},
+ r61c(){const pr=ri(2,20)*1000,d=pick([10,20,25,30,40,50]);return mcn(2,`${cm(pr)}원짜리 물건을 ${d}% 할인해서 사면 얼마일까요?`,pr*(100-d)/100,`할인 금액 ${cm(pr)} × ${F(d,100)} = ${cm(pr*d/100)}원 → ${cm(pr)} − ${cm(pr*d/100)} = ${cm(pr*(100-d)/100)}원`,[pr*d/100,pr*(100+d)/100],100)},
  d61a(){const L=['국어','수학','영어','과학'];let p=[ri(15,35),ri(15,35),ri(10,25)];p.push(100-p[0]-p[1]-p[2]);if(p[3]<5)return GEN.d61a();const tot=pick([20,40,50,100,200]);if(p.some(x=>x*tot%100))return GEN.d61a();const k=ri(0,3);if(Math.random()<.5)return sa(1,`좋아하는 과목: ${L.slice(0,3).map((l,i)=>l+' '+p[i]+'%').join(', ')}, 과학 □%\n과학은 몇 %일까요?`,p[3],`100 − (${p.slice(0,3).join(' + ')}) = ${p[3]}%`);return sa(2,`학생 ${tot}명이 좋아하는 과목: ${L.map((l,i)=>l+' '+p[i]+'%').join(', ')}\n${josa(L[k],'을','를')} 좋아하는 학생은 몇 명일까요?`,tot*p[k]/100,`${tot} × ${F(p[k],100)} = ${tot*p[k]/100}명`)},
  g62a(){const a=ri(2,12),b=ri(2,12),c=ri(2,12);if(Math.random()<.5){const s=ri(2,10);return sa(1,`한 모서리가 ${s} cm인 정육면체의 부피는 몇 cm³?`,s**3,`${s} × ${s} × ${s} = ${s**3}`)}return fig(sa(1,`가로 ${a} cm, 세로 ${b} cm, 높이 ${c} cm인 직육면체의 부피는 몇 cm³?`,a*b*c,`${a} × ${b} × ${c} = ${a*b*c}`),figBox(a,b,c,a+' cm',c+' cm',b+' cm'))},
  g62b(){const a=ri(2,10),b=ri(2,10),c=ri(2,10);if(Math.random()<.5){const s=ri(2,10);return sa(2,`한 모서리가 ${s} cm인 정육면체의 겉넓이는 몇 cm²?`,s*s*6,`${s} × ${s} × 6 = ${s*s*6}`)}return fig(sa(2,`가로 ${a} cm, 세로 ${b} cm, 높이 ${c} cm인 직육면체의 겉넓이는 몇 cm²?`,2*(a*b+a*c+b*c),`(${a} × ${b} + ${a} × ${c} + ${b} × ${c}) × 2 = ${2*(a*b+a*c+b*c)}`),figBox(a,b,c,a+' cm',c+' cm',b+' cm'))},
  n63a(){const d=ri(3,12),b=ri(1,4),q=ri(2,5);if(b*q>=d*2)return GEN.n63a();const a=b*q;if(Math.random()<.5)return sa(1,`${F(a,d)} ÷ ${F(b,d)} = ?`,q,`분모가 같으므로 분자끼리: ${a} ÷ ${b} = ${q}`);const k=ri(2,9),n=ri(1,4),m=ri(n+1,7);return mc(2,`${k} ÷ ${F(n,m)} = ?`,FRM(k*m,n),[FRM(k*n,m),FRM(k*m+1,n),FRM(k,m*n)].filter(x=>x!==FRM(k*m,n)),`${k} × ${F(m,n)} = ${F(k*m,n)}${FRM(k*m,n)!==F(k*m,n)?' = '+FRM(k*m,n):''}`)},
  n63b(){const a=ri(1,6),b=ri(a+1,9),c=ri(1,6),d=ri(c+1,9);if(b===d)return GEN.n63b();const A=FRM(a*d,b*c);return mc(2,`${F(a,b)} ÷ ${F(c,d)} = ?`,A,[FR(a*c,b*d),FRM(b*c,a*d),FRM(a*d+1,b*c)].filter(x=>x!==A),`${F(a,b)} × ${F(d,c)} = ${F(a*d,b*c)}${A!==F(a*d,b*c)?' = '+A:''}`)},
  n64a(){const b=ri(2,9)/10,q=ri(2,15);const a=b*q;return sa(1,`${dc(a)} ÷ ${dc(b)} = ?`,q,`소수점을 한 자리씩 옮기면 ${Math.round(a*10)} ÷ ${Math.round(b*10)} = ${q}`)},
- n64b(){const b=ri(11,39)/10,q=ri(2,9)/(Math.random()<.5?1:10);const a=+(b*q).toFixed(3);return mcd(2,`${dc(a)} ÷ ${dc(b)} = ?`,q,`소수점을 한 자리씩 옮기면 ${dc(a*10)} ÷ ${Math.round(b*10)} = ${dc(q)}`,[q*10,q/10],q>=1?1:.1)},
+ n64b(){const bt=ri(11,39);if(bt%10===0)return GEN.n64b();const b=bt/10,q=ri(2,9)/(Math.random()<.5?1:10);const a=+(b*q).toFixed(3);return mcd(2,`${dc(a)} ÷ ${dc(b)} = ?`,q,`소수점을 한 자리씩 옮기면 ${dc(a*10)} ÷ ${Math.round(b*10)} = ${dc(q)}`,[q*10,q/10],q>=1?1:.1)},
  g63a(){const n=ri(3,5);const L=Array.from({length:n},()=>ri(1,3));const tot=L.reduce((a,b)=>a+b,0);return fig(mcn(2,`한 줄로 쌓은 쌓기나무를 앞에서 보았어요. 칸마다 ${L.join(', ')}층으로 쌓였다면 쌓기나무는 모두 몇 개일까요?`,tot,`${L.join(' + ')} = ${tot}개`,[n,Math.max(...L)*n]),figCubes(L))},
  r62a(){const a=ri(2,9),b=ri(2,9),k=ri(2,6);if(a===b)return GEN.r62a();return Math.random()<.5?sa(1,`${a} : ${b} = ${a*k} : □`,b*k,`전항에 ${k}를 곱했으니 후항에도 ${k}를 곱해요 → ${b*k}`):sa(2,`${a} : □ = ${a*k} : ${b*k}`,b,`외항의 곱 = 내항의 곱: ${a} × ${b*k} = □ × ${a*k} → □ = ${b}`)},
  r62b(){const a=ri(1,5),b=ri(1,6);if(gcd(a,b)!==1||a===b)return GEN.r62b();const k=pick([.1,.2,.3,.5]);const A=+(a*k).toFixed(2),B=+(b*k).toFixed(2);return mc(2,`${dc(A)} : ${dc(B)}을 간단한 자연수의 비로 나타내면?`,`${a} : ${b}`,[`${b} : ${a}`,`${Math.round(A*10)} : ${Math.round(B*10)}`,`${a+1} : ${b}`].filter(x=>x!==`${a} : ${b}`),`10을 곱하고 최대공약수로 나누면 ${a} : ${b}`)},
@@ -1151,6 +1155,9 @@ const subjOf=u=>UNITS[u].g+'학년';
 const LV=['','기본','응용','도전'];
 const TY={ox:'O, X',mc:'고르기',sa:'답 쓰기',self:'말로 설명하기'};
 const INTERVAL=[0,1,2,4,7,14,30];
+// 보기 중 정답과 값이 같은 것(예: {{2§4}}와 {{1§2}}, 0.5와 0.50)은 빼요
+const valOf=s=>{s=String(s).replace(/,/g,'').replace(/\s*(cm²|cm³|cm|mm|km|m²|m|°|개|명|원|번|자루|장|살|일|분|초|시간|kg|g|mL|L|%|배|상자|권|컵|봉지)$/,'').trim();let m=s.match(/^(\d+)?\{\{(\d+)§(\d+)\}\}$/);if(m)return (+(m[1]||0)*+m[3]+ +m[2])/+m[3];if(/^\d+(\.\d+)?$/.test(s))return +s;return null};
+for(const k in GEN){const f=GEN[k];GEN[k]=()=>{const p=f();if(p&&p.t==='mc'){const v=valOf(p.x[0]);if(v!=null)p.x=[p.x[0],...p.x.slice(1).filter(o=>{const w=valOf(o);return w==null||Math.abs(w-v)>1e-9})]}return p}}
 
 
 // ===== 상태 =====
@@ -2414,6 +2421,1255 @@ document.addEventListener('click',e=>{if(typeof VIEW==='undefined'||VIEW!=='room
     let [x,y]=pc(r.left+r.width/2,r.bottom+(act[0]==='sit'||act[0]==='sleep'?-r.height*.25:6));if(r.width/sr.width>.2&&act[0]!=='sit'&&act[0]!=='sleep')x=cl(x+(x>50?-12:12),6,94);
     jsGo(el,x,y,()=>{if(act[0]==='sit'||act[0]==='sleep')el.style.zIndex=(parseInt(getComputedStyle(it).zIndex)||Math.round(y))+2;jsPose(el,act[0],act[0]==='sleep'?6000:act[0]==='read'?5000:3200,act[1])},1);return}
   e.preventDefault();e.stopPropagation();const [x,y]=pc(e.clientX,e.clientY);jsMark(sc,x,y);jsGo(el,x,y,()=>{if(Math.random()<.35)jsPose(el,pick(['wave','stretch','clap']),2200,'')},1)},true);
+// 오프라인 QR 만들기 (QRCode for JavaScript, Kazuhiko Arase, MIT · qrcode-terminal 판)
+const QRLIB=(()=>{const M={};const req=n=>M[n.replace('./','')];
+M['QRMode']=(()=>{let __e;__e = {
+    MODE_NUMBER :       1 << 0,
+    MODE_ALPHA_NUM :    1 << 1,
+    MODE_8BIT_BYTE :    1 << 2,
+    MODE_KANJI :        1 << 3
+};
+
+return __e})();
+M['QRMath']=(()=>{let __e;var QRMath = {
+
+	glog : function(n) {
+	
+		if (n < 1) {
+			throw new Error("glog(" + n + ")");
+		}
+		
+		return QRMath.LOG_TABLE[n];
+	},
+	
+	gexp : function(n) {
+	
+		while (n < 0) {
+			n += 255;
+		}
+	
+		while (n >= 256) {
+			n -= 255;
+		}
+	
+		return QRMath.EXP_TABLE[n];
+	},
+	
+	EXP_TABLE : new Array(256),
+	
+	LOG_TABLE : new Array(256)
+
+};
+	
+for (var i = 0; i < 8; i++) {
+	QRMath.EXP_TABLE[i] = 1 << i;
+}
+for (var i = 8; i < 256; i++) {
+	QRMath.EXP_TABLE[i] = QRMath.EXP_TABLE[i - 4]
+		^ QRMath.EXP_TABLE[i - 5]
+		^ QRMath.EXP_TABLE[i - 6]
+		^ QRMath.EXP_TABLE[i - 8];
+}
+for (var i = 0; i < 255; i++) {
+	QRMath.LOG_TABLE[QRMath.EXP_TABLE[i] ] = i;
+}
+
+__e = QRMath;
+
+return __e})();
+M['QRPolynomial']=(()=>{let __e;var QRMath = req('./QRMath');
+
+function QRPolynomial(num, shift) {
+	if (num.length === undefined) {
+		throw new Error(num.length + "/" + shift);
+	}
+
+	var offset = 0;
+
+	while (offset < num.length && num[offset] === 0) {
+		offset++;
+	}
+
+	this.num = new Array(num.length - offset + shift);
+	for (var i = 0; i < num.length - offset; i++) {
+		this.num[i] = num[i + offset];
+	}
+}
+
+QRPolynomial.prototype = {
+
+	get : function(index) {
+		return this.num[index];
+	},
+	
+	getLength : function() {
+		return this.num.length;
+	},
+	
+	multiply : function(e) {
+	
+		var num = new Array(this.getLength() + e.getLength() - 1);
+	
+		for (var i = 0; i < this.getLength(); i++) {
+			for (var j = 0; j < e.getLength(); j++) {
+				num[i + j] ^= QRMath.gexp(QRMath.glog(this.get(i) ) + QRMath.glog(e.get(j) ) );
+			}
+		}
+	
+		return new QRPolynomial(num, 0);
+	},
+	
+	mod : function(e) {
+	
+		if (this.getLength() - e.getLength() < 0) {
+			return this;
+		}
+	
+		var ratio = QRMath.glog(this.get(0) ) - QRMath.glog(e.get(0) );
+	
+		var num = new Array(this.getLength() );
+		
+		for (var i = 0; i < this.getLength(); i++) {
+			num[i] = this.get(i);
+		}
+		
+		for (var x = 0; x < e.getLength(); x++) {
+			num[x] ^= QRMath.gexp(QRMath.glog(e.get(x) ) + ratio);
+		}
+	
+		// recursive call
+		return new QRPolynomial(num, 0).mod(e);
+	}
+};
+
+__e = QRPolynomial;
+
+return __e})();
+M['QRMaskPattern']=(()=>{let __e;__e = {
+	PATTERN000 : 0,
+	PATTERN001 : 1,
+	PATTERN010 : 2,
+	PATTERN011 : 3,
+	PATTERN100 : 4,
+	PATTERN101 : 5,
+	PATTERN110 : 6,
+	PATTERN111 : 7
+};
+
+return __e})();
+M['QRErrorCorrectLevel']=(()=>{let __e;__e = {
+	L : 1,
+	M : 0,
+	Q : 3,
+	H : 2
+};
+
+
+return __e})();
+M['QRUtil']=(()=>{let __e;var QRMode = req('./QRMode');
+var QRPolynomial = req('./QRPolynomial');
+var QRMath = req('./QRMath');
+var QRMaskPattern = req('./QRMaskPattern');
+
+var QRUtil = {
+
+    PATTERN_POSITION_TABLE : [
+        [],
+        [6, 18],
+        [6, 22],
+        [6, 26],
+        [6, 30],
+        [6, 34],
+        [6, 22, 38],
+        [6, 24, 42],
+        [6, 26, 46],
+        [6, 28, 50],
+        [6, 30, 54],        
+        [6, 32, 58],
+        [6, 34, 62],
+        [6, 26, 46, 66],
+        [6, 26, 48, 70],
+        [6, 26, 50, 74],
+        [6, 30, 54, 78],
+        [6, 30, 56, 82],
+        [6, 30, 58, 86],
+        [6, 34, 62, 90],
+        [6, 28, 50, 72, 94],
+        [6, 26, 50, 74, 98],
+        [6, 30, 54, 78, 102],
+        [6, 28, 54, 80, 106],
+        [6, 32, 58, 84, 110],
+        [6, 30, 58, 86, 114],
+        [6, 34, 62, 90, 118],
+        [6, 26, 50, 74, 98, 122],
+        [6, 30, 54, 78, 102, 126],
+        [6, 26, 52, 78, 104, 130],
+        [6, 30, 56, 82, 108, 134],
+        [6, 34, 60, 86, 112, 138],
+        [6, 30, 58, 86, 114, 142],
+        [6, 34, 62, 90, 118, 146],
+        [6, 30, 54, 78, 102, 126, 150],
+        [6, 24, 50, 76, 102, 128, 154],
+        [6, 28, 54, 80, 106, 132, 158],
+        [6, 32, 58, 84, 110, 136, 162],
+        [6, 26, 54, 82, 110, 138, 166],
+        [6, 30, 58, 86, 114, 142, 170]
+    ],
+
+    G15 : (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) | (1 << 0),
+    G18 : (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) | (1 << 2) | (1 << 0),
+    G15_MASK : (1 << 14) | (1 << 12) | (1 << 10)    | (1 << 4) | (1 << 1),
+
+    getBCHTypeInfo : function(data) {
+        var d = data << 10;
+        while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15) >= 0) {
+            d ^= (QRUtil.G15 << (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15) ) );    
+        }
+        return ( (data << 10) | d) ^ QRUtil.G15_MASK;
+    },
+
+    getBCHTypeNumber : function(data) {
+        var d = data << 12;
+        while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18) >= 0) {
+            d ^= (QRUtil.G18 << (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18) ) );    
+        }
+        return (data << 12) | d;
+    },
+
+    getBCHDigit : function(data) {
+
+        var digit = 0;
+
+        while (data !== 0) {
+            digit++;
+            data >>>= 1;
+        }
+
+        return digit;
+    },
+
+    getPatternPosition : function(typeNumber) {
+        return QRUtil.PATTERN_POSITION_TABLE[typeNumber - 1];
+    },
+
+    getMask : function(maskPattern, i, j) {
+        
+        switch (maskPattern) {
+            
+        case QRMaskPattern.PATTERN000 : return (i + j) % 2 === 0;
+        case QRMaskPattern.PATTERN001 : return i % 2 === 0;
+        case QRMaskPattern.PATTERN010 : return j % 3 === 0;
+        case QRMaskPattern.PATTERN011 : return (i + j) % 3 === 0;
+        case QRMaskPattern.PATTERN100 : return (Math.floor(i / 2) + Math.floor(j / 3) ) % 2 === 0;
+        case QRMaskPattern.PATTERN101 : return (i * j) % 2 + (i * j) % 3 === 0;
+        case QRMaskPattern.PATTERN110 : return ( (i * j) % 2 + (i * j) % 3) % 2 === 0;
+        case QRMaskPattern.PATTERN111 : return ( (i * j) % 3 + (i + j) % 2) % 2 === 0;
+
+        default :
+            throw new Error("bad maskPattern:" + maskPattern);
+        }
+    },
+
+    getErrorCorrectPolynomial : function(errorCorrectLength) {
+
+        var a = new QRPolynomial([1], 0);
+
+        for (var i = 0; i < errorCorrectLength; i++) {
+            a = a.multiply(new QRPolynomial([1, QRMath.gexp(i)], 0) );
+        }
+
+        return a;
+    },
+
+    getLengthInBits : function(mode, type) {
+
+        if (1 <= type && type < 10) {
+
+            // 1 - 9
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 10;
+            case QRMode.MODE_ALPHA_NUM  : return 9;
+            case QRMode.MODE_8BIT_BYTE  : return 8;
+            case QRMode.MODE_KANJI      : return 8;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else if (type < 27) {
+
+            // 10 - 26
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 12;
+            case QRMode.MODE_ALPHA_NUM  : return 11;
+            case QRMode.MODE_8BIT_BYTE  : return 16;
+            case QRMode.MODE_KANJI      : return 10;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else if (type < 41) {
+
+            // 27 - 40
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 14;
+            case QRMode.MODE_ALPHA_NUM  : return 13;
+            case QRMode.MODE_8BIT_BYTE  : return 16;
+            case QRMode.MODE_KANJI      : return 12;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else {
+            throw new Error("type:" + type);
+        }
+    },
+
+    getLostPoint : function(qrCode) {
+        
+        var moduleCount = qrCode.getModuleCount();
+        var lostPoint = 0;
+        var row = 0; 
+        var col = 0;
+
+        
+        // LEVEL1
+        
+        for (row = 0; row < moduleCount; row++) {
+
+            for (col = 0; col < moduleCount; col++) {
+
+                var sameCount = 0;
+                var dark = qrCode.isDark(row, col);
+
+                for (var r = -1; r <= 1; r++) {
+
+                    if (row + r < 0 || moduleCount <= row + r) {
+                        continue;
+                    }
+
+                    for (var c = -1; c <= 1; c++) {
+
+                        if (col + c < 0 || moduleCount <= col + c) {
+                            continue;
+                        }
+
+                        if (r === 0 && c === 0) {
+                            continue;
+                        }
+
+                        if (dark === qrCode.isDark(row + r, col + c) ) {
+                            sameCount++;
+                        }
+                    }
+                }
+
+                if (sameCount > 5) {
+                    lostPoint += (3 + sameCount - 5);
+                }
+            }
+        }
+
+        // LEVEL2
+
+        for (row = 0; row < moduleCount - 1; row++) {
+            for (col = 0; col < moduleCount - 1; col++) {
+                var count = 0;
+                if (qrCode.isDark(row,     col    ) ) count++;
+                if (qrCode.isDark(row + 1, col    ) ) count++;
+                if (qrCode.isDark(row,     col + 1) ) count++;
+                if (qrCode.isDark(row + 1, col + 1) ) count++;
+                if (count === 0 || count === 4) {
+                    lostPoint += 3;
+                }
+            }
+        }
+
+        // LEVEL3
+
+        for (row = 0; row < moduleCount; row++) {
+            for (col = 0; col < moduleCount - 6; col++) {
+                if (qrCode.isDark(row, col) && 
+                        !qrCode.isDark(row, col + 1) && 
+                         qrCode.isDark(row, col + 2) && 
+                         qrCode.isDark(row, col + 3) && 
+                         qrCode.isDark(row, col + 4) && 
+                        !qrCode.isDark(row, col + 5) && 
+                         qrCode.isDark(row, col + 6) ) {
+                    lostPoint += 40;
+                }
+            }
+        }
+
+        for (col = 0; col < moduleCount; col++) {
+            for (row = 0; row < moduleCount - 6; row++) {
+                if (qrCode.isDark(row, col) &&
+                        !qrCode.isDark(row + 1, col) &&
+                         qrCode.isDark(row + 2, col) &&
+                         qrCode.isDark(row + 3, col) &&
+                         qrCode.isDark(row + 4, col) &&
+                        !qrCode.isDark(row + 5, col) &&
+                         qrCode.isDark(row + 6, col) ) {
+                    lostPoint += 40;
+                }
+            }
+        }
+
+        // LEVEL4
+        
+        var darkCount = 0;
+
+        for (col = 0; col < moduleCount; col++) {
+            for (row = 0; row < moduleCount; row++) {
+                if (qrCode.isDark(row, col) ) {
+                    darkCount++;
+                }
+            }
+        }
+        
+        var ratio = Math.abs(100 * darkCount / moduleCount / moduleCount - 50) / 5;
+        lostPoint += ratio * 10;
+
+        return lostPoint;       
+    }
+
+};
+
+__e = QRUtil;
+
+return __e})();
+M['QRRSBlock']=(()=>{let __e;var QRErrorCorrectLevel = req('./QRErrorCorrectLevel');
+
+function QRRSBlock(totalCount, dataCount) {
+	this.totalCount = totalCount;
+	this.dataCount  = dataCount;
+}
+
+QRRSBlock.RS_BLOCK_TABLE = [
+
+	// L
+	// M
+	// Q
+	// H
+
+	// 1
+	[1, 26, 19],
+	[1, 26, 16],
+	[1, 26, 13],
+	[1, 26, 9],
+	
+	// 2
+	[1, 44, 34],
+	[1, 44, 28],
+	[1, 44, 22],
+	[1, 44, 16],
+
+	// 3
+	[1, 70, 55],
+	[1, 70, 44],
+	[2, 35, 17],
+	[2, 35, 13],
+
+	// 4		
+	[1, 100, 80],
+	[2, 50, 32],
+	[2, 50, 24],
+	[4, 25, 9],
+	
+	// 5
+	[1, 134, 108],
+	[2, 67, 43],
+	[2, 33, 15, 2, 34, 16],
+	[2, 33, 11, 2, 34, 12],
+	
+	// 6
+	[2, 86, 68],
+	[4, 43, 27],
+	[4, 43, 19],
+	[4, 43, 15],
+	
+	// 7		
+	[2, 98, 78],
+	[4, 49, 31],
+	[2, 32, 14, 4, 33, 15],
+	[4, 39, 13, 1, 40, 14],
+	
+	// 8
+	[2, 121, 97],
+	[2, 60, 38, 2, 61, 39],
+	[4, 40, 18, 2, 41, 19],
+	[4, 40, 14, 2, 41, 15],
+	
+	// 9
+	[2, 146, 116],
+	[3, 58, 36, 2, 59, 37],
+	[4, 36, 16, 4, 37, 17],
+	[4, 36, 12, 4, 37, 13],
+	
+	// 10		
+	[2, 86, 68, 2, 87, 69],
+	[4, 69, 43, 1, 70, 44],
+	[6, 43, 19, 2, 44, 20],
+	[6, 43, 15, 2, 44, 16],
+
+	// 11
+	[4, 101, 81],
+	[1, 80, 50, 4, 81, 51],
+	[4, 50, 22, 4, 51, 23],
+	[3, 36, 12, 8, 37, 13],
+
+	// 12
+	[2, 116, 92, 2, 117, 93],
+	[6, 58, 36, 2, 59, 37],
+	[4, 46, 20, 6, 47, 21],
+	[7, 42, 14, 4, 43, 15],
+
+	// 13
+	[4, 133, 107],
+	[8, 59, 37, 1, 60, 38],
+	[8, 44, 20, 4, 45, 21],
+	[12, 33, 11, 4, 34, 12],
+
+	// 14
+	[3, 145, 115, 1, 146, 116],
+	[4, 64, 40, 5, 65, 41],
+	[11, 36, 16, 5, 37, 17],
+	[11, 36, 12, 5, 37, 13],
+
+	// 15
+	[5, 109, 87, 1, 110, 88],
+	[5, 65, 41, 5, 66, 42],
+	[5, 54, 24, 7, 55, 25],
+	[11, 36, 12],
+
+	// 16
+	[5, 122, 98, 1, 123, 99],
+	[7, 73, 45, 3, 74, 46],
+	[15, 43, 19, 2, 44, 20],
+	[3, 45, 15, 13, 46, 16],
+
+	// 17
+	[1, 135, 107, 5, 136, 108],
+	[10, 74, 46, 1, 75, 47],
+	[1, 50, 22, 15, 51, 23],
+	[2, 42, 14, 17, 43, 15],
+
+	// 18
+	[5, 150, 120, 1, 151, 121],
+	[9, 69, 43, 4, 70, 44],
+	[17, 50, 22, 1, 51, 23],
+	[2, 42, 14, 19, 43, 15],
+
+	// 19
+	[3, 141, 113, 4, 142, 114],
+	[3, 70, 44, 11, 71, 45],
+	[17, 47, 21, 4, 48, 22],
+	[9, 39, 13, 16, 40, 14],
+
+	// 20
+	[3, 135, 107, 5, 136, 108],
+	[3, 67, 41, 13, 68, 42],
+	[15, 54, 24, 5, 55, 25],
+	[15, 43, 15, 10, 44, 16],
+
+	// 21
+	[4, 144, 116, 4, 145, 117],
+	[17, 68, 42],
+	[17, 50, 22, 6, 51, 23],
+	[19, 46, 16, 6, 47, 17],
+
+	// 22
+	[2, 139, 111, 7, 140, 112],
+	[17, 74, 46],
+	[7, 54, 24, 16, 55, 25],
+	[34, 37, 13],
+
+	// 23
+	[4, 151, 121, 5, 152, 122],
+	[4, 75, 47, 14, 76, 48],
+	[11, 54, 24, 14, 55, 25],
+	[16, 45, 15, 14, 46, 16],
+
+	// 24
+	[6, 147, 117, 4, 148, 118],
+	[6, 73, 45, 14, 74, 46],
+	[11, 54, 24, 16, 55, 25],
+	[30, 46, 16, 2, 47, 17],
+
+	// 25
+	[8, 132, 106, 4, 133, 107],
+	[8, 75, 47, 13, 76, 48],
+	[7, 54, 24, 22, 55, 25],
+	[22, 45, 15, 13, 46, 16],
+
+	// 26
+	[10, 142, 114, 2, 143, 115],
+	[19, 74, 46, 4, 75, 47],
+	[28, 50, 22, 6, 51, 23],
+	[33, 46, 16, 4, 47, 17],
+
+	// 27
+	[8, 152, 122, 4, 153, 123],
+	[22, 73, 45, 3, 74, 46],
+	[8, 53, 23, 26, 54, 24],
+	[12, 45, 15, 28, 46, 16],
+
+	// 28
+	[3, 147, 117, 10, 148, 118],
+	[3, 73, 45, 23, 74, 46],
+	[4, 54, 24, 31, 55, 25],
+	[11, 45, 15, 31, 46, 16],
+
+	// 29
+	[7, 146, 116, 7, 147, 117],
+	[21, 73, 45, 7, 74, 46],
+	[1, 53, 23, 37, 54, 24],
+	[19, 45, 15, 26, 46, 16],
+
+	// 30
+	[5, 145, 115, 10, 146, 116],
+	[19, 75, 47, 10, 76, 48],
+	[15, 54, 24, 25, 55, 25],
+	[23, 45, 15, 25, 46, 16],
+
+	// 31
+	[13, 145, 115, 3, 146, 116],
+	[2, 74, 46, 29, 75, 47],
+	[42, 54, 24, 1, 55, 25],
+	[23, 45, 15, 28, 46, 16],
+
+	// 32
+	[17, 145, 115],
+	[10, 74, 46, 23, 75, 47],
+	[10, 54, 24, 35, 55, 25],
+	[19, 45, 15, 35, 46, 16],
+
+	// 33
+	[17, 145, 115, 1, 146, 116],
+	[14, 74, 46, 21, 75, 47],
+	[29, 54, 24, 19, 55, 25],
+	[11, 45, 15, 46, 46, 16],
+
+	// 34
+	[13, 145, 115, 6, 146, 116],
+	[14, 74, 46, 23, 75, 47],
+	[44, 54, 24, 7, 55, 25],
+	[59, 46, 16, 1, 47, 17],
+
+	// 35
+	[12, 151, 121, 7, 152, 122],
+	[12, 75, 47, 26, 76, 48],
+	[39, 54, 24, 14, 55, 25],
+	[22, 45, 15, 41, 46, 16],
+
+	// 36
+	[6, 151, 121, 14, 152, 122],
+	[6, 75, 47, 34, 76, 48],
+	[46, 54, 24, 10, 55, 25],
+	[2, 45, 15, 64, 46, 16],
+
+	// 37
+	[17, 152, 122, 4, 153, 123],
+	[29, 74, 46, 14, 75, 47],
+	[49, 54, 24, 10, 55, 25],
+	[24, 45, 15, 46, 46, 16],
+
+	// 38
+	[4, 152, 122, 18, 153, 123],
+	[13, 74, 46, 32, 75, 47],
+	[48, 54, 24, 14, 55, 25],
+	[42, 45, 15, 32, 46, 16],
+
+	// 39
+	[20, 147, 117, 4, 148, 118],
+	[40, 75, 47, 7, 76, 48],
+	[43, 54, 24, 22, 55, 25],
+	[10, 45, 15, 67, 46, 16],
+
+	// 40
+	[19, 148, 118, 6, 149, 119],
+	[18, 75, 47, 31, 76, 48],
+	[34, 54, 24, 34, 55, 25],
+	[20, 45, 15, 61, 46, 16]
+];
+
+QRRSBlock.getRSBlocks = function(typeNumber, errorCorrectLevel) {
+	
+	var rsBlock = QRRSBlock.getRsBlockTable(typeNumber, errorCorrectLevel);
+	
+	if (rsBlock === undefined) {
+		throw new Error("bad rs block @ typeNumber:" + typeNumber + "/errorCorrectLevel:" + errorCorrectLevel);
+	}
+
+	var length = rsBlock.length / 3;
+	
+	var list = [];
+	
+	for (var i = 0; i < length; i++) {
+
+		var count = rsBlock[i * 3 + 0];
+		var totalCount = rsBlock[i * 3 + 1];
+		var dataCount  = rsBlock[i * 3 + 2];
+
+		for (var j = 0; j < count; j++) {
+			list.push(new QRRSBlock(totalCount, dataCount) );	
+		}
+	}
+	
+	return list;
+};
+
+QRRSBlock.getRsBlockTable = function(typeNumber, errorCorrectLevel) {
+
+	switch(errorCorrectLevel) {
+	case QRErrorCorrectLevel.L :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 0];
+	case QRErrorCorrectLevel.M :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 1];
+	case QRErrorCorrectLevel.Q :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 2];
+	case QRErrorCorrectLevel.H :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 3];
+	default :
+		return undefined;
+	}
+};
+
+__e = QRRSBlock;
+
+return __e})();
+M['QRBitBuffer']=(()=>{let __e;function QRBitBuffer() {
+	this.buffer = [];
+	this.length = 0;
+}
+
+QRBitBuffer.prototype = {
+
+	get : function(index) {
+		var bufIndex = Math.floor(index / 8);
+		return ( (this.buffer[bufIndex] >>> (7 - index % 8) ) & 1) == 1;
+	},
+	
+	put : function(num, length) {
+		for (var i = 0; i < length; i++) {
+			this.putBit( ( (num >>> (length - i - 1) ) & 1) == 1);
+		}
+	},
+	
+	getLengthInBits : function() {
+		return this.length;
+	},
+	
+	putBit : function(bit) {
+	
+		var bufIndex = Math.floor(this.length / 8);
+		if (this.buffer.length <= bufIndex) {
+			this.buffer.push(0);
+		}
+	
+		if (bit) {
+			this.buffer[bufIndex] |= (0x80 >>> (this.length % 8) );
+		}
+	
+		this.length++;
+	}
+};
+
+__e = QRBitBuffer;
+
+return __e})();
+M['QR8bitByte']=(()=>{let __e;var QRMode = req('./QRMode');
+
+function QR8bitByte(data) {
+	this.mode = QRMode.MODE_8BIT_BYTE;
+	this.data = data;
+}
+
+QR8bitByte.prototype = {
+
+	getLength : function() {
+		return this.data.length;
+	},
+	
+	write : function(buffer) {
+		for (var i = 0; i < this.data.length; i++) {
+			// not JIS ...
+			buffer.put(this.data.charCodeAt(i), 8);
+		}
+	}
+};
+
+__e = QR8bitByte;
+
+return __e})();
+M['index']=(()=>{let __e;//---------------------------------------------------------------------
+// QRCode for JavaScript
+//
+// Copyright (c) 2009 Kazuhiko Arase
+//
+// URL: http://www.d-project.com/
+//
+// Licensed under the MIT license:
+//   http://www.opensource.org/licenses/mit-license.php
+//
+// The word "QR Code" is registered trademark of 
+// DENSO WAVE INCORPORATED
+//   http://www.denso-wave.com/qrcode/faqpatent-e.html
+//
+//---------------------------------------------------------------------
+// Modified to work in node for this project (and some refactoring)
+//---------------------------------------------------------------------
+
+var QR8bitByte = req('./QR8bitByte');
+var QRUtil = req('./QRUtil');
+var QRPolynomial = req('./QRPolynomial');
+var QRRSBlock = req('./QRRSBlock');
+var QRBitBuffer = req('./QRBitBuffer');
+
+function QRCode(typeNumber, errorCorrectLevel) {
+	this.typeNumber = typeNumber;
+	this.errorCorrectLevel = errorCorrectLevel;
+	this.modules = null;
+	this.moduleCount = 0;
+	this.dataCache = null;
+	this.dataList = [];
+}
+
+QRCode.prototype = {
+	
+	addData : function(data) {
+		var newData = new QR8bitByte(data);
+		this.dataList.push(newData);
+		this.dataCache = null;
+	},
+	
+	isDark : function(row, col) {
+		if (row < 0 || this.moduleCount <= row || col < 0 || this.moduleCount <= col) {
+			throw new Error(row + "," + col);
+		}
+		return this.modules[row][col];
+	},
+
+	getModuleCount : function() {
+		return this.moduleCount;
+	},
+	
+	make : function() {
+		// Calculate automatically typeNumber if provided is < 1
+		if (this.typeNumber < 1 ){
+			var typeNumber = 1;
+			for (typeNumber = 1; typeNumber < 40; typeNumber++) {
+				var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, this.errorCorrectLevel);
+
+				var buffer = new QRBitBuffer();
+				var totalDataCount = 0;
+				for (var i = 0; i < rsBlocks.length; i++) {
+					totalDataCount += rsBlocks[i].dataCount;
+				}
+
+				for (var x = 0; x < this.dataList.length; x++) {
+					var data = this.dataList[x];
+					buffer.put(data.mode, 4);
+					buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber) );
+					data.write(buffer);
+				}
+				if (buffer.getLengthInBits() <= totalDataCount * 8)
+					break;
+			}
+			this.typeNumber = typeNumber;
+		}
+		this.makeImpl(false, this.getBestMaskPattern() );
+	},
+	
+	makeImpl : function(test, maskPattern) {
+		
+		this.moduleCount = this.typeNumber * 4 + 17;
+		this.modules = new Array(this.moduleCount);
+		
+		for (var row = 0; row < this.moduleCount; row++) {
+			
+			this.modules[row] = new Array(this.moduleCount);
+			
+			for (var col = 0; col < this.moduleCount; col++) {
+				this.modules[row][col] = null;//(col + row) % 3;
+			}
+		}
+	
+		this.setupPositionProbePattern(0, 0);
+		this.setupPositionProbePattern(this.moduleCount - 7, 0);
+		this.setupPositionProbePattern(0, this.moduleCount - 7);
+		this.setupPositionAdjustPattern();
+		this.setupTimingPattern();
+		this.setupTypeInfo(test, maskPattern);
+		
+		if (this.typeNumber >= 7) {
+			this.setupTypeNumber(test);
+		}
+	
+		if (this.dataCache === null) {
+			this.dataCache = QRCode.createData(this.typeNumber, this.errorCorrectLevel, this.dataList);
+		}
+	
+		this.mapData(this.dataCache, maskPattern);
+	},
+
+	setupPositionProbePattern : function(row, col)  {
+		
+		for (var r = -1; r <= 7; r++) {
+			
+			if (row + r <= -1 || this.moduleCount <= row + r) continue;
+			
+			for (var c = -1; c <= 7; c++) {
+				
+				if (col + c <= -1 || this.moduleCount <= col + c) continue;
+				
+				if ( (0 <= r && r <= 6 && (c === 0 || c === 6) ) || 
+                     (0 <= c && c <= 6 && (r === 0 || r === 6) ) || 
+                     (2 <= r && r <= 4 && 2 <= c && c <= 4) ) {
+					this.modules[row + r][col + c] = true;
+				} else {
+					this.modules[row + r][col + c] = false;
+				}
+			}		
+		}		
+	},
+	
+	getBestMaskPattern : function() {
+	
+		var minLostPoint = 0;
+		var pattern = 0;
+	
+		for (var i = 0; i < 8; i++) {
+			
+			this.makeImpl(true, i);
+	
+			var lostPoint = QRUtil.getLostPoint(this);
+	
+			if (i === 0 || minLostPoint >  lostPoint) {
+				minLostPoint = lostPoint;
+				pattern = i;
+			}
+		}
+	
+		return pattern;
+	},
+	
+	createMovieClip : function(target_mc, instance_name, depth) {
+	
+		var qr_mc = target_mc.createEmptyMovieClip(instance_name, depth);
+		var cs = 1;
+	
+		this.make();
+
+		for (var row = 0; row < this.modules.length; row++) {
+			
+			var y = row * cs;
+			
+			for (var col = 0; col < this.modules[row].length; col++) {
+	
+				var x = col * cs;
+				var dark = this.modules[row][col];
+			
+				if (dark) {
+					qr_mc.beginFill(0, 100);
+					qr_mc.moveTo(x, y);
+					qr_mc.lineTo(x + cs, y);
+					qr_mc.lineTo(x + cs, y + cs);
+					qr_mc.lineTo(x, y + cs);
+					qr_mc.endFill();
+				}
+			}
+		}
+		
+		return qr_mc;
+	},
+
+	setupTimingPattern : function() {
+		
+		for (var r = 8; r < this.moduleCount - 8; r++) {
+			if (this.modules[r][6] !== null) {
+				continue;
+			}
+			this.modules[r][6] = (r % 2 === 0);
+		}
+	
+		for (var c = 8; c < this.moduleCount - 8; c++) {
+			if (this.modules[6][c] !== null) {
+				continue;
+			}
+			this.modules[6][c] = (c % 2 === 0);
+		}
+	},
+	
+	setupPositionAdjustPattern : function() {
+	
+		var pos = QRUtil.getPatternPosition(this.typeNumber);
+		
+		for (var i = 0; i < pos.length; i++) {
+		
+			for (var j = 0; j < pos.length; j++) {
+			
+				var row = pos[i];
+				var col = pos[j];
+				
+				if (this.modules[row][col] !== null) {
+					continue;
+				}
+				
+				for (var r = -2; r <= 2; r++) {
+				
+					for (var c = -2; c <= 2; c++) {
+					
+						if (Math.abs(r) === 2 || 
+                            Math.abs(c) === 2 ||
+                            (r === 0 && c === 0) ) {
+							this.modules[row + r][col + c] = true;
+						} else {
+							this.modules[row + r][col + c] = false;
+						}
+					}
+				}
+			}
+		}
+	},
+	
+	setupTypeNumber : function(test) {
+	
+		var bits = QRUtil.getBCHTypeNumber(this.typeNumber);
+        var mod;
+	
+		for (var i = 0; i < 18; i++) {
+			mod = (!test && ( (bits >> i) & 1) === 1);
+			this.modules[Math.floor(i / 3)][i % 3 + this.moduleCount - 8 - 3] = mod;
+		}
+	
+		for (var x = 0; x < 18; x++) {
+			mod = (!test && ( (bits >> x) & 1) === 1);
+			this.modules[x % 3 + this.moduleCount - 8 - 3][Math.floor(x / 3)] = mod;
+		}
+	},
+	
+	setupTypeInfo : function(test, maskPattern) {
+	
+		var data = (this.errorCorrectLevel << 3) | maskPattern;
+		var bits = QRUtil.getBCHTypeInfo(data);
+        var mod;
+	
+		// vertical		
+		for (var v = 0; v < 15; v++) {
+	
+			mod = (!test && ( (bits >> v) & 1) === 1);
+	
+			if (v < 6) {
+				this.modules[v][8] = mod;
+			} else if (v < 8) {
+				this.modules[v + 1][8] = mod;
+			} else {
+				this.modules[this.moduleCount - 15 + v][8] = mod;
+			}
+		}
+	
+		// horizontal
+		for (var h = 0; h < 15; h++) {
+	
+			mod = (!test && ( (bits >> h) & 1) === 1);
+			
+			if (h < 8) {
+				this.modules[8][this.moduleCount - h - 1] = mod;
+			} else if (h < 9) {
+				this.modules[8][15 - h - 1 + 1] = mod;
+			} else {
+				this.modules[8][15 - h - 1] = mod;
+			}
+		}
+	
+		// fixed module
+		this.modules[this.moduleCount - 8][8] = (!test);
+	
+	},
+	
+	mapData : function(data, maskPattern) {
+		
+		var inc = -1;
+		var row = this.moduleCount - 1;
+		var bitIndex = 7;
+		var byteIndex = 0;
+		
+		for (var col = this.moduleCount - 1; col > 0; col -= 2) {
+	
+			if (col === 6) col--;
+	
+			while (true) {
+	
+				for (var c = 0; c < 2; c++) {
+					
+					if (this.modules[row][col - c] === null) {
+						
+						var dark = false;
+	
+						if (byteIndex < data.length) {
+							dark = ( ( (data[byteIndex] >>> bitIndex) & 1) === 1);
+						}
+	
+						var mask = QRUtil.getMask(maskPattern, row, col - c);
+	
+						if (mask) {
+							dark = !dark;
+						}
+						
+						this.modules[row][col - c] = dark;
+						bitIndex--;
+	
+						if (bitIndex === -1) {
+							byteIndex++;
+							bitIndex = 7;
+						}
+					}
+				}
+								
+				row += inc;
+	
+				if (row < 0 || this.moduleCount <= row) {
+					row -= inc;
+					inc = -inc;
+					break;
+				}
+			}
+		}
+		
+	}
+
+};
+
+QRCode.PAD0 = 0xEC;
+QRCode.PAD1 = 0x11;
+
+QRCode.createData = function(typeNumber, errorCorrectLevel, dataList) {
+	
+	var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectLevel);
+	
+	var buffer = new QRBitBuffer();
+	
+	for (var i = 0; i < dataList.length; i++) {
+		var data = dataList[i];
+		buffer.put(data.mode, 4);
+		buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber) );
+		data.write(buffer);
+	}
+
+	// calc num max data.
+	var totalDataCount = 0;
+	for (var x = 0; x < rsBlocks.length; x++) {
+		totalDataCount += rsBlocks[x].dataCount;
+	}
+
+	if (buffer.getLengthInBits() > totalDataCount * 8) {
+		throw new Error("code length overflow. (" + 
+            buffer.getLengthInBits() + 
+            ">" +  
+            totalDataCount * 8 + 
+            ")");
+	}
+
+	// end code
+	if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) {
+		buffer.put(0, 4);
+	}
+
+	// padding
+	while (buffer.getLengthInBits() % 8 !== 0) {
+		buffer.putBit(false);
+	}
+
+	// padding
+	while (true) {
+		
+		if (buffer.getLengthInBits() >= totalDataCount * 8) {
+			break;
+		}
+		buffer.put(QRCode.PAD0, 8);
+		
+		if (buffer.getLengthInBits() >= totalDataCount * 8) {
+			break;
+		}
+		buffer.put(QRCode.PAD1, 8);
+	}
+
+	return QRCode.createBytes(buffer, rsBlocks);
+};
+
+QRCode.createBytes = function(buffer, rsBlocks) {
+
+	var offset = 0;
+	
+	var maxDcCount = 0;
+	var maxEcCount = 0;
+	
+	var dcdata = new Array(rsBlocks.length);
+	var ecdata = new Array(rsBlocks.length);
+	
+	for (var r = 0; r < rsBlocks.length; r++) {
+
+		var dcCount = rsBlocks[r].dataCount;
+		var ecCount = rsBlocks[r].totalCount - dcCount;
+
+		maxDcCount = Math.max(maxDcCount, dcCount);
+		maxEcCount = Math.max(maxEcCount, ecCount);
+		
+		dcdata[r] = new Array(dcCount);
+		
+		for (var i = 0; i < dcdata[r].length; i++) {
+			dcdata[r][i] = 0xff & buffer.buffer[i + offset];
+		}
+		offset += dcCount;
+		
+		var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
+		var rawPoly = new QRPolynomial(dcdata[r], rsPoly.getLength() - 1);
+
+		var modPoly = rawPoly.mod(rsPoly);
+		ecdata[r] = new Array(rsPoly.getLength() - 1);
+		for (var x = 0; x < ecdata[r].length; x++) {
+            var modIndex = x + modPoly.getLength() - ecdata[r].length;
+			ecdata[r][x] = (modIndex >= 0)? modPoly.get(modIndex) : 0;
+		}
+
+	}
+	
+	var totalCodeCount = 0;
+	for (var y = 0; y < rsBlocks.length; y++) {
+		totalCodeCount += rsBlocks[y].totalCount;
+	}
+
+	var data = new Array(totalCodeCount);
+	var index = 0;
+
+	for (var z = 0; z < maxDcCount; z++) {
+		for (var s = 0; s < rsBlocks.length; s++) {
+			if (z < dcdata[s].length) {
+				data[index++] = dcdata[s][z];
+			}
+		}
+	}
+
+	for (var xx = 0; xx < maxEcCount; xx++) {
+		for (var t = 0; t < rsBlocks.length; t++) {
+			if (xx < ecdata[t].length) {
+				data[index++] = ecdata[t][xx];
+			}
+		}
+	}
+
+	return data;
+
+};
+
+__e = QRCode;
+
+return __e})();
+return {QRCode:M['index'],EC:M['QRErrorCorrectLevel']}})();
+function qrSVG(text,px){const q=new QRLIB.QRCode(-1,QRLIB.EC.M);q.addData(text);q.make();const n=q.getModuleCount(),m=2;let d='';for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(q.isDark(r,c))d+=`M${c+m} ${r+m}h1v1h-1z`;return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n+2*m} ${n+2*m}" width="${px}" height="${px}" shape-rendering="crispEdges"><rect width="100%" height="100%" fill="#fff"/><path d="${d}" fill="#000"/></svg>`}
 
 // ===== PARTY: 친구랑 놀기 (QR 초대 · 실시간) =====
 const PT_URL=(()=>{try{const o=localStorage.getItem('ptURL');if(o)return o}catch(e){}return /^(localhost|127\.)/.test(location.hostname)?'http://localhost:8790':'https://nyangmeong-party.onrender.com'})();
@@ -2426,14 +3682,16 @@ function ptColor(pid){const i=(PT&&PT.people||[]).findIndex(p=>p.pid===pid);retu
 function ptEl(){let el=document.getElementById('rmparty');if(!el){el=document.createElement('div');el.id='rmparty';document.body.appendChild(el)}el.className='rmcam on';return el}
 function ptNick(){const R=rmS();return (PT&&PT.nick)||R.name||''}
 async function ptApi(path,body){const r=await fetch(PT_URL+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});let j={};try{j=await r.json()}catch(e){}if(!r.ok)throw Object.assign(new Error(j.err||'net'),{code:j.err||'net'});return j}
-async function ptWake(){const t0=Date.now();let first=true;while(Date.now()-t0<90000){try{const c=new AbortController();const tm=setTimeout(()=>c.abort(),first?4000:15000);const r=await fetch(PT_URL+'/health',{signal:c.signal,cache:'no-store'});clearTimeout(tm);if(r.ok)return true}catch(e){}
+let PT_BLOCK=0;
+async function ptWake(){PT_BLOCK=0;const t0=Date.now();let first=true;while(Date.now()-t0<90000){try{const c=new AbortController();const tm=setTimeout(()=>c.abort(),first?4000:15000);const t1=Date.now();const r=await fetch(PT_URL+'/health',{signal:c.signal,cache:'no-store'});clearTimeout(tm);let j=null;try{j=await r.json()}catch(e){}if(r.ok&&j&&j.ok)return true;if(r.ok){PT_BLOCK=(PT_BLOCK||0)+3}}catch(e){if(Date.now()-t0<20000&&e.name!=='AbortError')PT_BLOCK=(PT_BLOCK||0)+1}if((PT_BLOCK||0)>=4){PT_BLOCK=0;return false}
     if(first){first=false;ptMsg('⏳ 놀이터 문을 여는 중이에요','처음 열 때는 30초~1분쯤 걸려요. 잠시만 기다려 주세요!')}if(!PT)return false;await new Promise(r=>setTimeout(r,2500))}return false}
 function ptMsg(t,sub,btn){const el=ptEl();el.innerHTML=`<div class="camwrap"><div class="camtop"><b>👫 친구랑 놀기</b><button class="camx" data-pt="close">✕</button></div><div class="ptmsg"><div class="ptspin"></div><b>${t}</b><p>${sub||''}</p>${btn||''}</div></div>`}
+function ptSrvBox(){return `<details class="ptsrv"><summary>선생님용 · 놀이터 서버 주소 바꾸기</summary><input data-ptsrvin value="${esc(PT_URL)}" inputmode="url" autocomplete="off"><button class="cambtn" data-ptsrvsave>저장하고 다시 열기</button><button class="cambtn" data-ptsrvreset>처음 주소로</button></details>`}
 function ptErr(e){const m={gone:'그 코드의 방이 없어요. 코드를 다시 확인하거나, 친구에게 방을 다시 열어 달라고 해요.',many:'방이 꽉 찼어요 (최대 8명).',slow:'너무 빨리 눌렀어요. 잠시 뒤에 다시 해 봐요.',full:'놀이터가 붐벼요. 잠시 뒤에 다시 해 봐요.',origin:'이 주소에서는 놀이터를 쓸 수 없어요.'}[e.code]||'인터넷 연결을 확인하고 다시 해 봐요.';
   ptMsg('😿 들어갈 수 없어요',m,'<button class="cambig" data-pt="menu">처음으로</button>')}
 function ptOpen(code){if(PT&&PT.es)return ptPlay();PT={scr:code?'join':'menu',code:code||'',nick:ptDefNick(),bring:[]};ptDraw()}
 function ptClose(){if(PT&&PT.es&&PT.pid){ptApi('/api/act',{code:PT.code,pid:PT.pid,tok:PT.tok,t:'leave'}).catch(()=>{})}ptStop();PT=null;const el=document.getElementById('rmparty');if(el){el.className='rmcam';el.innerHTML=''}if(VIEW==='room')render()}
-function ptStop(){if(!PT)return;if(PT.es){PT.es.close();PT.es=null}clearInterval(PT.loop);clearTimeout(PT.rt)}
+function ptStop(){if(!PT)return;if(PT.es){PT.es.close();PT.es=null}PT.polling=false;clearInterval(PT.loop);clearTimeout(PT.rt);clearTimeout(PT.ht)}
 function ptCatPick(max){const all=rmAll();return `<div class="camcats">${all.map(i=>`<button class="camc ${PT.bring.includes(i)?'on':''}" data-ptbring="${i}"><svg viewBox="0 -2 40 36" width="34" height="30">${bFace(BREEDS[i])}</svg><span>${esc(BREEDS[i].n)}</span></button>`).join('')||'<p class="camhint" style="text-align:left">아직 모은 친구가 없어요. 그래도 놀러 갈 수 있어요!</p>'}</div>`}
 function ptDraw(){const el=ptEl();const R=rmS();const cur=rmCur(R);
   const nickIn=`<div class="camrow"><b>내 별명</b><input class="ptnick" data-ptnick maxlength="8" value="${esc(PT.nick)}" placeholder="별명을 꼭 써 주세요 (8자까지)"></div><p class="camhint" style="text-align:left;margin-top:0">진짜 이름 대신 별명을 써도 좋아요. 친구들에게 이 별명이 보여요.</p>`;
@@ -2450,14 +3708,21 @@ function ptDraw(){const el=ptEl();const R=rmS();const cur=rmCur(R);
     <p class="camhint">놀이터에서는 정해진 말과 이모지만 쓸 수 있어요. 방 정보는 놀이 중에만 잠깐 서버에 있고, 놀이가 끝나면 지워져요.</p></div>`}
 async function ptStart(kind){const R=rmS();PT.nick=(PT.nick||'').trim();if(!PT.nick){toast('친구들이 알아볼 수 있게 별명을 써 주세요');const n=document.querySelector('#rmparty [data-ptnick]');if(n)n.focus();return}R.ptNick=PT.nick;save();
   if(kind==='join'&&!/^\d{4}$/.test(PT.code)){toast('4자리 방 코드를 넣어 주세요');return}
-  ptMsg('🚪 놀이터로 가는 중…','');if(!await ptWake()){if(PT)ptMsg('😿 놀이터에 연결할 수 없어요','인터넷 연결을 확인하고 다시 해 봐요.','<button class="cambig" data-pt="menu">처음으로</button>');return}
+  ptMsg('🚪 놀이터로 가는 중…','');if(!await ptWake()){if(PT)ptMsg('😿 놀이터에 연결할 수 없어요',`학교·기관 인터넷에서는 놀이터 서버(<b>${esc(PT_URL.replace(/^https?:\/\//,''))}</b>)가 막혀 있을 수 있어요. 휴대폰 데이터로 해 보거나, 선생님께 이 주소를 열어 달라고 부탁해요.`,`<button class="cambig" data-pt="menu">처음으로</button>${ptSrvBox()}`);return}
   try{let j;if(kind==='host'){const cur=rmCur(R);j=await ptApi('/api/create',{nick:PT.nick,look:rmLook(),cats:rmLive().slice(0,12).map(i=>({i})),snap:{name:cur.name,t:cur.t,wall:cur.wall,floor:cur.floor,items:cur.items.map(it=>({k:it.k,x:it.x,y:it.y,f:it.f}))}})}
     else j=await ptApi('/api/join',{code:PT.code,nick:PT.nick,look:rmLook(),cats:PT.bring.map(i=>({i}))});
     Object.assign(PT,{code:j.code,pid:j.pid,tok:j.tok,host:kind==='host',st:{},people:[],scr:'play',qr:kind==='host'});ptConnect()}catch(e){if(PT)ptErr(e)}}
-function ptConnect(){const es=new EventSource(`${PT_URL}/api/events?code=${PT.code}&pid=${PT.pid}&tok=${encodeURIComponent(PT.tok)}`);PT.es=es;
-  es.onmessage=ev=>{if(!PT)return;let d;try{d=JSON.parse(ev.data)}catch(e){return}ptOn(d)};
-  es.onerror=()=>{if(!PT)return;if(es.readyState===2){ptStop();ptMsg('👋 놀이가 끝났어요','방이 닫혔거나 연결이 끊겼어요.','<button class="cambig" data-pt="menu">처음으로</button>')}else{const b=document.getElementById('ptnet');if(b)b.style.display=''}};
+// 실시간 연결: 먼저 이벤트 스트림(SSE)을 쓰고, 6초 안에 첫 소식이 안 오면(학교 망 등) 1.2초마다 물어보기로 바꿔요
+function ptConnect(){PT.since=0;PT.gotHello=false;let es;try{es=new EventSource(`${PT_URL}/api/events?code=${PT.code}&pid=${PT.pid}&tok=${encodeURIComponent(PT.tok)}`)}catch(e){return ptPollStart()}PT.es=es;
+  PT.ht=setTimeout(()=>{if(PT&&!PT.gotHello)ptPollStart()},6000);
+  es.onmessage=ev=>{if(!PT)return;let d;try{d=JSON.parse(ev.data)}catch(e){return}if(ev.lastEventId)PT.since=+ev.lastEventId;if(d.t==='hello')PT.gotHello=true;ptOn(d)};
+  es.onerror=()=>{if(!PT)return;if(!PT.gotHello){return ptPollStart()}if(es.readyState===2){ptStop();ptMsg('👋 놀이가 끝났어요','방이 닫혔거나 연결이 끊겼어요.','<button class="cambig" data-pt="menu">처음으로</button>')}else{const b=document.getElementById('ptnet');if(b)b.style.display=''}};
   es.onopen=()=>{const b=document.getElementById('ptnet');if(b)b.style.display='none'}}
+function ptPollStart(){if(!PT||PT.polling)return;clearTimeout(PT.ht);if(PT.es&&PT.es.close&&!PT.es.poll)PT.es.close();PT.polling=true;PT.es={poll:1,readyState:1,close(){if(PT)PT.polling=false}};PT.since=0;ptPollLoop()}
+async function ptPollLoop(){let fails=0;while(PT&&PT.polling){try{const j=await ptApi('/api/poll',{code:PT.code,pid:PT.pid,tok:PT.tok,since:PT.since||0});if(!PT||!PT.polling)return;fails=0;const b=document.getElementById('ptnet');if(b)b.style.display='none';
+    if(j.hello){PT.gotHello=true;ptOn(j.hello)}(j.evs||[]).forEach(d=>{if(PT)ptOn(d)});if(PT)PT.since=j.seq}
+  catch(e){if(!PT||!PT.polling)return;if(e.code==='gone'||e.code==='auth'){ptStop();ptMsg('👋 놀이가 끝났어요','방이 닫혔거나 연결이 끊겼어요.','<button class="cambig" data-pt="menu">처음으로</button>');return}fails++;const b=document.getElementById('ptnet');if(b)b.style.display=''}
+  await new Promise(r=>setTimeout(r,fails?2500:1200))}}
 function ptKeys(){const o=[];if(!PT)return o;(PT.people||[]).forEach(p=>(p.cats||[]).forEach(c=>{if(BREEDS[c.i])o.push({k:p.pid+'-'+c.i,i:c.i,own:p.nick,pid:p.pid,host:p.host})}));return o}
 function ptOn(d){if(d.t==='hello'){PT.snap=d.snap;PT.people=d.people;(d.pos||[]).forEach(p=>PT.st[p.k]=p);ptPlay();ptReward();if(d.seek)ptSeekStart(d.seek.hides,d.seek.found,null,true);return}
   if(d.t==='people'){const before=ptKeys().map(c=>c.k).join();PT.people=d.people;if(d.join){ptBubble(null,`🐾 ${esc(d.join)} 친구가 놀러 왔어요!`);if(PT.host){const R=rmS();R.guests=(R.guests||[]).concat({n:d.join,d:new Date().toLocaleDateString('ko-KR',{month:'numeric',day:'numeric'})}).slice(-30);save()}}
@@ -2497,8 +3762,8 @@ function ptPlay(){if(!PT||!PT.snap)return;const el=ptEl();const s=PT.snap;const 
     <div class="cambtns"><button class="cambtn" data-pt="close">${PT.host?'🚪 방 닫고 나가기':'🏠 집으로 돌아가기'}</button></div></div>`;
   document.querySelectorAll('#ptscene .rmc').forEach(c=>{const p=PT.st[c.dataset.ptc];if(p&&p.pose)ptPose(c,p.pose)});
   ptPeople();if(PT.qr)ptQR(url);if(PT.host){clearInterval(PT.loop);PT.loop=setInterval(ptHostTick,3000);ptHostTick(true)}}
-function ptQR(url){const draw=()=>{const box=document.getElementById('ptqrimg');if(!box)return;try{const q=qrcode(0,'M');q.addData(url);q.make();box.innerHTML=`<img src="${q.createDataURL(6,2)}" alt="초대 QR" width="180" height="180">`}catch(e){box.textContent='QR을 만들 수 없어요. 코드를 알려 주세요.'}};
-  if(typeof qrcode==='function')return draw();const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js';sc.onload=draw;sc.onerror=()=>{const b=document.getElementById('ptqrimg');if(b)b.textContent='QR을 불러오지 못했어요. 코드 '+jfix(PT.code+'를')+' 알려 주세요.'};document.head.appendChild(sc)}
+function ptQR(url){const draw=()=>{const box=document.getElementById('ptqrimg');if(!box)return;try{box.innerHTML=qrSVG(url,180)}catch(e){box.textContent='QR을 만들 수 없어요. 코드를 알려 주세요.'}};
+  draw()}
 function ptHostTick(initial){if(!PT||!PT.host||!PT.snap)return;if(PT.busy>Date.now()||PT.seek)return;const keys=ptKeys();if(!keys.length)return;
   const spots=[];(PT.snap.items||[]).forEach(it=>{if(RM_ITEMS[it.k])(RM_SPOTS[it.k]||[]).forEach((sp,j)=>spots.push({key:it.id+':'+j,it,sp}))});
   const used={};keys.forEach(c=>{const s=PT.st[c.k];if(s&&s.spot)used[s.spot]=1});const out=[];
@@ -2570,6 +3835,10 @@ function ptSeekEnd(score){if(!PT)return;const sc=document.getElementById('ptscen
 document.addEventListener('click',e=>{if(!PT||!PT.seek)return;const sc=e.target.closest('#ptscene');if(!sc)return;e.preventDefault();e.stopPropagation();
   let hit=null,best=1e9;sc.querySelectorAll('.rmc.rmhid:not(.ptpend)').forEach(c=>{const r=c.getBoundingClientRect();if(e.clientX>=r.left-6&&e.clientX<=r.right+6&&e.clientY>=r.top-6&&e.clientY<=r.bottom+6){const d=Math.hypot(e.clientX-(r.left+r.width/2),e.clientY-(r.top+r.height*.3));if(d<best){best=d;hit=c}}});
   if(hit){hit.classList.add('ptpend');ptApi('/api/act',{code:PT.code,pid:PT.pid,tok:PT.tok,t:'found',k:hit.dataset.ptc}).then(j=>{hit.classList.remove('ptpend');if(j&&j.late)toast('아깝다! 친구가 먼저 찾았어요')}).catch(()=>hit.classList.remove('ptpend'))}},true);
+
+document.addEventListener('click',e=>{const t=e.target.closest('[data-ptsrvsave],[data-ptsrvreset]');if(!t)return;e.preventDefault();e.stopPropagation();
+  try{if(t.dataset.ptsrvreset!=null){localStorage.removeItem('ptURL')}else{const v=(document.querySelector('[data-ptsrvin]')||{}).value||'';const u=v.trim().replace(/\/+$/,'');if(!/^https:\/\/[a-z0-9.-]+(:\d+)?$/i.test(u)){toast('https:// 로 시작하는 주소를 넣어 주세요');return}localStorage.setItem('ptURL',u)}}catch(err){}
+  toast('주소를 바꿨어요. 다시 열어요');setTimeout(()=>location.reload(),600)},true);
 </script>
 </body>
 </html>

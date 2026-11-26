@@ -15,6 +15,7 @@ const dc=(x,k=4)=>String(+(+x).toFixed(k));                          // 소수 �
 const sa=(l,q,x,s)=>({l,t:'sa',q,x:String(x),s});
 const ox=(l,q,v,s)=>({l,t:'ox',q,x:!!v,s});
 const fig=(p,f)=>{p.fig=f;return p};
+const tm=(h,m)=>m?`${h}시 ${m}분`:`${h}시`;
 const numDs=(n,step=1)=>[n+step,n-step,n+2*step,n-2*step,n+10*step,n+3*step].filter(v=>v>=0&&v!==n);
 const mcn=(l,q,ans,s,extra=[],step=1)=>mc(l,q,cm(ans),extra.map(v=>typeof v==='number'?cm(v):v).concat(numDs(ans,step).map(cm)),s);
 const mcd=(l,q,ans,s,extra=[],step=.1)=>mc(l,q,dc(ans),extra.map(v=>typeof v==='number'?dc(v):v).concat(numDs(ans,step).map(v=>dc(v))),s);
