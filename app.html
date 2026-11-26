@@ -1,4 +1,4 @@
-<!doctype html><html><head><title>yang2수학</title><script>var APPVER="11-26 18:35"</script><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png"><link rel="apple-touch-icon" sizes="180x180" href="icon-180.png"><link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-title" content="yang2수학"><meta name="mobile-web-app-capable" content="yes"><meta name="theme-color" content="#FFF8EE"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}.recbox{margin:10px 0 12px;padding:12px 14px;border:2px dashed var(--line,#E9DCC6);border-radius:18px;background:var(--card,#fff)}
+<!doctype html><html><head><title>yang2수학</title><script>var APPVER="11-26 18:47"</script><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png"><link rel="apple-touch-icon" sizes="180x180" href="icon-180.png"><link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-title" content="yang2수학"><meta name="mobile-web-app-capable" content="yes"><meta name="theme-color" content="#FFF8EE"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}.recbox{margin:10px 0 12px;padding:12px 14px;border:2px dashed var(--line,#E9DCC6);border-radius:18px;background:var(--card,#fff)}
 .recbox .rrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.recbox .rbtn{border:0;border-radius:999px;padding:10px 16px;font-weight:800;font-size:15px;background:#FF7563;color:#fff;cursor:pointer}
 .recbox .rbtn.stop{background:#2B2B38}.recbox .rbtn.ghost{background:transparent;color:var(--sub,#8a7f72);border:1.5px solid var(--line,#E9DCC6)}
 .recbox .rt{font-variant-numeric:tabular-nums;font-weight:800}.recbox .dot{width:10px;height:10px;border-radius:50%;background:#FF4B3A;animation:rblink 1s infinite}@keyframes rblink{50%{opacity:.2}}
@@ -124,6 +124,11 @@
 .obs span{display:block;font-size:26px;line-height:1.2}
 .obh{font-weight:800;margin:12px 0 0;text-align:left}
 .lpbig:disabled{opacity:.4;cursor:default}
+
+.fastnote{margin:8px 0 0;padding:8px 12px;border-radius:12px;background:#FFF3C9;color:#7A5A00;font-size:14px;font-weight:700}
+.rwcard{text-align:center}.rwcard .rwstar{font-size:28px;letter-spacing:2px;margin:2px 0 6px}.rwcard .rwstar b{font-size:22px;color:#E8A400;letter-spacing:0}
+.rwcard p{margin:6px 0}.rwcard .big{margin-top:10px}
+.helpsum{text-align:left;max-height:46vh;overflow:auto;margin:8px 0}.helpsum ol{padding-left:18px;margin:4px 0}.helpsum li{margin:4px 0}
 </style></head><body>
 <!DOCTYPE html>
 <html lang="ko">
@@ -1613,7 +1618,30 @@ const CAT_SLOTS=['hero','win','box','brand','daily','tail','loaf','nav','peekb',
 function catOrd(){const d=today();if(CAT_ORDER._d!==d){const sx=(S.seedX=S.seedX||Math.floor(Math.random()*1e6));const a=CAT_SLOTS.slice();let t=(d*2654435761+sx*40503)>>>0;const rnd=()=>{t=(t+0x6D2B79F5)>>>0;let x=Math.imul(t^(t>>>15),1|t);x=(x+Math.imul(x^(x>>>7),61|x))^x;return ((x^(x>>>14))>>>0)/4294967296};for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]]}const ci=a.indexOf('card');if(ci>=0){a.splice(ci,1);a.push('card')}a._d=d;CAT_ORDER=a}return CAT_ORDER}
 let CAT_PREV=null;
 function catSync(){const t=today();if(S.setDay!==t){S.setDay=t;S.setN=0;S.cats=[];S.catStart=t;save()}else if(S.catStart!==t){S.cats=[];S.catStart=t;save()}return Math.min(S.setN||0,CAT_TOTAL)}
-function setDone(n=1){catSync();try{rmEarn(n)}catch(e){}const b=S.setN||0;S.setN=Math.min(CAT_TOTAL,b+n);if(S.setN>b)S.setNew=S.setN-b;save();weekGift()}
+function setDone(n=1,stars=n){catSync();if(stars>0){try{rmEarn(stars)}catch(e){}}const b=S.setN||0;if(n>0){S.setN=Math.min(CAT_TOTAL,b+n);if(S.setN>b)S.setNew=S.setN-b}save();weekGift()}
+// ===== 보상 규칙: 맞힌 만큼 별, 고친 만큼 보너스, 찍기는 빼기 =====
+const FIX_CAP=3;
+function rewardSet(){const ps=RUN.steps.find(s=>s.k==='probs');if(!ps||!ps.list)return;const n=ps.list.length,t=today();
+  let good=0,fast=0,fixOk=0;const wrong=[];
+  ps.list.forEach((p,i)=>{const r=!!ps.res[i],f=!!(ps.fast&&ps.fast[i]);if(f)fast++;if(r&&!f){good++;if(p.retry||RUN.mode==='fix')fixOk++}else if(p.t!=='self')wrong.push({id:p.mid||p.id,cid:p.cid,l:p.l,t:p.t})});
+  const ratio=n?good/n:0;let stars=0,an=0;
+  if(RUN.mode==='session'){stars=ratio>=.8?2:ratio>=.5?1:0;an=ratio>=.5?2:0}
+  else if(RUN.mode!=='fix'){stars=ratio>=.999?2:ratio>=2/3?1:0;an=ratio>=.5?1:0}
+  S.fixStar=S.fixStar&&S.fixStar.d===t?S.fixStar:{d:t,n:0};const bonus=Math.min(fixOk,FIX_CAP-S.fixStar.n);S.fixStar.n+=bonus;
+  let pend=0;if(RUN.mode!=='fix'&&!an){const due=S.fixDue&&S.fixDue.d===t?S.fixDue.n:0;pend=RUN.mode==='session'?2:1;S.fixDue={d:t,n:Math.min(3,due+pend)}}
+  if(RUN.mode==='fix'&&ratio>=.5&&S.fixDue&&S.fixDue.d===t){an=S.fixDue.n;S.fixDue=null}
+  RUN.reward={stars,bonus,an,good,n,fast,pend,wrong,capped:fixOk>bonus};setDone(an,stars+bonus)}
+function rewardHTML(){const w=RUN.reward;if(!w)return '';const tot=w.stars+w.bonus;
+  const why=RUN.mode==='fix'?`비슷한 문제 ${w.n}개 중 <b>${w.good}개</b>를 고쳤어요`:`${w.n}문제 중 <b>${w.good}개</b>를 맞혔어요`;
+  return `<div class="card rwcard"><div class="rwstar">${tot?'⭐'.repeat(Math.min(tot,5))+` <b>+${tot}</b>`:'☆ 0'}</div><p>${why}${w.bonus?` · 틀린 문제 고치기 보너스 ⭐${w.bonus}`:''}${w.capped?' <span class="small">(고치기 보너스는 하루 ⭐'+FIX_CAP+'까지)</span>':''}</p>
+   ${w.fast?`<p class="small">⚡ 너무 빨리 고른 ${w.fast}문제는 별에 세지 않았어요.</p>`:''}
+   ${w.an?`<p>🐾 친구 ${w.an}마리가 홈 화면 어딘가에 숨었어요!</p>`:RUN.mode!=='fix'&&w.pend?'<p>이번에는 친구가 숨지 않았어요. <b>틀린 문제를 고치면</b> 친구가 나타나요!</p>':''}
+   <p class="small muted">${RUN.mode==='session'?'80% 이상 ⭐2 · 50% 이상 ⭐1':RUN.mode==='fix'?'고친 문제 1개마다 ⭐1':'모두 맞히면 ⭐2 · ⅔ 이상 ⭐1'} · 절반 이상 맞히면 친구가 숨어요</p>
+   ${w.wrong.length&&RUN.mode!=='fix'?`<button class="big alt" data-act="fixgo">🔧 틀린 문제 고치기 (${w.wrong.length}개)</button>`:''}</div>`}
+function startFix(list){const L=list.slice(0,5);const cids=[...new Set(L.map(x=>x.cid))].slice(0,3);
+  const probs=L.map(m=>{const q=similarTo(m.id,m);return q?prepare(Object.assign({},q,{mid:m.id,retry:true})):null}).filter(Boolean);if(!probs.length){toast('고칠 문제를 찾지 못했어요');return}
+  const steps=cids.map(cid=>({k:'learn',cid,fix:1}));steps.push({k:'probs',list:probs,j:0,ans:null,res:[]},{k:'done'});
+  RUN={mode:'fix',title:'틀린 문제 고치기',steps,i:0,start:Date.now(),re:()=>startFix(list)};go('run');startTick()}
 function weekGift(){const st=streakInfo();if(st.n<7)return;const k=st.start+':'+Math.floor(st.n/7);if(S.giftKey===k)return;S.dex=S.dex||{};const left=BREEDS.filter(b=>spOK(b)&&!S.dex[b.i]);S.giftKey=k;if(!left.length){save();return}const br=left[Math.floor(Math.random()*left.length)];S.dex[br.i]=today();try{rmEarn(5)}catch(e){}save();
   setTimeout(()=>ask(`<svg viewBox="0 -2 40 36" width="96" height="86">${bFace(br)}</svg>`,'🎁 일주일 연속 공부 선물!',`${st.n}일 연속으로 공부했어요. <b>${esc(br.n)}</b>${rmJ(br.n,'이','가').slice(br.n.length)} 선물로 도감에 들어왔어요!<br><span class="small">${esc(br.t)}</span>`,[{t:'📖 도감 보기',cls:'go',fn:openDex}],'고마워요'),1200)}
 function hcat(id,html,cls=''){if(catOrd().indexOf(id)>=catSync())return '';const f=(S.cats||[]).includes(id);return `<button class="hcat ${cls} ${f?'found':''}" data-cat="${id}" aria-label="숨은 친구">${html}</button>`}
@@ -1846,10 +1874,10 @@ function flashHTML(st){const c=st.cards[st.j];
   <div class="fcard ${st.show?'show':''}" data-act="fshow"><div class="fq2">${fmt(c.q)}</div>${st.show?`<div class="fa2">${fmt(c.a)}</div>`:'<div class="hint">머릿속으로 답한 뒤 눌러서 확인</div>'}</div>
   ${st.show?`<div class="three"><button class="rate r0" data-frate="0">몰랐음</button><button class="rate r1" data-frate="1">헷갈림</button><button class="rate r2" data-frate="2">알았음</button></div>`:''}`}
 function learnStepHTML(st){const c=C[st.cid];
-  return `<p class="step">새 개념 <span class="tag s">NEW</span></p><h2 class="h2">${esc(c.t)}</h2>${c.pic?`<div class="cpic">${c.pic()}</div>`:''}
+  return `<p class="step">${st.fix?'개념 다시 보기':'새 개념 <span class="tag s">NEW</span>'}</p><h2 class="h2">${esc(c.t)}</h2>${c.pic?`<div class="cpic">${c.pic()}</div>`:''}
   <div class="card sum"><ol>${c.sum.map(s=>`<li>${fmt(s)}</li>`).join('')}</ol></div>
-  <p class="muted">2분 정도 읽고, 다 읽었으면 화면을 넘기세요. 바로 백지 테스트로 떠올려 봐요.</p>
-  <button class="big" data-act="next">다 읽었어요, 덮고 백지 테스트 ▶</button>`}
+  <p class="muted">${st.fix?'틀린 문제와 관련된 개념이에요. 천천히 읽고 비슷한 문제로 다시 도전해요.':'2분 정도 읽고, 다 읽었으면 화면을 넘기세요. 바로 백지 테스트로 떠올려 봐요.'}</p>
+  <button class="big" data-act="next">${st.fix?'다 읽었어요, 다시 도전 ▶':'다 읽었어요, 덮고 백지 테스트 ▶'}</button>`}
 function blankHTML(st){
   if(!st.t0)st.t0=Date.now();
   const one=st.cids.length===1;const c=C[st.cids[0]];
@@ -1879,7 +1907,7 @@ function probsHTML(st){
     st.levelNote=bs<50?'기본 개념부터 다져요':bs<80?'기본 → 실력 → 심화 한 문제씩':'실력·심화로 도전!';
   }
   const p=st.list[st.j];if(!p)return '<p>문제를 불러오지 못했어요.</p>';
-  const a=st.ans;
+  const a=st.ans;st.shown=st.shown||{};if(!a&&!st.shown[st.j])st.shown[st.j]=Date.now();
   let ui='';
   if(p.t==='mc')ui=`<div class="opts">${p.order.map((oi,k)=>{let cls='';if(a){if(oi===0)cls='right';else if(a.pick===oi)cls='wrong';}return `<button class="opt ${cls}" data-pick="${oi}" ${a?'disabled':''}><span class="on">${'①②③④'[k]}</span><span>${fmt(p.x[oi])}</span></button>`}).join('')}</div>`;
   else if(p.t==='ox')ui=`<div class="ox">${[true,false].map(v=>{let cls='';if(a){if(v===p.x)cls='right';else if(a.pick===v)cls='wrong'}return `<button class="oxb ${cls}" data-ox="${v}" ${a?'disabled':''}>${v?'O':'X'}</button>`}).join('')}</div>`;
@@ -1888,13 +1916,13 @@ function probsHTML(st){
   if(RUN&&RUN.mode==='exam'&&!a&&!st.reveal&&st.j<st.list.length-1)ui+=`<button class="ghost wide skipb" data-act="pskip">⏭ 나중에 풀기 (맨 뒤로 보내기)</button>`;
   let fb='';
   if(p.t==='self'&&st.reveal&&!a)fb=`${(REC.st===recKey(st)&&REC.url)?`<div class="card recplay"><b>🎙 내 풀이 녹음 듣기</b><audio controls src="${REC.url}"></audio></div>`:''}<div class="sol"><b>모범 풀이</b><div>${fmt(p.s)}</div></div>${p.ck?`<div class="ckl"><b>✍️ 서술형 감점 체크 — 내 답안에 다 썼나요?</b>${p.ck.map(c=>`<label><input type="checkbox"> <span>${fmt(c)}</span></label>`).join('')}<p class="small muted">하나라도 빠졌으면 부분 점수가 깎여요.</p></div>`:''}<div class="two"><button class="rate r0" data-self="0">틀렸어요</button><button class="rate r2" data-self="1">맞았어요</button></div>`;
-  if(a)fb=`<div class="fb ${a.ok?'ok':'no'}">${a.ok?'정답! 👏':'아쉬워요 — 오답노트에 담았어요'}</div><div class="sol"><b>풀이</b><div>${fmt(p.s)}</div></div><button class="big" data-act="pnext">${st.j+1<st.list.length?'다음 문제 ▶':'결과 보기 ▶'}</button>`;
+  if(a)fb=`<div class="fb ${a.ok?'ok':'no'}">${a.ok?'정답! 👏':'아쉬워요 — 오답노트에 담았어요'}</div>${a.fast?'<p class="fastnote">⚡ 너무 빨리 골랐어요. 문제를 끝까지 읽고 풀어야 별(⭐)에 세어요.</p>':''}<div class="sol"><b>풀이</b><div>${fmt(p.s)}</div></div><button class="big" data-act="pnext">${st.j+1<st.list.length?'다음 문제 ▶':'결과 보기 ▶'}</button>`;
   return `<p class="step">문제 ${st.j+1} / ${st.list.length} ${st.levelNote&&st.j===0?`<span class="note">${st.levelNote}</span>`:''}</p>
   <div class="qmeta"><span class="tag s">${esc(C[p.cid].t)}</span><span class="tag lv${p.l}">${LV[p.l]}</span><span class="tag ty">${TY[p.t]}</span>${p.h?'<span class="tag hp">학평 유형</span>':''}${p.src?`<span class="tag src">${esc(p.src)}</span>`:''}${p.retry?'<span class="tag rt">오답 재도전</span>':''}</div>
   <div class="q">${fmt(p.q)}</div>${p.fig?`<div class="qfig">${p.fig}</div>`:''}${ui}${fb}`;
 }
 function doneHTML(){
-  const ps=RUN.steps.find(s=>s.k==='probs');const fl=RUN.steps.find(s=>s.k==='flash');
+  const ps=RUN.steps.find(s=>s.k==='probs');const RW=rewardHTML();const fl=RUN.steps.find(s=>s.k==='flash');
   const ok=ps?ps.res.filter(x=>x).length:0,n=ps?ps.res.length:0;
   const mins=Math.max(1,Math.round((Date.now()-RUN.start)/60000));
   let blank='';
@@ -1902,9 +1930,10 @@ function doneHTML(){
     if(RUN.mode!=='blank'||RUN.blankCids.length===1){const d=st.due-today();blank+=`<p class="muted center">「${esc(C[cid].t)}」 다음 복습: <b>${d<=0?'오늘':d===1?'내일':d+'일 뒤'}</b> (복습 ${st.box}단계)</p>`}}
   const msg=RUN.blankScore!=null&&RUN.blankScore<50?'오늘 헷갈린 개념은 내일 다시 나와요. 반복이 실력이 돼요!':n&&ok/n>=.8?'훌륭해요! 실력이 쑥쑥 자라고 있어요.':'좋아요. 틀린 문제는 내일 다시 만나요.';
   let pace='';if(RUN.mode==='exam'&&n){const sec=Math.round((Date.now()-RUN.start)/1000),per=Math.round(sec/n),inT=sec<=RUN.target;pace=`<div class="card"><h3>⏱ 실전 속도</h3><p>걸린 시간 <b>${mmss(sec)}</b> / 목표 ${mmss(RUN.target)} · 문항당 평균 <b>${mmss(per)}</b> (목표 2:16)${RUN.steps.find(x=>x.k==='probs').skipped?` · 넘긴 문제 ${RUN.steps.find(x=>x.k==='probs').skipped}번`:''}</p><p class="small muted">${inT&&ok/n>=.8?'시간도 정확도도 좋아요! 실전 감각이 잡혀 있어요.':inT?'시간은 충분해요. 틀린 문제의 조건을 다시 읽는 연습을 해 봐요.':ok/n>=.8?'정확하지만 느려요. 아는 문제는 더 빨리 넘어가는 연습을 해요.':'시간과 정확도 모두 아쉬워요. 개념 정리부터 다시 보고 도전해요.'}</p></div>`}
-  return `<div class="done"><div class="emoji">${RUN.mode==='session'?'🐾':RUN.mode==='exam'?'🎯':'✨'}</div><h2 class="h2 center">${RUN.mode==='session'?'오늘의 15분 끝!':'완료!'}</h2>
+  return `<div class="done"><div class="emoji">${RUN.mode==='session'?'🐾':RUN.mode==='exam'?'🎯':'✨'}</div><h2 class="h2 center">${RUN.mode==='session'?'오늘의 15분 끝!':RUN.mode==='fix'?'다시 도전 끝!':'완료!'}</h2>
   <div class="resrow">${blank}${n?`<div class="res"><b>${ok}/${n}</b><span>문제 정답</span></div>`:''}${fl?`<div class="res"><b>${fl.res.filter(x=>x===2).length}/${fl.cards.length}</b><span>플래시 알았음</span></div>`:''}<div class="res"><b>${mins}분</b><span>학습 시간</span></div></div>
   <p class="center">${msg}</p>
+  ${RW}
   ${pace}
   ${ps&&n?`<div class="card"><h3>문제 다시 보기</h3>${ps.list.map((p,i)=>`<div class="rv ${ps.res[i]?'ok':'no'}"><span>${ps.res[i]?'○':'✕'}</span><span>${esc(C[p.cid].t)} · ${LV[p.l]} · ${TY[p.t]}</span></div>`).join('')}</div>`:''}
   <button class="big" data-act="finish">홈으로</button></div>`;
@@ -1915,7 +1944,7 @@ function nextStep(){RUN.i++;
     {const ps=RUN.steps.find(s=>s.k==='probs');if(ps&&ps.list&&ps.list.length&&ps.res.length>=ps.list.length)RUN.setDone=1}
     if(RUN.mode==='session'){const ps=RUN.steps.find(s=>s.k==='probs');const own=ps.list.map((p,i)=>p.cid===RUN.blankCid?ps.res[i]:null).filter(x=>x!==null);
       const acc=own.length?own.filter(x=>x).length/own.length:null;recordBlank(RUN.blankCid,RUN.blankScore,acc);finishSessionDay()}
-    if(RUN.setDone)setDone(RUN.mode==='session'?2:1);
+    if(RUN.setDone)rewardSet();
   }
   render();window.scrollTo(0,0)}
 
@@ -1956,6 +1985,7 @@ document.addEventListener('click',e=>{
   if(a==='wrongrun'){const list=S.wrong.filter(w=>inRange(w.cid)).slice(0,15).map(w=>{if(w.g)return prepare(Object.assign({},w.g,{id:w.id,cid:w.cid,gen:true,retry:true}));const base=C[w.cid].pr[+w.id.split('-').pop()];return base?prepare(Object.assign({},base,{id:w.id,cid:w.cid,retry:true})):null}).filter(Boolean);return startProbs(list,'오답 재도전','wrong')}
   if(a==='quit'){if(RUN&&RUN.steps[RUN.i].k!=='done'&&!b.dataset.sure){b.dataset.sure=1;b.textContent='나가기?';b.classList.add('warn');setTimeout(()=>{if(b.isConnected){delete b.dataset.sure;b.textContent='✕';b.classList.remove('warn')}},2500);return}go('home');return}
   if(a==='finish'){go('home');return}
+  if(a==='fixgo'&&RUN&&RUN.reward){return startFix(RUN.reward.wrong)}
   if(a==='reset'){document.getElementById('resetbox').innerHTML='<p class="small">정말 모든 기록을 지울까요?</p><button class="ghost wide danger" data-act="reset2">네, 모두 지우기</button>';return}
   if(a==='reset2'){const r=S.range,sp=S.sp,mp=S.map;S=fresh();S.range=r;S.sp=sp;S.map=mp;save();toast('초기화했어요');go('home');return}
   if(!st)return;
@@ -1971,12 +2001,13 @@ document.addEventListener('click',e=>{
     nextStep();return}
   if(st.k==='probs'){
     const p=st.list[st.j];
-    const answer=(ok,extra)=>{st.ans=Object.assign({ok},extra);st.res[st.j]=ok;recordProblem(p,ok);render();const f=document.querySelector('.fb');if(f)f.scrollIntoView({behavior:'smooth',block:'center'})};
+    const answer=(ok,extra)=>{const fast=p.t!=='self'&&Date.now()-((st.shown&&st.shown[st.j])||0)<3000;st.fast=st.fast||{};st.fast[st.j]=fast;st.wr=ok?0:(st.wr||0)+1;if(st.wr>=3&&RUN.mode!=='exam'){st.help=p.cid;st.wr=0}st.ans=Object.assign({ok,fast},extra);st.res[st.j]=ok;recordProblem(p,ok);render();const f=document.querySelector('.fb');if(f)f.scrollIntoView({behavior:'smooth',block:'center'})};
     if(d.pick!=null&&!st.ans)return answer(+d.pick===0,{pick:+d.pick});
     if(d.ox!=null&&!st.ans){const v=d.ox==='true';return answer(v===p.x,{pick:v})}
     if(a==='sacheck'&&!st.ans){const v=(document.getElementById('sain').value||'').trim();const norm=s=>String(s).replace(/\s/g,'').replace(/−/g,'-').replace(/,/g,'').replace(/(cm²|cm³|cm|mm|km|m²|m|°|개|명|원|번|자루|장|살|일|분|초|시간|kg|g|mL|L|%|배|도|상자|봉지|층|권|컵|m³|cm³)$/,'').replace(/^0+(?=\d)/,'').toLowerCase();const same=(x,y)=>{x=norm(x);y=norm(y);if(x===y)return true;const nx=/^-?(\d+\.?\d*|\.\d+)$/;return nx.test(x)&&nx.test(y)&&Math.abs(+x - +y)<1e-9};return answer(String(p.x).split('|').some(x=>same(x,v)),{val:v})}
     if(a==='reveal'){st.reveal=true;render();return}
     if(d.self!=null&&!st.ans)return answer(d.self==='1',{});
+    if(a==='pnext'&&st.help){const cid=st.help;st.help=null;const c=C[cid];return ask('💡','잠깐! 개념부터 다시 봐요',`연속으로 3문제를 틀렸어요. 「${esc(c.t)}」 핵심을 읽고 다시 풀어 봐요.`,[{t:'다 읽었어요, 계속 풀기 ▶',cls:'go',fn:()=>{const b=document.querySelector('[data-act="pnext"]');if(b)b.click()}}],'닫기',`<div class="card sum helpsum">${c.pic?`<div class="cpic">${c.pic()}</div>`:''}<ol>${c.sum.map(x=>`<li>${fmt(x)}</li>`).join('')}</ol></div>`)}
     if(a==='pnext'){st.j++;st.ans=null;st.reveal=false;if(st.j>=st.list.length)nextStep();else{render();window.scrollTo(0,0)}return}
   }
 });
@@ -2318,7 +2349,7 @@ const JS_HC=['#3B2A22','#6B4630','#B07A4A','#E8C16A','#2F3550','#E58FA6','#8C8C9
 const JS_TC=['#FF9F7A','#7CD7C2','#8FB0F5','#FFD66B','#C9A7EB','#FFB8C6','#FFFFFF','#4A4F6B'];
 const JS_PC=['#5B6B8C','#3B3F4F','#B08A6A','#7CA8D9','#E8A0B4'];
 const JS_OPT={
-  hair:[['short','짧은 머리'],['bob','단발'],['long','긴 머리'],['pony','포니테일'],['bun','똥머리'],['curly','곱슬']],
+  hair:[['short','짧은 머리'],['buzz','스포츠 머리'],['spiky','삐죽 머리'],['side','옆가르마'],['bowl','바가지 머리'],['bob','단발'],['long','긴 머리'],['pony','포니테일'],['bun','똥머리'],['curly','곱슬']],
   top:[['apron','집사 앞치마'],['hoodie','동물 귀 후드'],['tee','티셔츠'],['dress','원피스'],['suit','집사 정장']],
   acc:[['none','없음'],['catears','동물 귀띠'],['ribbon','리본'],['glasses','동그란 안경'],['cap','모자'],['flower','꽃핀']],
   face:[['smile','방긋'],['wink','윙크'],['happy','행복'],['ooh','놀람']],
@@ -2350,11 +2381,16 @@ function jsSvg(o,xmlns,pose){o=jsClean(o);pose=pose||'stand';const PZ=JS_POSE[po
   if(o.top==='hoodie')back=`<path d="M10 30C9 8 51 8 50 30l-2 14H12z" fill="${tc}" ${st}/><path d="M13 16l1-11 9 6zM47 16l-1-11-9 6z" fill="${tc}" ${st}/><path d="M15 13l.6-5 4 3zM45 13l-.6-5-4 3z" fill="#FFB8C6"/>`+back;
   // 머리
   const head=`<circle cx="15" cy="31" r="3" fill="${sk}" ${st}/><circle cx="45" cy="31" r="3" fill="${sk}" ${st}/><circle cx="30" cy="28" r="16.5" fill="${sk}" ${st}/>`;
-  const bang={short:`M13.5 27C13 12 47 12 46.5 27C44 21 39 19 35.5 22.5C32.5 18 26 18.5 23.5 22.5C20 20.5 15.5 22 13.5 27z`,
-    bob:`M13.5 28C13 12 47 12 46.5 28C40 26 35 23 32 19C28 24 21 27 13.5 28z`,long:`M13.5 28C13 12 47 12 46.5 28C40 26 35 23 32 19C28 24 21 27 13.5 28z`,
-    pony:`M13.5 27C13 12 47 12 46.5 27C43 22 37 21 33 17C30 22 20 24 13.5 27z`,bun:`M13.5 26C13 12 47 12 46.5 26C42 22 34 19 30 21C26 19 18 22 13.5 26z`,
-    curly:`M13.5 27C13 12 47 12 46.5 27C45 23 42 22 40 23C39 20 35 19 33 21C31 18 27 18 25 21C23 19 19 20 18 23C16 22 14 24 13.5 27z`}[o.hair];
-  front=o.top==='hoodie'&&o.hair!=='curly'?`<path d="${bang}" fill="${hc}" ${st} transform="translate(30 27) scale(.96) translate(-30 -27)"/>`:`<path d="${bang}" fill="${hc}" ${st}/>`;
+  const bang={buzz:`M13.4 26C12.8 6 47.2 6 46.6 26C44 21.5 38 20 30 20C22 20 16 21.5 13.4 26z`,
+    spiky:`M13 27C12.6 15 15 11 18 9.6L19.6 13L22.6 7.2L25.6 11.6L29.6 5.6L32.8 11.4L36.8 7L38.6 12.6L42 9.6C45 11.4 47.4 15 47 27C44 22 39 20.4 34 21.4L30 19.6L26 21.4C21 20.4 16 22 13 27z`,
+    side:`M13 27C12.4 5 47.6 5 47 27C46 23.4 44 21.2 41 20.2C36 18.6 27 16.6 21 20.6C18 22 15 24 13 27z`,
+    bowl:`M13 29.5C12.4 5 47.6 5 47 29.5C46.4 26.6 45.6 24.6 44 24.4H16C14.4 24.6 13.6 26.6 13 29.5z`,
+    short:`M13 27C12.4 5 47.6 5 47 27C44 21 39 19 35.5 22.5C32.5 18 26 18.5 23.5 22.5C20 20.5 15.5 22 13.5 27z`,
+    bob:`M13 28C12.4 5 47.6 5 47 28C40 26 35 23 32 19C28 24 21 27 13.5 28z`,long:`M13 28C12.4 5 47.6 5 47 28C40 26 35 23 32 19C28 24 21 27 13.5 28z`,
+    pony:`M13 27C12.4 5 47.6 5 47 27C43 22 37 21 33 17C30 22 20 24 13.5 27z`,bun:`M13 26C12.4 5 47.6 5 47 26C42 22 34 19 30 21C26 19 18 22 13.5 26z`,
+    curly:`M13 27C12.4 5 47.6 5 47 27C45 23 42 22 40 23C39 20 35 19 33 21C31 18 27 18 25 21C23 19 19 20 18 23C16 22 14 24 13.5 27z`}[o.hair];
+  const part=o.hair==='side'?`<path d="M23.4 9.6q2.6 4.6 1.4 10.4" stroke="${OL}" stroke-width="1.1" fill="none" opacity=".55"/>`:o.hair==='buzz'?`<path d="M18 15.6q12-5 24 0" stroke="#fff" stroke-width="1" fill="none" opacity=".35"/>`:'';
+  front=o.top==='hoodie'&&o.hair!=='curly'?`<path d="${bang}" fill="${hc}" ${st} transform="translate(30 27) scale(.96) translate(-30 -27)"/>`:`<path d="${bang}" fill="${hc}" ${st}/>`;front+=part;
   // 얼굴
   const ey=pose==='read'?32.5:31;const eye=(x)=>`<ellipse cx="${x}" cy="${ey}" rx="1.9" ry="2.5" fill="${OL}"/><circle cx="${x+.7}" cy="${ey-1}" r=".7" fill="#fff"/>`;
   const shut=(x)=>`<path d="M${x-2.2} 30.5q2.2 2.6 4.4 0" stroke="${OL}" stroke-width="1.5" fill="none" stroke-linecap="round"/>`;

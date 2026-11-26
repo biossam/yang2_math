@@ -5,7 +5,7 @@ const JS_HC=['#3B2A22','#6B4630','#B07A4A','#E8C16A','#2F3550','#E58FA6','#8C8C9
 const JS_TC=['#FF9F7A','#7CD7C2','#8FB0F5','#FFD66B','#C9A7EB','#FFB8C6','#FFFFFF','#4A4F6B'];
 const JS_PC=['#5B6B8C','#3B3F4F','#B08A6A','#7CA8D9','#E8A0B4'];
 const JS_OPT={
-  hair:[['short','짧은 머리'],['bob','단발'],['long','긴 머리'],['pony','포니테일'],['bun','똥머리'],['curly','곱슬']],
+  hair:[['short','짧은 머리'],['buzz','스포츠 머리'],['spiky','삐죽 머리'],['side','옆가르마'],['bowl','바가지 머리'],['bob','단발'],['long','긴 머리'],['pony','포니테일'],['bun','똥머리'],['curly','곱슬']],
   top:[['apron','집사 앞치마'],['hoodie','동물 귀 후드'],['tee','티셔츠'],['dress','원피스'],['suit','집사 정장']],
   acc:[['none','없음'],['catears','동물 귀띠'],['ribbon','리본'],['glasses','동그란 안경'],['cap','모자'],['flower','꽃핀']],
   face:[['smile','방긋'],['wink','윙크'],['happy','행복'],['ooh','놀람']],
@@ -37,11 +37,16 @@ function jsSvg(o,xmlns,pose){o=jsClean(o);pose=pose||'stand';const PZ=JS_POSE[po
   if(o.top==='hoodie')back=`<path d="M10 30C9 8 51 8 50 30l-2 14H12z" fill="${tc}" ${st}/><path d="M13 16l1-11 9 6zM47 16l-1-11-9 6z" fill="${tc}" ${st}/><path d="M15 13l.6-5 4 3zM45 13l-.6-5-4 3z" fill="#FFB8C6"/>`+back;
   // 머리
   const head=`<circle cx="15" cy="31" r="3" fill="${sk}" ${st}/><circle cx="45" cy="31" r="3" fill="${sk}" ${st}/><circle cx="30" cy="28" r="16.5" fill="${sk}" ${st}/>`;
-  const bang={short:`M13.5 27C13 12 47 12 46.5 27C44 21 39 19 35.5 22.5C32.5 18 26 18.5 23.5 22.5C20 20.5 15.5 22 13.5 27z`,
-    bob:`M13.5 28C13 12 47 12 46.5 28C40 26 35 23 32 19C28 24 21 27 13.5 28z`,long:`M13.5 28C13 12 47 12 46.5 28C40 26 35 23 32 19C28 24 21 27 13.5 28z`,
-    pony:`M13.5 27C13 12 47 12 46.5 27C43 22 37 21 33 17C30 22 20 24 13.5 27z`,bun:`M13.5 26C13 12 47 12 46.5 26C42 22 34 19 30 21C26 19 18 22 13.5 26z`,
-    curly:`M13.5 27C13 12 47 12 46.5 27C45 23 42 22 40 23C39 20 35 19 33 21C31 18 27 18 25 21C23 19 19 20 18 23C16 22 14 24 13.5 27z`}[o.hair];
-  front=o.top==='hoodie'&&o.hair!=='curly'?`<path d="${bang}" fill="${hc}" ${st} transform="translate(30 27) scale(.96) translate(-30 -27)"/>`:`<path d="${bang}" fill="${hc}" ${st}/>`;
+  const bang={buzz:`M13.4 26C12.8 6 47.2 6 46.6 26C44 21.5 38 20 30 20C22 20 16 21.5 13.4 26z`,
+    spiky:`M13 27C12.6 15 15 11 18 9.6L19.6 13L22.6 7.2L25.6 11.6L29.6 5.6L32.8 11.4L36.8 7L38.6 12.6L42 9.6C45 11.4 47.4 15 47 27C44 22 39 20.4 34 21.4L30 19.6L26 21.4C21 20.4 16 22 13 27z`,
+    side:`M13 27C12.4 5 47.6 5 47 27C46 23.4 44 21.2 41 20.2C36 18.6 27 16.6 21 20.6C18 22 15 24 13 27z`,
+    bowl:`M13 29.5C12.4 5 47.6 5 47 29.5C46.4 26.6 45.6 24.6 44 24.4H16C14.4 24.6 13.6 26.6 13 29.5z`,
+    short:`M13 27C12.4 5 47.6 5 47 27C44 21 39 19 35.5 22.5C32.5 18 26 18.5 23.5 22.5C20 20.5 15.5 22 13.5 27z`,
+    bob:`M13 28C12.4 5 47.6 5 47 28C40 26 35 23 32 19C28 24 21 27 13.5 28z`,long:`M13 28C12.4 5 47.6 5 47 28C40 26 35 23 32 19C28 24 21 27 13.5 28z`,
+    pony:`M13 27C12.4 5 47.6 5 47 27C43 22 37 21 33 17C30 22 20 24 13.5 27z`,bun:`M13 26C12.4 5 47.6 5 47 26C42 22 34 19 30 21C26 19 18 22 13.5 26z`,
+    curly:`M13 27C12.4 5 47.6 5 47 27C45 23 42 22 40 23C39 20 35 19 33 21C31 18 27 18 25 21C23 19 19 20 18 23C16 22 14 24 13.5 27z`}[o.hair];
+  const part=o.hair==='side'?`<path d="M23.4 9.6q2.6 4.6 1.4 10.4" stroke="${OL}" stroke-width="1.1" fill="none" opacity=".55"/>`:o.hair==='buzz'?`<path d="M18 15.6q12-5 24 0" stroke="#fff" stroke-width="1" fill="none" opacity=".35"/>`:'';
+  front=o.top==='hoodie'&&o.hair!=='curly'?`<path d="${bang}" fill="${hc}" ${st} transform="translate(30 27) scale(.96) translate(-30 -27)"/>`:`<path d="${bang}" fill="${hc}" ${st}/>`;front+=part;
   // 얼굴
   const ey=pose==='read'?32.5:31;const eye=(x)=>`<ellipse cx="${x}" cy="${ey}" rx="1.9" ry="2.5" fill="${OL}"/><circle cx="${x+.7}" cy="${ey-1}" r=".7" fill="#fff"/>`;
   const shut=(x)=>`<path d="M${x-2.2} 30.5q2.2 2.6 4.4 0" stroke="${OL}" stroke-width="1.5" fill="none" stroke-linecap="round"/>`;
