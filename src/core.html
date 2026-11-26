@@ -786,10 +786,36 @@ function runHTML(){
   else body=doneHTML();
   return head+`<div class="runbody">${body}</div>`;
 }
-function flashHTML(st){const c=st.cards[st.j];
+// 플래시 복습: 먼저 답하고 확인 (숫자는 숫자 칸 + 단위 고르기, 1~2학년은 고르기)
+const FU_FAM=[['mm','cm','m','km'],['cm²','m²','km²','cm'],['cm³','m³','mL','L'],['g','kg','t'],['mL','L'],['초','분','시간','일'],['°','cm','개','분'],['개','명','마리','장'],['원','개','명','장'],['살','개','명','년'],['%','개','cm','°'],['만','억','조','천'],['쌍','개','명','장'],['단','개','씩','배'],['씩','개','배','단']];
+const FU_ALL=[...new Set(FU_FAM.flat())].sort((a,b)=>b.length-a.length);
+function flParse(a){let x=String(a).replace(/\s*\([^)]*\)\s*$/,'').trim();
+  let m=x.match(/^(\d+)?\{\{(\d+)§(\d+)\}\}$/);if(m)return {k:'frac',w:+(m[1]||0),n:+m[2],d:+m[3],v:(+(m[1]||0)*+m[3]+ +m[2])/+m[3]};
+  m=x.match(/^(\d[\d,]*(?:\.\d+)?)\s*(.*)$/);if(m){const u=m[2].trim();const n=+m[1].replace(/,/g,'');if(!u)return {k:'num',n,u:''};if(FU_ALL.includes(u))return {k:'num',n,u}}
+  return {k:'text',core:x}}
+function flUnits(u){const fam=FU_FAM.find(f=>f.includes(u))||[];const o=[u];for(const v of fam.concat(['개','cm','분','°','원','명']))if(!o.includes(v)&&o.length<4)o.push(v);return shuffle(o)}
+function flNorm(t){return String(t).replace(/[x*]/gi,'×').replace(/\([^)]*\)/g,'').replace(/\.\.\./g,'…').replace(/[\s.,~·!?'"]/g,'').toLowerCase()}
+function flFrac(t){t=String(t).trim();let m=t.match(/^(\d+)\s+(\d+)\s*\/\s*(\d+)$/);if(m)return {w:+m[1],n:+m[2],d:+m[3],v:+m[1]+ +m[2]/+m[3]};m=t.match(/^(\d+)\s*\/\s*(\d+)$/);if(m)return {w:0,n:+m[1],d:+m[2],v:+m[1]/+m[2]};m=t.match(/^\d+(\.\d+)?$/);if(m)return {w:0,n:0,d:1,v:+t,plain:true};return null}
+function flMode(c){const P=flParse(c.a);const g=+C[c.cid].u[0];if(g<=2)return 'mc';return P.k}
+function flOpts(st){st.fopt=st.fopt||{};if(st.fopt[st.j])return st.fopt[st.j];const c=st.cards[st.j],P=flParse(c.a);let o;
+  if(P.k==='num'){o=[c.a,...balDs(P.n,[],P.n>=200&&Number.isInteger(P.n)?10**(Math.floor(Math.log10(P.n))-1):1).map(v=>(P.u?`${cm(v)}${/^[a-zA-Z°%²³]/.test(P.u)&&P.u!=='%'&&P.u!=='°'?' ':''}${P.u}`:cm(v)))]}
+  else{const g=C[c.cid].u[0];const pool=[...new Set(Object.values(C).filter(k=>k.u[0]===g).flatMap(k=>k.fl.map(f=>f[1])).filter(a=>a!==c.a&&flParse(a).k===P.k&&flNorm(a)!==flNorm(c.a)))];o=[c.a,...shuffle(pool).slice(0,3)]}
+  return st.fopt[st.j]=shuffle(o.slice(0,4))}
+function flashHTML(st){const c=st.cards[st.j];const P=flParse(c.a),mode=flMode(c);
+  let inp='';if(!st.show){
+    if(mode==='mc')inp=`<div class="opts">${flOpts(st).map((o,i)=>`<button class="opt" data-fpick="${i}"><span class="on">${"①②③④"[i]}</span><span>${fmt(o)}</span></button>`).join('')}</div>`;
+    else if(mode==='num')inp=`<div class="fin"><input id="fnum" inputmode="decimal" autocomplete="off" placeholder="숫자" value="${esc(st.fnum||'')}">${P.u?`<div class="uchips">${(st.fu=st.fu||{},st.fu[st.j]=st.fu[st.j]||flUnits(P.u)).map(u=>`<button class="uchip ${st.funit===u?'on':''}" data-funit="${esc(u)}">${esc(u)}</button>`).join('')}</div>`:''}</div><button class="btn wide" data-act="fcheck">확인하기</button>`;
+    else inp=`<div class="fin"><input id="ftxt" autocomplete="off" placeholder="${P.k==='frac'?'분수는 3/4, 대분수는 2 1/3처럼 써요':'답을 써 보세요'}" value="${esc(st.ftxt||'')}"></div><button class="btn wide" data-act="fcheck">확인하기</button>`;
+    inp+=`<button class="linkbtn" data-act="fdunno">모르겠어요</button>`}
+  const res=st.show?(st.fres==='ok'?`<div class="fb ok">정답! 🎉</div>`:st.fres==='form'?`<div class="fb no">크기는 같지만, 문제가 원하는 모양(기약분수·대분수·가분수)이 아니에요.</div>`:st.fres==='near'?`<div class="fb">내 답과 정답이 <b>같은 뜻</b>인지 비교해 보세요.</div>`:`<div class="fb no">${st.fmine==null?'정답을 확인하고 내일 다시 만나요.':'아쉬워요 — 내일 다시 나와요.'}</div>`):'';
+  const btns=st.show?(st.fres==='ok'?`<button class="big" data-frate="2">다음 ▶</button>`:st.fres==='form'?`<button class="big" data-frate="1">다음 ▶</button>`:st.fres==='near'?`<div class="two"><button class="rate r0" data-frate="0">달라요</button><button class="rate r2" data-frate="1">같은 뜻이에요</button></div>`:`<button class="big" data-frate="0">다음 ▶</button>`):'';
   return `<p class="step">플래시 복습 ${st.j+1} / ${st.cards.length} <span class="tag s">${esc(C[c.cid].t)}</span></p>
-  <div class="fcard ${st.show?'show':''}" data-act="fshow"><div class="fq2">${fmt(c.q)}</div>${st.show?`<div class="fa2">${fmt(c.a)}</div>`:'<div class="hint">머릿속으로 답한 뒤 눌러서 확인</div>'}</div>
-  ${st.show?`<div class="three"><button class="rate r0" data-frate="0">몰랐음</button><button class="rate r1" data-frate="1">헷갈림</button><button class="rate r2" data-frate="2">알았음</button></div>`:''}`}
+  <div class="fcard ${st.show?'show':''}"><div class="fq2">${fmt(c.q)}</div>${st.show?`${st.fmine!=null?`<div class="fmine">내 답: <b>${fmt(st.fmine)}</b></div>`:''}<div class="fa2">${fmt(c.a)}</div>`:`<div class="hint">${mode==='mc'?'알맞은 답을 골라요':'답을 먼저 쓰고 확인해요'}</div>`}</div>${res}${inp}${btns}`}
+function flGrade(st,mine){const c=st.cards[st.j],P=flParse(c.a);st.fmine=mine;st.show=true;
+  if(mine==null){st.fres='no';return}
+  if(P.k==='num'){const n=+String(mine.n).replace(/,/g,'');const ok=Math.abs(n-P.n)<1e-9&&(!P.u||mine.u===P.u);st.fres=ok?'ok':'no';st.fmine=`${mine.n}${mine.u?(/^[a-zA-Z]/.test(mine.u)?' ':'')+mine.u:''}`;return}
+  if(P.k==='frac'){const f=flFrac(mine);if(f&&f.w===P.w&&f.n===P.n&&f.d===P.d){st.fres='ok';return}st.fres=f&&Math.abs(f.v-P.v)<1e-9?'form':'no';return}
+  if(flNorm(mine)===flNorm(P.core)||flNorm(mine)===flNorm(c.a)){st.fres='ok';return}st.fres=String(mine).trim()?'near':'no'}
 function learnStepHTML(st){const c=C[st.cid];
   return `<p class="step">${st.fix?'개념 다시 보기':'새 개념 <span class="tag s">NEW</span>'}</p><h2 class="h2">${esc(c.t)}</h2>${c.pic?`<div class="cpic">${c.pic()}</div>`:''}
   <div class="card sum"><ol>${c.sum.map(s=>`<li>${fmt(s)}</li>`).join('')}</ol></div>
@@ -906,8 +932,12 @@ document.addEventListener('click',e=>{
   if(a==='reset'){document.getElementById('resetbox').innerHTML='<p class="small">정말 모든 기록을 지울까요?</p><button class="ghost wide danger" data-act="reset2">네, 모두 지우기</button>';return}
   if(a==='reset2'){const r=S.range,sp=S.sp,mp=S.map;S=fresh();S.range=r;S.sp=sp;S.map=mp;save();toast('초기화했어요');go('home');return}
   if(!st)return;
-  if(a==='fshow'&&st.k==='flash'&&!st.show){st.show=true;render();return}
-  if(d.frate!=null&&st.k==='flash'){const v=+d.frate;st.res.push(v);const c=st.cards[st.j];if(v===0){const cc=cs(c.cid);cc.due=Math.min(cc.due,today()+1)}dayRec().fl++;save();st.j++;st.show=false;if(st.j>=st.cards.length)nextStep();else render();return}
+  if(st.k==='flash'&&!st.show){const c=st.cards[st.j];
+    if(d.fpick!=null){const o=flOpts(st)[+d.fpick];flGrade(st,o);if(o!==c.a)st.fres='no';else st.fres='ok';render();return}
+    if(d.funit!=null){const v=document.getElementById('fnum');st.fnum=v?v.value:'';st.funit=d.funit;render();return}
+    if(a==='fdunno'){flGrade(st,null);render();return}
+    if(a==='fcheck'){const P=flParse(c.a);if(P.k==='num'){const v=(document.getElementById('fnum').value||'').trim();if(!/^\d[\d,]*(\.\d+)?$/.test(v)){toast('숫자를 써 주세요');return}if(P.u&&!st.funit){st.fnum=v;toast('단위를 골라 주세요');render();return}flGrade(st,{n:v,u:st.funit||''})}else{const v=(document.getElementById('ftxt').value||'').trim();if(!v){toast('답을 써 주세요');return}flGrade(st,v)}render();return}}
+  if(d.frate!=null&&st.k==='flash'){const v=+d.frate;st.res.push(v);const c=st.cards[st.j];if(v<2){const cc=cs(c.cid);cc.due=Math.min(cc.due,today()+1)}dayRec().fl++;save();st.j++;st.show=false;st.fres=null;st.fmine=null;st.fnum='';st.funit=null;st.ftxt='';if(st.j>=st.cards.length)nextStep();else render();return}
   if(a==='next'){nextStep();return}
   if(a==='bcheck'){const m=document.getElementById('memo');st.memo=m?m.value:'';st.phase='check';render();window.scrollTo(0,0);return}
   if(d.chk){st.checked[d.chk]=!st.checked[d.chk];render();return}
