@@ -701,7 +701,7 @@ function conceptHTML(id){
   return `<button class="back" data-go="learn">← 개념 목록</button>
   <div class="ctitle"><span class="tag">${EXAMS[c.ex]} · ${UNITS[c.u].t}</span><h1>${esc(c.t)}</h1>
   <p class="muted">숙련도 ${m==null?'아직 없음':Math.round(m*100)+'%'}${st&&st.seen?` · 다음 복습 ${st.due<=today()?'<b>오늘</b>':dayStr(st.due).slice(5).replace('-','/')}`:''}</p></div>
-  ${c.th?thHTML(c):''}${c.pic?`<div class="cpic">${c.pic()}</div>`:''}<div class="card sum"><h3>핵심 정리</h3><ol>${c.sum.map(s=>`<li>${fmt(s)}</li>`).join('')}</ol></div>
+  ${c.th?thHTML(c):''}${c.pic?`<div class="cpic">${c.pic()}</div>`:''}<div class="card sum"><h3>핵심 정리</h3>${sumHTML(id)}</div>
   <div class="card"><h3>플래시카드 <small>눌러서 답 보기</small></h3>${c.fl.map(f=>`<button class="flip"><span class="fq">${fmt(f[0])}</span><span class="fa">${fmt(f[1])}</span></button>`).join('')}</div>
   <div class="two"><button class="big" data-blankone="${id}">백지 테스트</button><button class="big alt" data-practone="${id}">문제 풀기</button></div>
   ${autoShelf(id)?`<button class="shelfbtn on" disabled>📗 숙련도 80% 이상 — 서재에 꽂혀 있어요</button>`:(S.shelf||[]).includes(id)?`<button class="shelfbtn on" data-shelf="${id}">📗 서재에 꽂혀 있어요 (누르면 빼기)</button>`:`<button class="shelfbtn" data-shelf="${id}">📗 이해했어요 — 서재에 꽂기</button>`}`;
@@ -816,9 +816,11 @@ function flGrade(st,mine){const c=st.cards[st.j],P=flParse(c.a);st.fmine=mine;st
   if(P.k==='num'){const n=+String(mine.n).replace(/,/g,'');const ok=Math.abs(n-P.n)<1e-9&&(!P.u||mine.u===P.u);st.fres=ok?'ok':'no';st.fmine=`${mine.n}${mine.u?(/^[a-zA-Z]/.test(mine.u)?' ':'')+mine.u:''}`;return}
   if(P.k==='frac'){const f=flFrac(mine);if(f&&f.w===P.w&&f.n===P.n&&f.d===P.d){st.fres='ok';return}st.fres=f&&Math.abs(f.v-P.v)<1e-9?'form':'no';return}
   if(flNorm(mine)===flNorm(P.core)||flNorm(mine)===flNorm(c.a)){st.fres='ok';return}st.fres=String(mine).trim()?'near':'no'}
+function sumHTML(cid){const c=C[cid];const k=(S.und&&S.und[cid])||[];return `<ol class="sumck">${c.sum.map((t,i)=>`<li><label><input type="checkbox" data-und="${cid}:${i}" ${k.includes(i)?'checked':''}><span class="n">${i+1}.</span><span>${fmt(t)}</span></label></li>`).join('')}</ol><p class="small muted undc" data-undc="${cid}">✔ 이해한 부분에 스스로 체크해요 · <b>${k.length} / ${c.sum.length}</b></p>`}
+document.addEventListener('change',e=>{const i=e.target.closest('[data-und]');if(!i)return;const [cid,n]=i.dataset.und.split(':');S.und=S.und||{};const k=new Set(S.und[cid]||[]);i.checked?k.add(+n):k.delete(+n);S.und[cid]=[...k].sort((a,b)=>a-b);save();const p=document.querySelector(`[data-undc="${cid}"] b`);if(p)p.textContent=`${S.und[cid].length} / ${C[cid].sum.length}`});
 function learnStepHTML(st){const c=C[st.cid];
   return `<p class="step">${st.fix?'개념 다시 보기':'새 개념 <span class="tag s">NEW</span>'}</p><h2 class="h2">${esc(c.t)}</h2>${c.pic?`<div class="cpic">${c.pic()}</div>`:''}
-  <div class="card sum"><ol>${c.sum.map(s=>`<li>${fmt(s)}</li>`).join('')}</ol></div>
+  <div class="card sum">${sumHTML(st.cid)}</div>
   <p class="muted">${st.fix?'틀린 문제와 관련된 개념이에요. 천천히 읽고 비슷한 문제로 다시 도전해요.':'2분 정도 읽고, 다 읽었으면 화면을 넘기세요. 바로 백지 테스트로 떠올려 봐요.'}</p>
   <button class="big" data-act="next">${st.fix?'다 읽었어요, 다시 도전 ▶':'다 읽었어요, 덮고 백지 테스트 ▶'}</button>`}
 function blankHTML(st){
