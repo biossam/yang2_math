@@ -535,7 +535,7 @@ let CAT_PREV=null;
 function catSync(){const t=today();if(S.setDay!==t){S.setDay=t;S.setN=0;S.cats=[];S.catStart=t;save()}else if(S.catStart!==t){S.cats=[];S.catStart=t;save()}return Math.min(S.setN||0,CAT_TOTAL)}
 function setDone(n=1,stars=n){catSync();let got=0;if(stars>0){try{got=rmEarn(stars)}catch(e){}}if(RUN&&RUN.reward)RUN.reward.got=got;const b=S.setN||0;if(n>0){S.setN=Math.min(CAT_TOTAL,b+n);if(S.setN>b)S.setNew=S.setN-b}save();weekGift()}
 // ===== 보상 규칙: 맞힌 만큼 별, 고친 만큼 보너스, 찍기는 빼기 =====
-const FIX_CAP=3;
+const FIX_CAP=10;
 function rewardSet(){const ps=RUN.steps.find(s=>s.k==='probs');if(!ps||!ps.list)return;const n=ps.list.length,t=today();
   let good=0,fast=0,fixOk=0;const wrong=[];
   ps.list.forEach((p,i)=>{const r=!!ps.res[i],f=!!(ps.fast&&ps.fast[i]);if(f)fast++;if(r&&!f){good++;if(p.retry||RUN.mode==='fix')fixOk++}else if(p.t!=='self')wrong.push({id:p.mid||p.id,cid:p.cid,l:p.l,t:p.t})});
