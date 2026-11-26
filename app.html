@@ -1,4 +1,4 @@
-<!doctype html><html><head><title>yang2수학</title><script>var APPVER="11-26 19:56"</script><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png"><link rel="apple-touch-icon" sizes="180x180" href="icon-180.png"><link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-title" content="yang2수학"><meta name="mobile-web-app-capable" content="yes"><meta name="theme-color" content="#FFF8EE"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}.recbox{margin:10px 0 12px;padding:12px 14px;border:2px dashed var(--line,#E9DCC6);border-radius:18px;background:var(--card,#fff)}
+<!doctype html><html><head><title>yang2수학</title><script>var APPVER="11-26 20:14"</script><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png"><link rel="apple-touch-icon" sizes="180x180" href="icon-180.png"><link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-title" content="yang2수학"><meta name="mobile-web-app-capable" content="yes"><meta name="theme-color" content="#FFF8EE"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}.recbox{margin:10px 0 12px;padding:12px 14px;border:2px dashed var(--line,#E9DCC6);border-radius:18px;background:var(--card,#fff)}
 .recbox .rrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.recbox .rbtn{border:0;border-radius:999px;padding:10px 16px;font-weight:800;font-size:15px;background:#FF7563;color:#fff;cursor:pointer}
 .recbox .rbtn.stop{background:#2B2B38}.recbox .rbtn.ghost{background:transparent;color:var(--sub,#8a7f72);border:1.5px solid var(--line,#E9DCC6)}
 .recbox .rt{font-variant-numeric:tabular-nums;font-weight:800}.recbox .dot{width:10px;height:10px;border-radius:50%;background:#FF4B3A;animation:rblink 1s infinite}@keyframes rblink{50%{opacity:.2}}
@@ -22,7 +22,7 @@
 .mhst{display:flex;gap:10px;font-size:12px;color:#5B6B8C;font-weight:700}
 .mhmain{min-width:0}.mhtitle{font-size:19px;margin:2px 4px 6px;color:#3D5A99}
 .mhtabs{display:flex;gap:4px;margin-bottom:8px}.mhtabs button{flex:1;border:1.5px solid #C9DAFF;background:#F2F6FF;border-radius:10px;padding:6px 2px;font-size:13px;font-weight:700;color:#5B6B8C;cursor:pointer}.mhtabs button.on{background:#5B8DEF;color:#fff;border-color:#5B8DEF}
-.rmscene{position:relative;width:100%;aspect-ratio:4/3;border-radius:12px;overflow:hidden;border:2px solid #4A3B34;user-select:none;-webkit-user-select:none;touch-action:pan-y}
+.rmscene{position:relative;isolation:isolate;width:100%;aspect-ratio:4/3;border-radius:12px;overflow:hidden;border:2px solid #4A3B34;user-select:none;-webkit-user-select:none;touch-action:pan-y}
 .rmwall{position:absolute;left:0;right:0;top:0;height:60%}.rmfloor{position:absolute;left:0;right:0;bottom:0;height:40%;border-top:3px solid #4A3B34;box-shadow:inset 0 10px 14px -8px rgba(0,0,0,.25)}
 .rmi{position:absolute;transform-origin:50% 100%}.rmi svg{display:block;overflow:visible}.rmi.ed{cursor:grab;touch-action:none;outline:1.5px dashed rgba(91,141,239,.55);outline-offset:2px;border-radius:6px}.rmi.sel{outline:2.5px solid #FF7563}
 .rmc{position:absolute;width:11%;transform:translate(-50%,-100%);transition:left 2.4s linear,top 2.4s linear;cursor:pointer}
@@ -148,6 +148,10 @@
 .sumck .n{color:var(--mint,#2fb59b);font-weight:700;flex:none}
 .sumck input:checked~span:last-child{color:var(--sub,#8a7f72)}
 .undc{margin:6px 0 0}
+.tb{white-space:nowrap}
+@media (max-width:400px){.tbs{gap:4px}.tb{padding:5px 8px;font-size:12px}}
+@media (max-width:340px){.tb{padding:4px 6px;gap:2px}}
+@media (max-width:360px){.topbar .brand{display:none}.topbar{justify-content:flex-end}}
 </style></head><body>
 <!DOCTYPE html>
 <html lang="ko">
@@ -1829,7 +1833,7 @@ function conceptHTML(id){
   <div class="ctitle"><span class="tag">${EXAMS[c.ex]} · ${UNITS[c.u].t}</span><h1>${esc(c.t)}</h1>
   <p class="muted">숙련도 ${m==null?'아직 없음':Math.round(m*100)+'%'}${st&&st.seen?` · 다음 복습 ${st.due<=today()?'<b>오늘</b>':dayStr(st.due).slice(5).replace('-','/')}`:''}</p></div>
   ${c.th?thHTML(c):''}${c.pic?`<div class="cpic">${c.pic()}</div>`:''}<div class="card sum"><h3>핵심 정리</h3>${sumHTML(id)}</div>
-  <div class="card"><h3>플래시카드 <small>눌러서 답 보기</small></h3>${c.fl.map(f=>`<button class="flip"><span class="fq">${fmt(f[0])}</span><span class="fa">${fmt(f[1])}</span></button>`).join('')}</div>
+  <div class="card"><h3>플래시카드</h3><p class="small muted" style="margin:-4px 0 8px">먼저 스스로 풀어본 뒤 눌러서 답을 확인해 보세요.</p>${c.fl.map(f=>`<button class="flip"><span class="fq">${fmt(f[0])}</span><span class="fa">${fmt(f[1])}</span></button>`).join('')}</div>
   <div class="two"><button class="big" data-blankone="${id}">백지 테스트</button><button class="big alt" data-practone="${id}">문제 풀기</button></div>
   ${autoShelf(id)?`<button class="shelfbtn on" disabled>📗 숙련도 80% 이상 — 서재에 꽂혀 있어요</button>`:(S.shelf||[]).includes(id)?`<button class="shelfbtn on" data-shelf="${id}">📗 서재에 꽂혀 있어요 (누르면 빼기)</button>`:`<button class="shelfbtn" data-shelf="${id}">📗 이해했어요 — 서재에 꽂기</button>`}`;
 }

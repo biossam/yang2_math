@@ -702,7 +702,7 @@ function conceptHTML(id){
   <div class="ctitle"><span class="tag">${EXAMS[c.ex]} · ${UNITS[c.u].t}</span><h1>${esc(c.t)}</h1>
   <p class="muted">숙련도 ${m==null?'아직 없음':Math.round(m*100)+'%'}${st&&st.seen?` · 다음 복습 ${st.due<=today()?'<b>오늘</b>':dayStr(st.due).slice(5).replace('-','/')}`:''}</p></div>
   ${c.th?thHTML(c):''}${c.pic?`<div class="cpic">${c.pic()}</div>`:''}<div class="card sum"><h3>핵심 정리</h3>${sumHTML(id)}</div>
-  <div class="card"><h3>플래시카드 <small>눌러서 답 보기</small></h3>${c.fl.map(f=>`<button class="flip"><span class="fq">${fmt(f[0])}</span><span class="fa">${fmt(f[1])}</span></button>`).join('')}</div>
+  <div class="card"><h3>플래시카드</h3><p class="small muted" style="margin:-4px 0 8px">먼저 스스로 풀어본 뒤 눌러서 답을 확인해 보세요.</p>${c.fl.map(f=>`<button class="flip"><span class="fq">${fmt(f[0])}</span><span class="fa">${fmt(f[1])}</span></button>`).join('')}</div>
   <div class="two"><button class="big" data-blankone="${id}">백지 테스트</button><button class="big alt" data-practone="${id}">문제 풀기</button></div>
   ${autoShelf(id)?`<button class="shelfbtn on" disabled>📗 숙련도 80% 이상 — 서재에 꽂혀 있어요</button>`:(S.shelf||[]).includes(id)?`<button class="shelfbtn on" data-shelf="${id}">📗 서재에 꽂혀 있어요 (누르면 빼기)</button>`:`<button class="shelfbtn" data-shelf="${id}">📗 이해했어요 — 서재에 꽂기</button>`}`;
 }

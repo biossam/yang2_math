@@ -33,3 +33,7 @@
 .sumck .n{color:var(--mint,#2fb59b);font-weight:700;flex:none}
 .sumck input:checked~span:last-child{color:var(--sub,#8a7f72)}
 .undc{margin:6px 0 0}
+.tb{white-space:nowrap}
+@media (max-width:400px){.tbs{gap:4px}.tb{padding:5px 8px;font-size:12px}}
+@media (max-width:340px){.tb{padding:4px 6px;gap:2px}}
+@media (max-width:360px){.topbar .brand{display:none}.topbar{justify-content:flex-end}}
