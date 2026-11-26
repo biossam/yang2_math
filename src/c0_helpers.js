@@ -20,13 +20,15 @@ const fig=(p,f)=>{p.fig=f;return p};
 const tm=(h,m)=>m?`${h}시 ${m}분`:`${h}시`;
 const numDs=(n,step=1)=>[n+step,n-step,n+2*step,n-2*step,n+10*step,n+3*step].filter(v=>v>=0&&v!==n);
 // 정답이 늘 가운데에 오지 않도록: 정답보다 작은 보기 개수(0~3)를 무작위로 정하고 맞춰 채운다
-function balDs(ans,extra,step){const eq=(a,b)=>Math.abs(a-b)<1e-9,R=v=>+(+v).toFixed(6);const E=[];for(const v of extra){if(typeof v!=='number'||!(v>=0)||eq(v,ans)||E.some(e=>eq(e,v)))continue;E.push(R(v))}
-  let keep=E.slice(0,3);if(keep.some(v=>eq(v,ans*10))&&keep.some(v=>eq(v,ans/10)))keep=keep.filter(v=>!(Math.random()<.5?eq(v,ans*10):eq(v,ans/10)));const lo=[],hi=[];for(let k=1;k<=8;k++){const a=R(ans-k*step),b=R(ans+k*step);if(a>0)lo.push(a);hi.push(b)}
-  const fresh=L=>L.filter(v=>!keep.some(e=>eq(e,v)));const maxLo=Math.min(3,keep.filter(v=>v<ans).length+fresh(lo).length);
-  const r=Math.min(maxLo,ri(0,3));let B=keep.filter(v=>v<ans),A=keep.filter(v=>v>ans);
-  while(B.length>r)B.pop();while(A.length>3-r)A.pop();
+function balDs(ans,extra,step){const eq=(a,b)=>Math.abs(a-b)<1e-9,R=v=>+(+v).toFixed(6);let E=[];for(const v of extra){if(typeof v!=='number'||!(v>=0)||eq(v,ans)||E.some(e=>eq(e,v)))continue;E.push(R(v))}
+  // 정답보다 작은 보기 개수 r(0~3)을 무작위로 정하고, 오개념 보기(extra)를 먼저 그 자리에 채운다
+  if(E.some(v=>eq(v,ans*10))&&E.some(v=>eq(v,ans/10))&&E.length<=3){const dropBig=Math.random()<.5;E=E.filter(v=>!(dropBig?eq(v,ans*10):eq(v,ans/10)))}
+  const lo=[],hi=[];for(let k=1;k<=8;k++){const a=R(ans-k*step),b=R(ans+k*step);if(a>0)lo.push(a);hi.push(b)}
+  const eLo=E.filter(v=>v<ans),eHi=E.filter(v=>v>ans);const cap=Math.min(3,eLo.length+lo.filter(v=>!E.some(e=>eq(e,v))).length);
+  // 첫 번째 오개념 보기는 꼭 들어가게: 그 보기가 들어갈 쪽 자리를 하나는 남긴다
+  const f0=E[0];const rMin=f0!=null&&f0<ans?Math.min(1,cap):0,rMax=f0!=null&&f0>ans?Math.min(cap,2):cap;const r=ri(rMin,Math.max(rMin,rMax));const B=eLo.slice(0,r),A=eHi.slice(0,3-r);
   for(const v of lo){if(B.length>=r)break;if(!B.some(e=>eq(e,v))&&!A.some(e=>eq(e,v)))B.push(v)}
-  for(const v of hi){if(A.length>=3-B.length)break;if(!A.some(e=>eq(e,v)))A.push(v)}
+  for(const v of hi){if(B.length+A.length>=3)break;if(!A.some(e=>eq(e,v))&&!B.some(e=>eq(e,v)))A.push(v)}
   return [...B,...A]}
 const autoStep=(ans,step)=>step===1&&ans>=200&&Number.isInteger(ans)?10**(Math.floor(Math.log10(ans))-1):step;
 const mcn=(l,q,ans,s,extra=[],step=1)=>{if(extra.some(v=>typeof v!=='number'))return mc(l,q,cm(ans),extra.map(v=>typeof v==='number'?cm(v):v).concat(numDs(ans,step).map(cm)),s);return mc(l,q,cm(ans),balDs(ans,extra,autoStep(ans,step)).map(cm),s)};
