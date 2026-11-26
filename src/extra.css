@@ -37,3 +37,7 @@
 @media (max-width:400px){.tbs{gap:4px}.tb{padding:5px 8px;font-size:12px}}
 @media (max-width:340px){.tb{padding:4px 6px;gap:2px}}
 @media (max-width:360px){.topbar .brand{display:none}.topbar{justify-content:flex-end}}
+.mhcard{position:relative}
+.mhoutc{position:absolute!important;right:44px;bottom:-16px}
+.pawtrail{position:absolute;right:8px;bottom:2px;font-size:11px;opacity:.5;letter-spacing:4px;transform:rotate(-14deg);pointer-events:none}
+.pawtrail i{font-style:normal;display:inline-block;transform:translateY(-5px)}
