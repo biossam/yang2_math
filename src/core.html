@@ -894,7 +894,7 @@ document.addEventListener('click',e=>{
     const answer=(ok,extra)=>{st.ans=Object.assign({ok},extra);st.res[st.j]=ok;recordProblem(p,ok);render();const f=document.querySelector('.fb');if(f)f.scrollIntoView({behavior:'smooth',block:'center'})};
     if(d.pick!=null&&!st.ans)return answer(+d.pick===0,{pick:+d.pick});
     if(d.ox!=null&&!st.ans){const v=d.ox==='true';return answer(v===p.x,{pick:v})}
-    if(a==='sacheck'&&!st.ans){const v=(document.getElementById('sain').value||'').trim();const norm=s=>String(s).replace(/\s/g,'').replace(/−/g,'-').replace(/,/g,'').replace(/(cm²|cm³|cm|mm|km|m²|m|°|개|명|원|번|자루|장|살|일|분|초|시간|kg|g|mL|L|%|배)$/,'').replace(/^0+(?=\d)/,'').toLowerCase();return answer(String(p.x).split('|').some(x=>norm(x)===norm(v)),{val:v})}
+    if(a==='sacheck'&&!st.ans){const v=(document.getElementById('sain').value||'').trim();const norm=s=>String(s).replace(/\s/g,'').replace(/−/g,'-').replace(/,/g,'').replace(/(cm²|cm³|cm|mm|km|m²|m|°|개|명|원|번|자루|장|살|일|분|초|시간|kg|g|mL|L|%|배|도|상자|봉지|층|권|컵|m³|cm³)$/,'').replace(/^0+(?=\d)/,'').toLowerCase();const same=(x,y)=>{x=norm(x);y=norm(y);if(x===y)return true;const nx=/^-?(\d+\.?\d*|\.\d+)$/;return nx.test(x)&&nx.test(y)&&Math.abs(+x - +y)<1e-9};return answer(String(p.x).split('|').some(x=>same(x,v)),{val:v})}
     if(a==='reveal'){st.reveal=true;render();return}
     if(d.self!=null&&!st.ans)return answer(d.self==='1',{});
     if(a==='pnext'){st.j++;st.ans=null;st.reveal=false;if(st.j>=st.list.length)nextStep();else{render();window.scrollTo(0,0)}return}
