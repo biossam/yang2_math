@@ -25,7 +25,7 @@ async def main():
                 x=await pg.evaluate("()=>{const st=RUN.steps[RUN.i];return String(st.list[st.j].x).split('|')[0]}")
                 await pg.fill('#sain',x);await pg.click('[data-act="sacheck"]')
             else:
-                await pg.click('[data-act="reveal"]');await pg.click('[data-self="1"]')
+                await pg.fill('#selftxt','과정을 차례대로 써 봤어요 1234');await pg.click('[data-act="reveal"]');await pg.evaluate("()=>document.querySelectorAll('.ckl input').forEach(c=>c.checked=true)");await pg.click('[data-self="1"]')
             await pg.wait_for_timeout(200)
             if i==0: await pg.screenshot(path=OUT+'04_answered.png',full_page=True)
             await pg.click('[data-act="pnext"]');await pg.wait_for_timeout(200)

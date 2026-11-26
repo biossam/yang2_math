@@ -17,7 +17,7 @@ async def solve(pg,mode,slow=True):
             x=await pg.evaluate("()=>{const s=RUN.steps[RUN.i];return String(s.list[s.j].x).split('|')[0]}")
             await pg.fill('#sain',x if right else '99999');await pg.click('[data-act="sacheck"]')
         else:
-            await pg.click('[data-act="reveal"]');await pg.click('[data-self="1"]' if right else '[data-self="0"]')
+            await pg.fill('#selftxt','과정을 차례대로 써 봤어요 1234');await pg.click('[data-act="reveal"]');await pg.evaluate("()=>document.querySelectorAll('.ckl input').forEach(c=>c.checked=true)");await pg.click('[data-self="1"]' if right else '[data-self="0"]')
         await pg.wait_for_timeout(120)
         if await pg.evaluate("()=>document.getElementById('modal').classList.contains('on')"): print('  (modal)');await pg.evaluate("()=>closeModal()")
         await pg.click('[data-act="pnext"]');await pg.wait_for_timeout(150)

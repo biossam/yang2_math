@@ -537,17 +537,17 @@ function setDone(n=1,stars=n){catSync();let got=0;if(stars>0){try{got=rmEarn(sta
 // ===== 보상 규칙: 맞힌 만큼 별, 고친 만큼 보너스, 찍기는 빼기 =====
 const FIX_CAP=10;
 function rewardSet(){const ps=RUN.steps.find(s=>s.k==='probs');if(!ps||!ps.list)return;const n=ps.list.length,t=today();
-  let good=0,fast=0,fixOk=0;const wrong=[];
-  ps.list.forEach((p,i)=>{const r=!!ps.res[i],f=!!(ps.fast&&ps.fast[i]);if(f)fast++;if(r&&!f){good++;if(p.retry||RUN.mode==='fix')fixOk++}else if(p.t!=='self')wrong.push({id:p.mid||p.id,cid:p.cid,l:p.l,t:p.t})});
-  const ratio=n?good/n:0;let stars=0,an=0;
+  let good=0,fast=0,fixOk=0,self=0;const wrong=[];
+  ps.list.forEach((p,i)=>{const r=!!ps.res[i],f=!!(ps.fast&&ps.fast[i]);if(p.t==='self'){self++;return}if(f)fast++;if(r&&!f){good++;if(p.retry||RUN.mode==='fix')fixOk++}else if(p.t!=='self')wrong.push({id:p.mid||p.id,cid:p.cid,l:p.l,t:p.t})});
+  const na=n-self,ratio=na?good/na:0;let stars=0,an=0;
   if(RUN.mode==='session'){stars=ratio>=.8?2:ratio>=.5?1:0;an=ratio>=.5?2:0}
   else if(RUN.mode!=='fix'){stars=ratio>=.999?2:ratio>=2/3?1:0;an=ratio>=.5?1:0}
   S.fixStar=S.fixStar&&S.fixStar.d===t?S.fixStar:{d:t,n:0};const bonus=Math.min(fixOk,FIX_CAP-S.fixStar.n);S.fixStar.n+=bonus;
-  let pend=0;if(RUN.mode!=='fix'&&!an){const due=S.fixDue&&S.fixDue.d===t?S.fixDue.n:0;pend=RUN.mode==='session'?2:1;S.fixDue={d:t,n:Math.min(3,due+pend)}}
+  let pend=0;if(RUN.mode!=='fix'&&!an&&na){const due=S.fixDue&&S.fixDue.d===t?S.fixDue.n:0;pend=RUN.mode==='session'?2:1;S.fixDue={d:t,n:Math.min(3,due+pend)}}
   if(RUN.mode==='fix'&&ratio>=.5&&S.fixDue&&S.fixDue.d===t){an=S.fixDue.n;S.fixDue=null}
-  RUN.reward={stars,bonus,an,good,n,fast,pend,wrong,capped:fixOk>bonus};setDone(an,stars+bonus)}
+  RUN.reward={stars,bonus,an,good,n:na,self,fast,pend,wrong,capped:fixOk>bonus};setDone(an,stars+bonus)}
 function rewardHTML(){const w=RUN.reward;if(!w)return '';const want=w.stars+w.bonus,tot=w.got==null?want:w.got;const e=typeof starToday==='function'?starToday():{n:0};
-  const why=RUN.mode==='fix'?`비슷한 문제 ${w.n}개 중 <b>${w.good}개</b>를 고쳤어요`:`${w.n}문제 중 <b>${w.good}개</b>를 맞혔어요`;
+  const why=(w.n?(RUN.mode==='fix'?`비슷한 문제 ${w.n}개 중 <b>${w.good}개</b>를 고쳤어요`:`${w.n}문제 중 <b>${w.good}개</b>를 맞혔어요`):'앱이 채점하는 문제가 없었어요')+(w.self?` <span class="small">(스스로 채점한 ${w.self}문제는 참여로만 세요)</span>`:'');
   return `<div class="card rwcard"><div class="rwstar">${tot?'⭐'.repeat(Math.min(tot,5))+` <b>+${tot}</b>`:'☆ 0'}</div><p>${why}${w.bonus?` · 틀린 문제 고치기 보너스 ⭐${w.bonus}`:''}${w.capped?' <span class="small">(고치기 보너스는 하루 ⭐'+FIX_CAP+'까지)</span>':''}</p>
    ${RUN.streakStars?`<p>🔥 연속 3문제 정답 보너스 ⭐${RUN.streakStars}</p>`:''}
    ${want>tot?`<p class="small">🌙 오늘 모을 수 있는 별 ⭐${STAR_DAY}개를 다 모았어요. 내일 또 모아요!</p>`:''}<p class="small muted">오늘 모은 별 ⭐${e.n} / ${STAR_DAY}</p>
@@ -829,10 +829,10 @@ function probsHTML(st){
   if(p.t==='mc')ui=`<div class="opts">${p.order.map((oi,k)=>{let cls='';if(a){if(oi===0)cls='right';else if(a.pick===oi)cls='wrong';}return `<button class="opt ${cls}" data-pick="${oi}" ${a?'disabled':''}><span class="on">${'①②③④'[k]}</span><span>${fmt(p.x[oi])}</span></button>`}).join('')}</div>`;
   else if(p.t==='ox')ui=`<div class="ox">${[true,false].map(v=>{let cls='';if(a){if(v===p.x)cls='right';else if(a.pick===v)cls='wrong'}return `<button class="oxb ${cls}" data-ox="${v}" ${a?'disabled':''}>${v?'O':'X'}</button>`}).join('')}</div>`;
   else if(p.t==='sa')ui=a?`<div class="saans">내 답: <b>${esc(a.val||'(빈칸)')}</b> · 정답: <b>${fmt(String(p.x).split('|')[0])}</b></div>`:`<div class="sa"><input id="sain" inputmode="text" autocomplete="off" placeholder="답 입력 (예: 12, 3/4, 2.5)"><button class="btn" data-act="sacheck">확인</button></div>`;
-  else if(p.t==='self')ui=a?'':`<p class="muted small">노트에 풀이를 쓴 다음 모범 풀이와 비교해요.</p>${st.reveal?'':`<div id="recbox" class="recbox">${recHTML(recKey(st))}</div>`}${a===null&&st.reveal?'':`<button class="btn wide" data-act="reveal">모범 풀이 보기</button>`}`;
+  else if(p.t==='self')ui=a?'':`<p class="muted small">노트에 풀이를 쓴 다음 모범 풀이와 비교해요.</p>${st.reveal?'':`<div id="recbox" class="recbox">${recHTML(recKey(st))}</div><div class="selfalt"><label class="rfile">📷 노트에 푼 풀이를 사진으로 올리기<input type="file" accept="image/*" capture="environment" data-notepic hidden></label>${st.pic&&st.pic[st.j]?`<img class="notepic" src="${st.pic[st.j]}" alt="내 노트 사진">`:''}<textarea id="selftxt" rows="3" placeholder="또는 풀이를 글로 써 보세요 (10글자 이상)">${esc((st.txt&&st.txt[st.j])||'')}</textarea><p class="muted small" style="margin:4px 0 0">녹음 · 사진 · 글 중 하나를 남기면 모범 풀이를 볼 수 있어요.</p></div>`}${a===null&&st.reveal?'':`<button class="btn wide" data-act="reveal">모범 풀이 보기</button>`}`;
   if(RUN&&RUN.mode==='exam'&&!a&&!st.reveal&&st.j<st.list.length-1)ui+=`<button class="ghost wide skipb" data-act="pskip">⏭ 나중에 풀기 (맨 뒤로 보내기)</button>`;
   let fb='';
-  if(p.t==='self'&&st.reveal&&!a)fb=`${(REC.st===recKey(st)&&REC.url)?`<div class="card recplay"><b>🎙 내 풀이 녹음 듣기</b><audio controls src="${REC.url}"></audio></div>`:''}<div class="sol"><b>모범 풀이</b><div>${fmt(p.s)}</div></div>${p.ck?`<div class="ckl"><b>✍️ 서술형 감점 체크 — 내 답안에 다 썼나요?</b>${p.ck.map(c=>`<label><input type="checkbox"> <span>${fmt(c)}</span></label>`).join('')}<p class="small muted">하나라도 빠졌으면 부분 점수가 깎여요.</p></div>`:''}<div class="two"><button class="rate r0" data-self="0">틀렸어요</button><button class="rate r2" data-self="1">맞았어요</button></div>`;
+  if(p.t==='self'&&st.reveal&&!a)fb=`${(REC.st===recKey(st)&&REC.url)?`<div class="card recplay"><b>🎙 내 풀이 녹음 듣기</b><audio controls src="${REC.url}"></audio></div>`:''}${st.pic&&st.pic[st.j]?`<div class="card recplay"><b>📷 내 노트</b><img class="notepic" src="${st.pic[st.j]}" alt="내 노트 사진"></div>`:''}${st.txt&&st.txt[st.j]?`<div class="card recplay"><b>✏️ 내가 쓴 풀이</b><p style="margin:4px 0 0;white-space:pre-wrap">${esc(st.txt[st.j])}</p></div>`:''}<div class="sol"><b>모범 풀이</b><div>${fmt(p.s)}</div></div>${(p.ck||autoCk(p.s)).length?`<div class="ckl"><b>✍️ ${p.ck?'서술형 감점 체크 — 내 답안에 다 썼나요?':'스스로 채점 체크 — 모범 풀이와 말이 달라도 괜찮아요'}</b>${(p.ck||autoCk(p.s)).map(c=>`<label><input type="checkbox"> <span>${fmt(c)}</span></label>`).join('')}<p class="small muted">모두 체크해야 「맞았어요」를 누를 수 있어요. 빠진 게 있으면 「틀렸어요」를 눌러요. 스스로 채점한 문제는 별에 세지 않아요.</p></div>`:''}<div class="two"><button class="rate r0" data-self="0">틀렸어요</button><button class="rate r2" data-self="1">맞았어요</button></div>`;
   if(a)fb=`<div class="fb ${a.ok?'ok':'no'}">${a.ok?'정답! 👏':'아쉬워요 — 오답노트에 담았어요'}</div>${a.streakHit?`<p class="streaknote">🔥 연속 3문제 정답!${a.streak?' ⭐+1':' (오늘 별은 다 모았어요)'}</p>`:''}${a.fast?'<p class="fastnote">⚡ 너무 빨리 골랐어요. 문제를 끝까지 읽고 풀어야 별(⭐)에 세어요.</p>':''}<div class="sol"><b>풀이</b><div>${fmt(p.s)}</div></div><button class="big" data-act="pnext">${st.j+1<st.list.length?'다음 문제 ▶':'결과 보기 ▶'}</button>`;
   return `<p class="step">문제 ${st.j+1} / ${st.list.length} ${st.levelNote&&st.j===0?`<span class="note">${st.levelNote}</span>`:''}</p>
   <div class="qmeta"><span class="tag s">${esc(C[p.cid].t)}</span><span class="tag lv${p.l}">${LV[p.l]}</span><span class="tag ty">${TY[p.t]}</span>${p.h?'<span class="tag hp">학평 유형</span>':''}${p.src?`<span class="tag src">${esc(p.src)}</span>`:''}${p.retry?'<span class="tag rt">오답 재도전</span>':''}</div>
@@ -918,12 +918,12 @@ document.addEventListener('click',e=>{
     nextStep();return}
   if(st.k==='probs'){
     const p=st.list[st.j];
-    const answer=(ok,extra)=>{const fast=p.t!=='self'&&Date.now()-((st.shown&&st.shown[st.j])||0)<3000;st.fast=st.fast||{};st.fast[st.j]=fast;st.wr=ok?0:(st.wr||0)+1;st.rc=ok&&!fast&&p.t!=='self'?(st.rc||0)+1:0;let streak=0;if(st.rc>=3&&RUN.mode!=='exam'){st.rc=0;streak=rmEarn(1);RUN.streakStars=(RUN.streakStars||0)+streak;if(!streak)RUN.streakCap=1}if(st.wr>=3&&RUN.mode!=='exam'){st.help=p.cid;st.wr=0}st.ans=Object.assign({ok,fast,streak:st.rc===0&&ok&&!fast&&p.t!=='self'?streak:0,streakHit:ok&&!fast&&st.rc===0&&p.t!=='self'},extra);st.res[st.j]=ok;recordProblem(p,ok);render();const f=document.querySelector('.fb');if(f)f.scrollIntoView({behavior:'smooth',block:'center'})};
+    const answer=(ok,extra)=>{const fast=p.t!=='self'&&Date.now()-((st.shown&&st.shown[st.j])||0)<3000;st.fast=st.fast||{};st.fast[st.j]=fast;st.wr=ok?0:(st.wr||0)+1;st.rc=p.t==='self'?(st.rc||0):ok&&!fast?(st.rc||0)+1:0;let streak=0;if(st.rc>=3&&RUN.mode!=='exam'){st.rc=0;streak=rmEarn(1);RUN.streakStars=(RUN.streakStars||0)+streak;if(!streak)RUN.streakCap=1}if(st.wr>=3&&RUN.mode!=='exam'){st.help=p.cid;st.wr=0}st.ans=Object.assign({ok,fast,streak:st.rc===0&&ok&&!fast&&p.t!=='self'?streak:0,streakHit:ok&&!fast&&st.rc===0&&p.t!=='self'},extra);st.res[st.j]=ok;recordProblem(p,ok);render();const f=document.querySelector('.fb');if(f)f.scrollIntoView({behavior:'smooth',block:'center'})};
     if(d.pick!=null&&!st.ans)return answer(+d.pick===0,{pick:+d.pick});
     if(d.ox!=null&&!st.ans){const v=d.ox==='true';return answer(v===p.x,{pick:v})}
     if(a==='sacheck'&&!st.ans){const v=(document.getElementById('sain').value||'').trim();const norm=s=>String(s).replace(/\s/g,'').replace(/−/g,'-').replace(/,/g,'').replace(/(cm²|cm³|cm|mm|km|m²|m|°|개|명|원|번|자루|장|살|일|분|초|시간|kg|g|mL|L|%|배|도|상자|봉지|층|권|컵|m³|cm³)$/,'').replace(/^0+(?=\d)/,'').toLowerCase();const same=(x,y)=>{x=norm(x);y=norm(y);if(x===y)return true;const nx=/^-?(\d+\.?\d*|\.\d+)$/;return nx.test(x)&&nx.test(y)&&Math.abs(+x - +y)<1e-9};return answer(String(p.x).split('|').some(x=>same(x,v)),{val:v})}
-    if(a==='reveal'){st.reveal=true;render();return}
-    if(d.self!=null&&!st.ans)return answer(d.self==='1',{});
+    if(a==='reveal'){if(p.t==='self'&&!selfReady(st)){toast('먼저 녹음하거나, 노트 사진을 올리거나, 풀이를 글로 써 주세요.');return}st.reveal=true;render();return}
+    if(d.self!=null&&!st.ans){if(d.self==='1'){const cb=[...document.querySelectorAll('.ckl input[type=checkbox]')];if(cb.some(c=>!c.checked)){toast('체크리스트를 모두 확인해야 「맞았어요」를 누를 수 있어요.');return}}return answer(d.self==='1',{})}
     if(a==='pnext'&&st.help){const cid=st.help;st.help=null;const c=C[cid];return ask('💡','잠깐! 개념부터 다시 봐요',`연속으로 3문제를 틀렸어요. 「${esc(c.t)}」 핵심을 읽고 다시 풀어 봐요.`,[{t:'다 읽었어요, 계속 풀기 ▶',cls:'go',fn:()=>{const b=document.querySelector('[data-act="pnext"]');if(b)b.click()}}],'닫기',`<div class="card sum helpsum">${c.pic?`<div class="cpic">${c.pic()}</div>`:''}<ol>${c.sum.map(x=>`<li>${fmt(x)}</li>`).join('')}</ol></div>`)}
     if(a==='pnext'){st.j++;st.ans=null;st.reveal=false;if(st.j>=st.list.length)nextStep();else{render();window.scrollTo(0,0)}return}
   }
@@ -940,6 +940,8 @@ initSync();
 
 
 // ===== REC_PATCH: 백지 테스트 녹음 =====
+function selfReady(st){return !!((REC.st===recKey(st)&&REC.url)||(st.pic&&st.pic[st.j])||((st.txt&&st.txt[st.j])||'').replace(/\s/g,'').length>=10)}
+function autoCk(){return ['내 답(결론)이 모범 풀이와 같은 뜻이에요','답만 말하지 않고, 푸는 과정이나 이유를 차례대로 말했어요(썼어요)','방법이 달라도 괜찮아요 — 내 방법으로 다시 확인해 보니 맞아요']}
 function recKey(st){if(!st._rid)st._rid=Math.random().toString(36).slice(2);return st._rid+':'+st.j}
 const REC={st:null,mr:null,chunks:[],url:null,t0:0,iv:null,err:false};
 function recReset(st){if(REC.mr&&REC.mr.state!=='inactive'){try{REC.mr.stop()}catch(e){}}if(REC.url)URL.revokeObjectURL(REC.url);clearInterval(REC.iv);Object.assign(REC,{st,mr:null,chunks:[],url:null,t0:0,iv:null})}
@@ -965,6 +967,8 @@ async function recStart(){
 }
 document.addEventListener('click',e=>{const b=e.target.closest('[data-rec]');if(!b)return;e.preventDefault();e.stopPropagation();const a=b.dataset.rec;
   if(a==='start')recStart();else if(a==='stop'){if(REC.mr)REC.mr.stop()}else if(a==='again'){if(REC.url)URL.revokeObjectURL(REC.url);REC.url=null;recStart()}},true);
+document.addEventListener('change',e=>{const q=e.target.closest('[data-notepic]');if(q&&q.files&&q.files[0]){const st=RUN&&RUN.steps[RUN.i];if(st){st.pic=st.pic||{};if(st.pic[st.j])URL.revokeObjectURL(st.pic[st.j]);st.pic[st.j]=URL.createObjectURL(q.files[0]);render()}return}});
+document.addEventListener('input',e=>{if(e.target.id!=='selftxt')return;const st=RUN&&RUN.steps[RUN.i];if(st){st.txt=st.txt||{};st.txt[st.j]=e.target.value}});
 document.addEventListener('change',e=>{const i=e.target.closest('[data-recfile]');if(!i||!i.files||!i.files[0])return;if(REC.url)URL.revokeObjectURL(REC.url);REC.url=URL.createObjectURL(i.files[0]);REC.err=false;recPaint()});
 
 // ===== ONBOARD: 처음 들어오면 학년과 함께 모을 친구 고르기 =====
