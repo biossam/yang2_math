@@ -65,7 +65,7 @@ function ptOn(d){if(d.t==='hello'){PT.snap=d.snap;PT.people=d.people;(d.pos||[])
   if(d.t==='pet'){const el=document.querySelector(`#ptscene [data-ptc="${d.k}"]`);const p=(PT.people||[]).find(x=>x.pid===d.by);if(el){const h=document.createElement('i');h.className='rmheart';h.textContent='💗';el.appendChild(h);setTimeout(()=>h.remove(),1600)}
     const [pid,i]=d.k.split('-');if(pid===PT.pid&&d.by!==PT.pid&&BREEDS[+i]){const R=rmS();R.love=R.love||{};R.love[+i]=(R.love[+i]||0)+1;save();ptBubble(null,`💗 ${esc(p?p.nick:'친구')}이(가) 내 ${esc(BREEDS[+i].n)}을(를) 쓰다듬었어요`)}return}
   if(d.t==='closed'){ptStop();ptMsg('👋 놀이가 끝났어요',d.why==='host'?'방 주인이 방을 닫았어요. 또 놀자!':'오래 쉬어서 방이 닫혔어요.','<button class="cambig" data-pt="menu">처음으로</button>')}}
-function ptReward(){const on=(PT.people||[]).filter(p=>p.on).length;if(on<2)return;const R=rmS();const d=today();if(R.ptDay===d)return;R.ptDay=d;R.coins=(R.coins||0)+1;save();toast('👫 친구랑 놀기 보너스 ⭐1 (하루 한 번)')}
+function ptReward(){const on=(PT.people||[]).filter(p=>p.on).length;if(on<2)return;const R=rmS();const d=today();if(R.ptDay===d)return;R.ptDay=d;if(rmEarn(1))toast('👫 친구랑 놀기 보너스 ⭐1 (하루 한 번)')}
 function ptApply(el,p,walk){const x0=parseFloat(el.style.left);if(Math.abs(p.x-x0)>.5)el.classList.toggle('rmflip',p.x<x0);if(walk){ptPose(el,'sit');el.classList.add('rmwalk')}
   el.style.left=p.x+'%';el.style.top=p.y+'%';el.style.zIndex=p.z;clearTimeout(el._t);el._t=setTimeout(()=>{el.classList.remove('rmwalk');ptPose(el,p.pose)},walk?2400:0)}
 function ptPose(el,pose){if(el._pose===pose)return;el._pose=pose;const keep=[...el.querySelectorAll('.ptown,.rmheart')];el.innerHTML=rmPose(BREEDS[+el.dataset.i],pose);keep.forEach(k=>el.appendChild(k));el.classList.toggle('rmwide',pose==='sleep'||pose==='lie'||pose==='stretch')}
@@ -157,7 +157,7 @@ function ptFound(d){if(!PT||!PT.seek)return;PT.seek.found[d.k]=d.by;PT.seek.scor
 function ptSeekEnd(score){if(!PT)return;const sc=document.getElementById('ptscene');PT.seek=null;if(sc){sc.classList.remove('rmseeking');const b=sc.querySelector('.rmsbadge');if(b)b.remove()}
   const rank=Object.entries(score||{}).sort((a,b)=>b[1]-a[1]);const nm=pid=>{const p=(PT.people||[]).find(x=>x.pid===pid);return pid===PT.pid?'나':(p?p.nick:'친구')};
   const top=rank.length?rank[0][1]:0;const win=rank.filter(r=>r[1]===top).map(r=>nm(r[0]));const mine=(score||{})[PT.pid]||0;
-  const R=rmS();let bonus='';if(R.ptSeekDay!==today()){R.ptSeekDay=today();R.coins=(R.coins||0)+1;save();bonus='<span>오늘의 숨바꼭질 보너스 ⭐1</span>'}
+  const R=rmS();let bonus='';if(R.ptSeekDay!==today()){R.ptSeekDay=today();if(rmEarn(1))bonus='<span>오늘의 숨바꼭질 보너스 ⭐1</span>'}
   if(sc){const cover=document.createElement('div');cover.className='rmcover ptend';cover.innerHTML=`<b>🎉 다 찾았어요!</b><span>🏆 ${win.map(esc).join(', ')} ${win.length>1?'공동 1등':'1등'} (${top}마리)</span><div class="ptrank">${rank.map(([pid,v])=>`<i style="background:${ptColor(pid)}">${esc(nm(pid))} ${v}마리</i>`).join('')}</div><span>나는 ${mine}마리 찾았어요</span>${bonus}`;sc.appendChild(cover);setTimeout(()=>cover.classList.add('rmfade'),3800);setTimeout(()=>cover.remove(),4500)}
   PT.busy=Date.now()+3000}
 document.addEventListener('click',e=>{if(!PT||!PT.seek)return;const sc=e.target.closest('#ptscene');if(!sc)return;e.preventDefault();e.stopPropagation();

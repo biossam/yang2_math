@@ -533,7 +533,7 @@ const CAT_SLOTS=['hero','win','box','brand','daily','tail','loaf','nav','peekb',
 function catOrd(){const d=today();if(CAT_ORDER._d!==d){const sx=(S.seedX=S.seedX||Math.floor(Math.random()*1e6));const a=CAT_SLOTS.slice();let t=(d*2654435761+sx*40503)>>>0;const rnd=()=>{t=(t+0x6D2B79F5)>>>0;let x=Math.imul(t^(t>>>15),1|t);x=(x+Math.imul(x^(x>>>7),61|x))^x;return ((x^(x>>>14))>>>0)/4294967296};for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]]}const ci=a.indexOf('card');if(ci>=0){a.splice(ci,1);a.push('card')}a._d=d;CAT_ORDER=a}return CAT_ORDER}
 let CAT_PREV=null;
 function catSync(){const t=today();if(S.setDay!==t){S.setDay=t;S.setN=0;S.cats=[];S.catStart=t;save()}else if(S.catStart!==t){S.cats=[];S.catStart=t;save()}return Math.min(S.setN||0,CAT_TOTAL)}
-function setDone(n=1,stars=n){catSync();if(stars>0){try{rmEarn(stars)}catch(e){}}const b=S.setN||0;if(n>0){S.setN=Math.min(CAT_TOTAL,b+n);if(S.setN>b)S.setNew=S.setN-b}save();weekGift()}
+function setDone(n=1,stars=n){catSync();let got=0;if(stars>0){try{got=rmEarn(stars)}catch(e){}}if(RUN&&RUN.reward)RUN.reward.got=got;const b=S.setN||0;if(n>0){S.setN=Math.min(CAT_TOTAL,b+n);if(S.setN>b)S.setNew=S.setN-b}save();weekGift()}
 // ===== 보상 규칙: 맞힌 만큼 별, 고친 만큼 보너스, 찍기는 빼기 =====
 const FIX_CAP=3;
 function rewardSet(){const ps=RUN.steps.find(s=>s.k==='probs');if(!ps||!ps.list)return;const n=ps.list.length,t=today();
@@ -546,9 +546,11 @@ function rewardSet(){const ps=RUN.steps.find(s=>s.k==='probs');if(!ps||!ps.list)
   let pend=0;if(RUN.mode!=='fix'&&!an){const due=S.fixDue&&S.fixDue.d===t?S.fixDue.n:0;pend=RUN.mode==='session'?2:1;S.fixDue={d:t,n:Math.min(3,due+pend)}}
   if(RUN.mode==='fix'&&ratio>=.5&&S.fixDue&&S.fixDue.d===t){an=S.fixDue.n;S.fixDue=null}
   RUN.reward={stars,bonus,an,good,n,fast,pend,wrong,capped:fixOk>bonus};setDone(an,stars+bonus)}
-function rewardHTML(){const w=RUN.reward;if(!w)return '';const tot=w.stars+w.bonus;
+function rewardHTML(){const w=RUN.reward;if(!w)return '';const want=w.stars+w.bonus,tot=w.got==null?want:w.got;const e=typeof starToday==='function'?starToday():{n:0};
   const why=RUN.mode==='fix'?`비슷한 문제 ${w.n}개 중 <b>${w.good}개</b>를 고쳤어요`:`${w.n}문제 중 <b>${w.good}개</b>를 맞혔어요`;
   return `<div class="card rwcard"><div class="rwstar">${tot?'⭐'.repeat(Math.min(tot,5))+` <b>+${tot}</b>`:'☆ 0'}</div><p>${why}${w.bonus?` · 틀린 문제 고치기 보너스 ⭐${w.bonus}`:''}${w.capped?' <span class="small">(고치기 보너스는 하루 ⭐'+FIX_CAP+'까지)</span>':''}</p>
+   ${RUN.streakStars?`<p>🔥 연속 3문제 정답 보너스 ⭐${RUN.streakStars}</p>`:''}
+   ${want>tot?`<p class="small">🌙 오늘 모을 수 있는 별 ⭐${STAR_DAY}개를 다 모았어요. 내일 또 모아요!</p>`:''}<p class="small muted">오늘 모은 별 ⭐${e.n} / ${STAR_DAY}</p>
    ${w.fast?`<p class="small">⚡ 너무 빨리 고른 ${w.fast}문제는 별에 세지 않았어요.</p>`:''}
    ${w.an?`<p>🐾 친구 ${w.an}마리가 홈 화면 어딘가에 숨었어요!</p>`:RUN.mode!=='fix'&&w.pend?'<p>이번에는 친구가 숨지 않았어요. <b>틀린 문제를 고치면</b> 친구가 나타나요!</p>':''}
    <p class="small muted">${RUN.mode==='session'?'80% 이상 ⭐2 · 50% 이상 ⭐1':RUN.mode==='fix'?'고친 문제 1개마다 ⭐1':'모두 맞히면 ⭐2 · ⅔ 이상 ⭐1'} · 절반 이상 맞히면 친구가 숨어요</p>
@@ -666,7 +668,7 @@ function homeHTML(){
     </div>
     <button class="big" data-act="start">${done?'한 번 더 시작':'시작하기'} ▶</button><button class="pickc" data-lp="pick">📘 개념 골라서 15분</button>
   </section>
-  ${(()=>{const R=rmS();const n=rmLive().length;return `<button class="mhcard" data-act="room"><span class="mhci">🏠</span><span><b>${esc(R.name||'나')}의 미니홈피</b><small>${PETW()} ${n}마리가 살고 있어요 · ⭐ ${R.coins||0}</small></span><span class="mhgo">›</span></button>`})()}
+  ${(()=>{const R=rmS();const n=rmLive().length;return `<button class="mhcard" data-act="room"><span class="mhci">🏠</span><span><b>${esc(R.name||'나')}의 미니홈피</b><small>${PETW()} ${n}마리가 살고 있어요 · ⭐ ${R.coins||0} (오늘 ${starToday().n}/${STAR_DAY})</small></span><span class="mhgo">›</span></button>`})()}
   <div class="quick"><button class="qb lib" data-act="shelfopen"><span class="qi">📚</span><b>나의 서재</b><small>이해한 개념 ${CONCEPTS.filter(c=>onShelf(c.id)).length}권 · 🐾 ${catSync()}마리</small></button><button class="qb map" data-act="mapopen"><span class="qi">🗺️</span><b>개념 지도</b><small>${esc(rangeName())} · ${ids.filter(id=>{const m=mastery(id);return m!=null&&m>=.8}).length}/${ids.length} 완성</small></button></div>
   ${dailyHTML()}
   <div class="stats">
@@ -831,7 +833,7 @@ function probsHTML(st){
   if(RUN&&RUN.mode==='exam'&&!a&&!st.reveal&&st.j<st.list.length-1)ui+=`<button class="ghost wide skipb" data-act="pskip">⏭ 나중에 풀기 (맨 뒤로 보내기)</button>`;
   let fb='';
   if(p.t==='self'&&st.reveal&&!a)fb=`${(REC.st===recKey(st)&&REC.url)?`<div class="card recplay"><b>🎙 내 풀이 녹음 듣기</b><audio controls src="${REC.url}"></audio></div>`:''}<div class="sol"><b>모범 풀이</b><div>${fmt(p.s)}</div></div>${p.ck?`<div class="ckl"><b>✍️ 서술형 감점 체크 — 내 답안에 다 썼나요?</b>${p.ck.map(c=>`<label><input type="checkbox"> <span>${fmt(c)}</span></label>`).join('')}<p class="small muted">하나라도 빠졌으면 부분 점수가 깎여요.</p></div>`:''}<div class="two"><button class="rate r0" data-self="0">틀렸어요</button><button class="rate r2" data-self="1">맞았어요</button></div>`;
-  if(a)fb=`<div class="fb ${a.ok?'ok':'no'}">${a.ok?'정답! 👏':'아쉬워요 — 오답노트에 담았어요'}</div>${a.fast?'<p class="fastnote">⚡ 너무 빨리 골랐어요. 문제를 끝까지 읽고 풀어야 별(⭐)에 세어요.</p>':''}<div class="sol"><b>풀이</b><div>${fmt(p.s)}</div></div><button class="big" data-act="pnext">${st.j+1<st.list.length?'다음 문제 ▶':'결과 보기 ▶'}</button>`;
+  if(a)fb=`<div class="fb ${a.ok?'ok':'no'}">${a.ok?'정답! 👏':'아쉬워요 — 오답노트에 담았어요'}</div>${a.streakHit?`<p class="streaknote">🔥 연속 3문제 정답!${a.streak?' ⭐+1':' (오늘 별은 다 모았어요)'}</p>`:''}${a.fast?'<p class="fastnote">⚡ 너무 빨리 골랐어요. 문제를 끝까지 읽고 풀어야 별(⭐)에 세어요.</p>':''}<div class="sol"><b>풀이</b><div>${fmt(p.s)}</div></div><button class="big" data-act="pnext">${st.j+1<st.list.length?'다음 문제 ▶':'결과 보기 ▶'}</button>`;
   return `<p class="step">문제 ${st.j+1} / ${st.list.length} ${st.levelNote&&st.j===0?`<span class="note">${st.levelNote}</span>`:''}</p>
   <div class="qmeta"><span class="tag s">${esc(C[p.cid].t)}</span><span class="tag lv${p.l}">${LV[p.l]}</span><span class="tag ty">${TY[p.t]}</span>${p.h?'<span class="tag hp">학평 유형</span>':''}${p.src?`<span class="tag src">${esc(p.src)}</span>`:''}${p.retry?'<span class="tag rt">오답 재도전</span>':''}</div>
   <div class="q">${fmt(p.q)}</div>${p.fig?`<div class="qfig">${p.fig}</div>`:''}${ui}${fb}`;
@@ -916,7 +918,7 @@ document.addEventListener('click',e=>{
     nextStep();return}
   if(st.k==='probs'){
     const p=st.list[st.j];
-    const answer=(ok,extra)=>{const fast=p.t!=='self'&&Date.now()-((st.shown&&st.shown[st.j])||0)<3000;st.fast=st.fast||{};st.fast[st.j]=fast;st.wr=ok?0:(st.wr||0)+1;if(st.wr>=3&&RUN.mode!=='exam'){st.help=p.cid;st.wr=0}st.ans=Object.assign({ok,fast},extra);st.res[st.j]=ok;recordProblem(p,ok);render();const f=document.querySelector('.fb');if(f)f.scrollIntoView({behavior:'smooth',block:'center'})};
+    const answer=(ok,extra)=>{const fast=p.t!=='self'&&Date.now()-((st.shown&&st.shown[st.j])||0)<3000;st.fast=st.fast||{};st.fast[st.j]=fast;st.wr=ok?0:(st.wr||0)+1;st.rc=ok&&!fast&&p.t!=='self'?(st.rc||0)+1:0;let streak=0;if(st.rc>=3&&RUN.mode!=='exam'){st.rc=0;streak=rmEarn(1);RUN.streakStars=(RUN.streakStars||0)+streak;if(!streak)RUN.streakCap=1}if(st.wr>=3&&RUN.mode!=='exam'){st.help=p.cid;st.wr=0}st.ans=Object.assign({ok,fast,streak:st.rc===0&&ok&&!fast&&p.t!=='self'?streak:0,streakHit:ok&&!fast&&st.rc===0&&p.t!=='self'},extra);st.res[st.j]=ok;recordProblem(p,ok);render();const f=document.querySelector('.fb');if(f)f.scrollIntoView({behavior:'smooth',block:'center'})};
     if(d.pick!=null&&!st.ans)return answer(+d.pick===0,{pick:+d.pick});
     if(d.ox!=null&&!st.ans){const v=d.ox==='true';return answer(v===p.x,{pick:v})}
     if(a==='sacheck'&&!st.ans){const v=(document.getElementById('sain').value||'').trim();const norm=s=>String(s).replace(/\s/g,'').replace(/−/g,'-').replace(/,/g,'').replace(/(cm²|cm³|cm|mm|km|m²|m|°|개|명|원|번|자루|장|살|일|분|초|시간|kg|g|mL|L|%|배|도|상자|봉지|층|권|컵|m³|cm³)$/,'').replace(/^0+(?=\d)/,'').toLowerCase();const same=(x,y)=>{x=norm(x);y=norm(y);if(x===y)return true;const nx=/^-?(\d+\.?\d*|\.\d+)$/;return nx.test(x)&&nx.test(y)&&Math.abs(+x - +y)<1e-9};return answer(String(p.x).split('|').some(x=>same(x,v)),{val:v})}

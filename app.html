@@ -1,4 +1,4 @@
-<!doctype html><html><head><title>yang2수학</title><script>var APPVER="11-26 18:47"</script><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png"><link rel="apple-touch-icon" sizes="180x180" href="icon-180.png"><link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-title" content="yang2수학"><meta name="mobile-web-app-capable" content="yes"><meta name="theme-color" content="#FFF8EE"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}.recbox{margin:10px 0 12px;padding:12px 14px;border:2px dashed var(--line,#E9DCC6);border-radius:18px;background:var(--card,#fff)}
+<!doctype html><html><head><title>yang2수학</title><script>var APPVER="11-26 18:50"</script><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png"><link rel="apple-touch-icon" sizes="180x180" href="icon-180.png"><link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-title" content="yang2수학"><meta name="mobile-web-app-capable" content="yes"><meta name="theme-color" content="#FFF8EE"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}.recbox{margin:10px 0 12px;padding:12px 14px;border:2px dashed var(--line,#E9DCC6);border-radius:18px;background:var(--card,#fff)}
 .recbox .rrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.recbox .rbtn{border:0;border-radius:999px;padding:10px 16px;font-weight:800;font-size:15px;background:#FF7563;color:#fff;cursor:pointer}
 .recbox .rbtn.stop{background:#2B2B38}.recbox .rbtn.ghost{background:transparent;color:var(--sub,#8a7f72);border:1.5px solid var(--line,#E9DCC6)}
 .recbox .rt{font-variant-numeric:tabular-nums;font-weight:800}.recbox .dot{width:10px;height:10px;border-radius:50%;background:#FF4B3A;animation:rblink 1s infinite}@keyframes rblink{50%{opacity:.2}}
@@ -129,6 +129,7 @@
 .rwcard{text-align:center}.rwcard .rwstar{font-size:28px;letter-spacing:2px;margin:2px 0 6px}.rwcard .rwstar b{font-size:22px;color:#E8A400;letter-spacing:0}
 .rwcard p{margin:6px 0}.rwcard .big{margin-top:10px}
 .helpsum{text-align:left;max-height:46vh;overflow:auto;margin:8px 0}.helpsum ol{padding-left:18px;margin:4px 0}.helpsum li{margin:4px 0}
+.streaknote{margin:8px 0 0;padding:8px 12px;border-radius:12px;background:#FFE3DC;color:#C2410C;font-size:15px;font-weight:800}
 </style></head><body>
 <!DOCTYPE html>
 <html lang="ko">
@@ -454,6 +455,8 @@ function fmtOld(s){
   return s.replace(/\n/g,'<br>');
 }
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+// 별(⭐)은 하루 최대 30개까지 모을 수 있어요 (모든 방법 합쳐서)
+const STAR_DAY=30;
 // ===== 초등 수학: 단원(학년 × 4영역) =====
 const DOM={N:'수와 연산',R:'변화와 관계',G:'도형과 측정',D:'자료와 가능성'};
 const UNITS={};for(let g=1;g<=6;g++)for(const k in DOM)UNITS[g+k]={g,t:DOM[k]};
@@ -1618,7 +1621,7 @@ const CAT_SLOTS=['hero','win','box','brand','daily','tail','loaf','nav','peekb',
 function catOrd(){const d=today();if(CAT_ORDER._d!==d){const sx=(S.seedX=S.seedX||Math.floor(Math.random()*1e6));const a=CAT_SLOTS.slice();let t=(d*2654435761+sx*40503)>>>0;const rnd=()=>{t=(t+0x6D2B79F5)>>>0;let x=Math.imul(t^(t>>>15),1|t);x=(x+Math.imul(x^(x>>>7),61|x))^x;return ((x^(x>>>14))>>>0)/4294967296};for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]]}const ci=a.indexOf('card');if(ci>=0){a.splice(ci,1);a.push('card')}a._d=d;CAT_ORDER=a}return CAT_ORDER}
 let CAT_PREV=null;
 function catSync(){const t=today();if(S.setDay!==t){S.setDay=t;S.setN=0;S.cats=[];S.catStart=t;save()}else if(S.catStart!==t){S.cats=[];S.catStart=t;save()}return Math.min(S.setN||0,CAT_TOTAL)}
-function setDone(n=1,stars=n){catSync();if(stars>0){try{rmEarn(stars)}catch(e){}}const b=S.setN||0;if(n>0){S.setN=Math.min(CAT_TOTAL,b+n);if(S.setN>b)S.setNew=S.setN-b}save();weekGift()}
+function setDone(n=1,stars=n){catSync();let got=0;if(stars>0){try{got=rmEarn(stars)}catch(e){}}if(RUN&&RUN.reward)RUN.reward.got=got;const b=S.setN||0;if(n>0){S.setN=Math.min(CAT_TOTAL,b+n);if(S.setN>b)S.setNew=S.setN-b}save();weekGift()}
 // ===== 보상 규칙: 맞힌 만큼 별, 고친 만큼 보너스, 찍기는 빼기 =====
 const FIX_CAP=3;
 function rewardSet(){const ps=RUN.steps.find(s=>s.k==='probs');if(!ps||!ps.list)return;const n=ps.list.length,t=today();
@@ -1631,9 +1634,11 @@ function rewardSet(){const ps=RUN.steps.find(s=>s.k==='probs');if(!ps||!ps.list)
   let pend=0;if(RUN.mode!=='fix'&&!an){const due=S.fixDue&&S.fixDue.d===t?S.fixDue.n:0;pend=RUN.mode==='session'?2:1;S.fixDue={d:t,n:Math.min(3,due+pend)}}
   if(RUN.mode==='fix'&&ratio>=.5&&S.fixDue&&S.fixDue.d===t){an=S.fixDue.n;S.fixDue=null}
   RUN.reward={stars,bonus,an,good,n,fast,pend,wrong,capped:fixOk>bonus};setDone(an,stars+bonus)}
-function rewardHTML(){const w=RUN.reward;if(!w)return '';const tot=w.stars+w.bonus;
+function rewardHTML(){const w=RUN.reward;if(!w)return '';const want=w.stars+w.bonus,tot=w.got==null?want:w.got;const e=typeof starToday==='function'?starToday():{n:0};
   const why=RUN.mode==='fix'?`비슷한 문제 ${w.n}개 중 <b>${w.good}개</b>를 고쳤어요`:`${w.n}문제 중 <b>${w.good}개</b>를 맞혔어요`;
   return `<div class="card rwcard"><div class="rwstar">${tot?'⭐'.repeat(Math.min(tot,5))+` <b>+${tot}</b>`:'☆ 0'}</div><p>${why}${w.bonus?` · 틀린 문제 고치기 보너스 ⭐${w.bonus}`:''}${w.capped?' <span class="small">(고치기 보너스는 하루 ⭐'+FIX_CAP+'까지)</span>':''}</p>
+   ${RUN.streakStars?`<p>🔥 연속 3문제 정답 보너스 ⭐${RUN.streakStars}</p>`:''}
+   ${want>tot?`<p class="small">🌙 오늘 모을 수 있는 별 ⭐${STAR_DAY}개를 다 모았어요. 내일 또 모아요!</p>`:''}<p class="small muted">오늘 모은 별 ⭐${e.n} / ${STAR_DAY}</p>
    ${w.fast?`<p class="small">⚡ 너무 빨리 고른 ${w.fast}문제는 별에 세지 않았어요.</p>`:''}
    ${w.an?`<p>🐾 친구 ${w.an}마리가 홈 화면 어딘가에 숨었어요!</p>`:RUN.mode!=='fix'&&w.pend?'<p>이번에는 친구가 숨지 않았어요. <b>틀린 문제를 고치면</b> 친구가 나타나요!</p>':''}
    <p class="small muted">${RUN.mode==='session'?'80% 이상 ⭐2 · 50% 이상 ⭐1':RUN.mode==='fix'?'고친 문제 1개마다 ⭐1':'모두 맞히면 ⭐2 · ⅔ 이상 ⭐1'} · 절반 이상 맞히면 친구가 숨어요</p>
@@ -1751,7 +1756,7 @@ function homeHTML(){
     </div>
     <button class="big" data-act="start">${done?'한 번 더 시작':'시작하기'} ▶</button><button class="pickc" data-lp="pick">📘 개념 골라서 15분</button>
   </section>
-  ${(()=>{const R=rmS();const n=rmLive().length;return `<button class="mhcard" data-act="room"><span class="mhci">🏠</span><span><b>${esc(R.name||'나')}의 미니홈피</b><small>${PETW()} ${n}마리가 살고 있어요 · ⭐ ${R.coins||0}</small></span><span class="mhgo">›</span></button>`})()}
+  ${(()=>{const R=rmS();const n=rmLive().length;return `<button class="mhcard" data-act="room"><span class="mhci">🏠</span><span><b>${esc(R.name||'나')}의 미니홈피</b><small>${PETW()} ${n}마리가 살고 있어요 · ⭐ ${R.coins||0} (오늘 ${starToday().n}/${STAR_DAY})</small></span><span class="mhgo">›</span></button>`})()}
   <div class="quick"><button class="qb lib" data-act="shelfopen"><span class="qi">📚</span><b>나의 서재</b><small>이해한 개념 ${CONCEPTS.filter(c=>onShelf(c.id)).length}권 · 🐾 ${catSync()}마리</small></button><button class="qb map" data-act="mapopen"><span class="qi">🗺️</span><b>개념 지도</b><small>${esc(rangeName())} · ${ids.filter(id=>{const m=mastery(id);return m!=null&&m>=.8}).length}/${ids.length} 완성</small></button></div>
   ${dailyHTML()}
   <div class="stats">
@@ -1916,7 +1921,7 @@ function probsHTML(st){
   if(RUN&&RUN.mode==='exam'&&!a&&!st.reveal&&st.j<st.list.length-1)ui+=`<button class="ghost wide skipb" data-act="pskip">⏭ 나중에 풀기 (맨 뒤로 보내기)</button>`;
   let fb='';
   if(p.t==='self'&&st.reveal&&!a)fb=`${(REC.st===recKey(st)&&REC.url)?`<div class="card recplay"><b>🎙 내 풀이 녹음 듣기</b><audio controls src="${REC.url}"></audio></div>`:''}<div class="sol"><b>모범 풀이</b><div>${fmt(p.s)}</div></div>${p.ck?`<div class="ckl"><b>✍️ 서술형 감점 체크 — 내 답안에 다 썼나요?</b>${p.ck.map(c=>`<label><input type="checkbox"> <span>${fmt(c)}</span></label>`).join('')}<p class="small muted">하나라도 빠졌으면 부분 점수가 깎여요.</p></div>`:''}<div class="two"><button class="rate r0" data-self="0">틀렸어요</button><button class="rate r2" data-self="1">맞았어요</button></div>`;
-  if(a)fb=`<div class="fb ${a.ok?'ok':'no'}">${a.ok?'정답! 👏':'아쉬워요 — 오답노트에 담았어요'}</div>${a.fast?'<p class="fastnote">⚡ 너무 빨리 골랐어요. 문제를 끝까지 읽고 풀어야 별(⭐)에 세어요.</p>':''}<div class="sol"><b>풀이</b><div>${fmt(p.s)}</div></div><button class="big" data-act="pnext">${st.j+1<st.list.length?'다음 문제 ▶':'결과 보기 ▶'}</button>`;
+  if(a)fb=`<div class="fb ${a.ok?'ok':'no'}">${a.ok?'정답! 👏':'아쉬워요 — 오답노트에 담았어요'}</div>${a.streakHit?`<p class="streaknote">🔥 연속 3문제 정답!${a.streak?' ⭐+1':' (오늘 별은 다 모았어요)'}</p>`:''}${a.fast?'<p class="fastnote">⚡ 너무 빨리 골랐어요. 문제를 끝까지 읽고 풀어야 별(⭐)에 세어요.</p>':''}<div class="sol"><b>풀이</b><div>${fmt(p.s)}</div></div><button class="big" data-act="pnext">${st.j+1<st.list.length?'다음 문제 ▶':'결과 보기 ▶'}</button>`;
   return `<p class="step">문제 ${st.j+1} / ${st.list.length} ${st.levelNote&&st.j===0?`<span class="note">${st.levelNote}</span>`:''}</p>
   <div class="qmeta"><span class="tag s">${esc(C[p.cid].t)}</span><span class="tag lv${p.l}">${LV[p.l]}</span><span class="tag ty">${TY[p.t]}</span>${p.h?'<span class="tag hp">학평 유형</span>':''}${p.src?`<span class="tag src">${esc(p.src)}</span>`:''}${p.retry?'<span class="tag rt">오답 재도전</span>':''}</div>
   <div class="q">${fmt(p.q)}</div>${p.fig?`<div class="qfig">${p.fig}</div>`:''}${ui}${fb}`;
@@ -2001,7 +2006,7 @@ document.addEventListener('click',e=>{
     nextStep();return}
   if(st.k==='probs'){
     const p=st.list[st.j];
-    const answer=(ok,extra)=>{const fast=p.t!=='self'&&Date.now()-((st.shown&&st.shown[st.j])||0)<3000;st.fast=st.fast||{};st.fast[st.j]=fast;st.wr=ok?0:(st.wr||0)+1;if(st.wr>=3&&RUN.mode!=='exam'){st.help=p.cid;st.wr=0}st.ans=Object.assign({ok,fast},extra);st.res[st.j]=ok;recordProblem(p,ok);render();const f=document.querySelector('.fb');if(f)f.scrollIntoView({behavior:'smooth',block:'center'})};
+    const answer=(ok,extra)=>{const fast=p.t!=='self'&&Date.now()-((st.shown&&st.shown[st.j])||0)<3000;st.fast=st.fast||{};st.fast[st.j]=fast;st.wr=ok?0:(st.wr||0)+1;st.rc=ok&&!fast&&p.t!=='self'?(st.rc||0)+1:0;let streak=0;if(st.rc>=3&&RUN.mode!=='exam'){st.rc=0;streak=rmEarn(1);RUN.streakStars=(RUN.streakStars||0)+streak;if(!streak)RUN.streakCap=1}if(st.wr>=3&&RUN.mode!=='exam'){st.help=p.cid;st.wr=0}st.ans=Object.assign({ok,fast,streak:st.rc===0&&ok&&!fast&&p.t!=='self'?streak:0,streakHit:ok&&!fast&&st.rc===0&&p.t!=='self'},extra);st.res[st.j]=ok;recordProblem(p,ok);render();const f=document.querySelector('.fb');if(f)f.scrollIntoView({behavior:'smooth',block:'center'})};
     if(d.pick!=null&&!st.ans)return answer(+d.pick===0,{pick:+d.pick});
     if(d.ox!=null&&!st.ans){const v=d.ox==='true';return answer(v===p.x,{pick:v})}
     if(a==='sacheck'&&!st.ans){const v=(document.getElementById('sain').value||'').trim();const norm=s=>String(s).replace(/\s/g,'').replace(/−/g,'-').replace(/,/g,'').replace(/(cm²|cm³|cm|mm|km|m²|m|°|개|명|원|번|자루|장|살|일|분|초|시간|kg|g|mL|L|%|배|도|상자|봉지|층|권|컵|m³|cm³)$/,'').replace(/^0+(?=\d)/,'').toLowerCase();const same=(x,y)=>{x=norm(x);y=norm(y);if(x===y)return true;const nx=/^-?(\d+\.?\d*|\.\d+)$/;return nx.test(x)&&nx.test(y)&&Math.abs(+x - +y)<1e-9};return answer(String(p.x).split('|').some(x=>same(x,v)),{val:v})}
@@ -2124,7 +2129,9 @@ function rmHomeOf(i){const R=S.room;const h=R.home[i];return R.rooms.some(r=>r.i
 function rmMkRoom(t){const R=rmS();const T=RM_RT[t];const same=R.rooms.filter(r=>r.t===t).length;const r={id:R.rid++,t,name:T.n+(same?' '+(same+1):''),wall:T.wall,floor:T.floor,items:[]};
   T.it.forEach(([k,x,y])=>{r.items.push({id:R.nid++,k,x,y,f:0});if(!R.own.includes(k))R.own.push(k)});[T.wall,T.floor].forEach(k=>{if(!R.own.includes(k))R.own.push(k)});R.rooms.push(r);R.cur=r.id;save();return r}
 function rmS(){if(!S.room){S.room={name:'',msg:'',wall:'cream',floor:'wood',coins:3,own:['window','cushion','cream','wood'],items:[{id:1,k:'window',x:28,y:34,f:0},{id:2,k:'cushion',x:62,y:86,f:0}],nid:3};save()}return rmMig(S.room)}
-function rmEarn(n){const R=rmS();R.coins=(R.coins||0)+n;save()}
+// 별은 하루 최대 STAR_DAY개까지 모을 수 있어요 (모든 방법 합쳐서). 실제로 준 개수를 돌려줘요
+function starToday(){const R=rmS(),t=today();if(!R.earn||R.earn.d!==t)R.earn={d:t,n:0};return R.earn}
+function rmEarn(n){const R=rmS(),e=starToday();const g=Math.max(0,Math.min(n,STAR_DAY-e.n));if(g){R.coins=(R.coins||0)+g;e.n+=g}save();return g}
 function rmLive(){const R=rmS();return rmAll().filter(i=>rmHomeOf(i)===R.cur).slice(0,16)}
 function rmCat(b){return `<svg viewBox="-2 -2 44 54"><path d="M30 42c9 0 10-10 5-13" stroke="${RM_OL}" stroke-width="5.4" fill="none" stroke-linecap="round"/><path d="M30 42c9 0 10-10 5-13" stroke="${b.b}" stroke-width="3.4" fill="none" stroke-linecap="round"/><ellipse cx="20" cy="40" rx="12" ry="9" fill="${b.b}" stroke="${RM_OL}" stroke-width="1.6"/><path d="M13 48v-3M27 48v-3" stroke="${RM_OL}" stroke-width="2.6" stroke-linecap="round"/><g transform="translate(1,-1) scale(.95)">${bFace(b)}</g></svg>`}
 let RM_NEW=false,RM_TAB='room',RM_EDIT=false,RM_SEL=null,RM_T=null;
@@ -2258,7 +2265,7 @@ function rmSeek(){const sc=document.getElementById('rmscene');if(!sc)return;cons
 function rmFound(el){if(!el.classList.contains('rmhid'))return;el.classList.remove('rmhid');el.style.transition='';RM_SEEK.f++;
   const y=66+Math.random()*28,x=Math.max(8,Math.min(92,parseFloat(el.style.left)));el.style.left=x+'%';el.style.top=y+'%';el.style.zIndex=Math.round(y)+1;
   const h=document.createElement('i');h.className='rmheart';h.textContent='찾았다!';el.appendChild(h);setTimeout(()=>h.remove(),1600);
-  if(RM_SEEK.f>=RM_SEEK.n){const R=rmS();const d=today();let msg=`다 찾았어요! 🎉`;if(R.seekDay!==d){R.seekDay=d;R.coins=(R.coins||0)+1;save();msg+=' 오늘의 숨바꼭질 보너스 ⭐1'}
+  if(RM_SEEK.f>=RM_SEEK.n){const R=rmS();const d=today();let msg=`다 찾았어요! 🎉`;if(R.seekDay!==d){R.seekDay=d;if(rmEarn(1))msg+=' 오늘의 숨바꼭질 보너스 ⭐1'}
     RM_SEEK=null;const sc3=document.getElementById('rmscene');sc3.classList.remove('rmseeking');const bd=sc3.querySelector('.rmsbadge');if(bd)bd.remove();toast(msg);setTimeout(()=>{if(VIEW==='room')render()},1800)}
   else rmSeekBadge()}
 function rmSeekBadge(){const sc=document.getElementById('rmscene');if(!sc||!RM_SEEK)return;let b=sc.querySelector('.rmsbadge');if(!b){b=document.createElement('div');b.className='rmsbadge';sc.appendChild(b)}b.textContent=`🔍 ${RM_SEEK.f} / ${RM_SEEK.n}`}
@@ -3776,7 +3783,7 @@ function ptOn(d){if(d.t==='hello'){PT.snap=d.snap;PT.people=d.people;(d.pos||[])
   if(d.t==='pet'){const el=document.querySelector(`#ptscene [data-ptc="${d.k}"]`);const p=(PT.people||[]).find(x=>x.pid===d.by);if(el){const h=document.createElement('i');h.className='rmheart';h.textContent='💗';el.appendChild(h);setTimeout(()=>h.remove(),1600)}
     const [pid,i]=d.k.split('-');if(pid===PT.pid&&d.by!==PT.pid&&BREEDS[+i]){const R=rmS();R.love=R.love||{};R.love[+i]=(R.love[+i]||0)+1;save();ptBubble(null,`💗 ${esc(p?p.nick:'친구')}이(가) 내 ${esc(BREEDS[+i].n)}을(를) 쓰다듬었어요`)}return}
   if(d.t==='closed'){ptStop();ptMsg('👋 놀이가 끝났어요',d.why==='host'?'방 주인이 방을 닫았어요. 또 놀자!':'오래 쉬어서 방이 닫혔어요.','<button class="cambig" data-pt="menu">처음으로</button>')}}
-function ptReward(){const on=(PT.people||[]).filter(p=>p.on).length;if(on<2)return;const R=rmS();const d=today();if(R.ptDay===d)return;R.ptDay=d;R.coins=(R.coins||0)+1;save();toast('👫 친구랑 놀기 보너스 ⭐1 (하루 한 번)')}
+function ptReward(){const on=(PT.people||[]).filter(p=>p.on).length;if(on<2)return;const R=rmS();const d=today();if(R.ptDay===d)return;R.ptDay=d;if(rmEarn(1))toast('👫 친구랑 놀기 보너스 ⭐1 (하루 한 번)')}
 function ptApply(el,p,walk){const x0=parseFloat(el.style.left);if(Math.abs(p.x-x0)>.5)el.classList.toggle('rmflip',p.x<x0);if(walk){ptPose(el,'sit');el.classList.add('rmwalk')}
   el.style.left=p.x+'%';el.style.top=p.y+'%';el.style.zIndex=p.z;clearTimeout(el._t);el._t=setTimeout(()=>{el.classList.remove('rmwalk');ptPose(el,p.pose)},walk?2400:0)}
 function ptPose(el,pose){if(el._pose===pose)return;el._pose=pose;const keep=[...el.querySelectorAll('.ptown,.rmheart')];el.innerHTML=rmPose(BREEDS[+el.dataset.i],pose);keep.forEach(k=>el.appendChild(k));el.classList.toggle('rmwide',pose==='sleep'||pose==='lie'||pose==='stretch')}
@@ -3868,7 +3875,7 @@ function ptFound(d){if(!PT||!PT.seek)return;PT.seek.found[d.k]=d.by;PT.seek.scor
 function ptSeekEnd(score){if(!PT)return;const sc=document.getElementById('ptscene');PT.seek=null;if(sc){sc.classList.remove('rmseeking');const b=sc.querySelector('.rmsbadge');if(b)b.remove()}
   const rank=Object.entries(score||{}).sort((a,b)=>b[1]-a[1]);const nm=pid=>{const p=(PT.people||[]).find(x=>x.pid===pid);return pid===PT.pid?'나':(p?p.nick:'친구')};
   const top=rank.length?rank[0][1]:0;const win=rank.filter(r=>r[1]===top).map(r=>nm(r[0]));const mine=(score||{})[PT.pid]||0;
-  const R=rmS();let bonus='';if(R.ptSeekDay!==today()){R.ptSeekDay=today();R.coins=(R.coins||0)+1;save();bonus='<span>오늘의 숨바꼭질 보너스 ⭐1</span>'}
+  const R=rmS();let bonus='';if(R.ptSeekDay!==today()){R.ptSeekDay=today();if(rmEarn(1))bonus='<span>오늘의 숨바꼭질 보너스 ⭐1</span>'}
   if(sc){const cover=document.createElement('div');cover.className='rmcover ptend';cover.innerHTML=`<b>🎉 다 찾았어요!</b><span>🏆 ${win.map(esc).join(', ')} ${win.length>1?'공동 1등':'1등'} (${top}마리)</span><div class="ptrank">${rank.map(([pid,v])=>`<i style="background:${ptColor(pid)}">${esc(nm(pid))} ${v}마리</i>`).join('')}</div><span>나는 ${mine}마리 찾았어요</span>${bonus}`;sc.appendChild(cover);setTimeout(()=>cover.classList.add('rmfade'),3800);setTimeout(()=>cover.remove(),4500)}
   PT.busy=Date.now()+3000}
 document.addEventListener('click',e=>{if(!PT||!PT.seek)return;const sc=e.target.closest('#ptscene');if(!sc)return;e.preventDefault();e.stopPropagation();

@@ -1,3 +1,5 @@
+// 별(⭐)은 하루 최대 30개까지 모을 수 있어요 (모든 방법 합쳐서)
+const STAR_DAY=30;
 // ===== 초등 수학: 단원(학년 × 4영역) =====
 const DOM={N:'수와 연산',R:'변화와 관계',G:'도형과 측정',D:'자료와 가능성'};
 const UNITS={};for(let g=1;g<=6;g++)for(const k in DOM)UNITS[g+k]={g,t:DOM[k]};
